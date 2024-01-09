@@ -13,6 +13,9 @@ namespace CommonLib.DAL
         public DbSet<User> Users => Set<User>();
         public DbSet<UserType> UserTypes => Set<UserType>();
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
     }
 }

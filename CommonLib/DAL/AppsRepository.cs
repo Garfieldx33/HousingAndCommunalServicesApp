@@ -16,7 +16,7 @@ namespace CommonLib.DAL
             var query = context.Apps.AsNoTracking();
             if (UserId > 0)
             {
-                query = query.Where(q => q.Applicant == UserId);
+                query = query.Where(q => q.ApplicantId == UserId);
             }
             return await query.ToListAsync(cancellation);
         }

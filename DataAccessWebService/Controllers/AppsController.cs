@@ -28,6 +28,7 @@ namespace DataAccessWebService.Controllers
         public async Task<int> AddNewApp(ApplicationDTO applicationDTO)
         {
             Application newApp = _mapper.Map<Application>(applicationDTO);
+            newApp.DateCreate = DateTimeOffset.Parse(newApp.DateCreate.ToString());
             return await _repository.AddNewApplication(newApp);
         }
     }

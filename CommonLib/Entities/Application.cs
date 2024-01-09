@@ -4,34 +4,38 @@ using System.Diagnostics;
 namespace CommonLib.Entities
 {
     [Table("application")]
-    public class Application 
+    public class Application
     {
         [Column("id")]
+        [ForeignKey(nameof(Application.Id))]
         public int Id { get; set; }
-        
+
         [Column("name")]
         public string Subject { get; set; }
-        
+
         [Column("description")]
         public string Description { get; set; }
-        
+
         [Column("status")]
-        public int Status { get; set; }
+        [ForeignKey(nameof(Application.StatusId))]
+        public int StatusId { get; set; }
 
         [Column("type")]
-        public int Type { get; set; }
+        public int ApplicationTypeId { get; set; }
 
         [Column("department")]
-        public int? Department { get; set; }
+        [ForeignKey(nameof(Application.DepartmentId))]
+        public int? DepartmentId { get; set; }
 
         [Column("applicant")]
-        public int Applicant { get; set; }
+        [ForeignKey(nameof(Application.ApplicantId))]
+        public int ApplicantId { get; set; }
 
         [Column("executor")]
-        public int? Executor { get; set; }
+        public int? ExecutorId { get; set; }
         
         [Column("datecreate")]
-        public DateTime DateCreate { get; set; }
+        public DateTimeOffset DateCreate { get; set; }
         
         [Column("dateconfirm")]
         public DateTime? DateConfirm { get; set; }

@@ -9,6 +9,10 @@ namespace CommonLib.DAL
     public partial class PostgresRepository
     {
         private AppDbContext context { get; set; }
-        public PostgresRepository(AppDbContext context) { this.context = context; }
+        public PostgresRepository(AppDbContext context) 
+        { 
+            this.context = context;
+
+        }
     }
 }
