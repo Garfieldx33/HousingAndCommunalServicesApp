@@ -2,29 +2,26 @@ using AutoMapper;
 using CommonLib.DAL;
 using CommonLib.DTO;
 using CommonLib.Entities;
+using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DataAccessWebService.Controllers
+namespace DataAccessGrpcService.Services
 {
-    [ApiController]
-    [Route("[controller]/[action]")]
-    public class AppsController : ControllerBase
+    public class DataAccessService : Greeter.GreeterBase
     {
         PostgresRepository _repository;
         IMapper _mapper;
-        public AppsController(PostgresRepository repo, IMapper mapper)
+        public DataAccessService(PostgresRepository repo, IMapper mapper)
         {
             _repository = repo;
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<Application>> GetApps(int applicantId)
+        public async Task<IEnumerable<Application>> GetAppsByUserId(int applicantId)
         {
             return await _repository.GetApplicationByApplicantId(applicantId);
         }
 
-        [HttpPost]
         public async Task<int> AddNewApp(ApplicationDTO applicationDTO)
         {
             Application newApp = _mapper.Map<Application>(applicationDTO);

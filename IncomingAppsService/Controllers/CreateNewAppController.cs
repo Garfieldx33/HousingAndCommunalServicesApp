@@ -15,20 +15,11 @@ namespace IncomingAppsService.Controllers
         }
 
         [HttpPost(Name = "PostNew")]
-        public IActionResult AddNewApp(string subject, string fullText, int userId, int appTypeId, int departamentId, CancellationToken cancellationToken = default)
+        public IActionResult AddNewApp([FromBody] ApplicationDTO newApplication, CancellationToken cancellationToken = default)
         {
             try
             {
-                ApplicationDTO applicationDTO = new ApplicationDTO
-                {
-                    ApplicantId = userId,
-                    ApplicationTypeId = appTypeId,
-                    DateCreate = DateTime.Now,
-                    Description = fullText,
-                    Subject = subject,
-                    DepartamentId = departamentId
-                };
-                var sendSuccess = publisherService.SendNewApplication(applicationDTO);
+                var sendSuccess = publisherService.SendNewApplication(newApplication);
                 if (sendSuccess)
                 {
                     return Ok("Поздравляем! Ваша заявка успешно зарегистрирована");

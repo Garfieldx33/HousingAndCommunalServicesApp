@@ -13,10 +13,9 @@ namespace CommonLib.DTO
         public string Description { get; set; }
 
         public int StatusId { get; set; } = 1;
-        public int TypeId { get; set; }
-        public int ApplicantId { get; set; } 
         public int ApplicationTypeId { get; set; }
         public int DepartamentId { get; set; }
+        public int ApplicantId { get; set; }
         public DateTimeOffset DateCreate { get; set; }
 
     }
