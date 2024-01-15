@@ -1,12 +1,17 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/duration.proto"; 
+
 option csharp_namespace = "DataAccessGrpcService";
 
-package greet;
+package DataAccessService;
 
 
 service DataAccessGrpcService {
-  // Sends a greeting
+ // Methods 
   rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (GetAppsByUserIdResponce);
   rpc AddNewApp (AddNewAppRequest) returns (AddNewAppResponce);
 }

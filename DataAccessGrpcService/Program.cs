@@ -1,16 +1,48 @@
+using CommonLib.DAL;
+using CommonLib.Helpers;
 using DataAccessGrpcService.Services;
+using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Extensions.Logging;
+using NLog.Web;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigurationManager configuration = builder.Configuration;
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("Data Access gRPC Service init");
 
-// Additional configuration is required to successfully run gRPC on macOS.
-// For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
+try
+{
+    builder.Services.AddLogging(log => log.AddNLog());
+    builder.Services.AddControllers().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
-// Add services to the container.
-builder.Services.AddGrpc();
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseNpgsql(configuration.GetConnectionString("SrcConnectionString"));
+    });
+    builder.Services.AddScoped<PostgresRepository>();
+    builder.Services.AddAutoMapper(typeof(MappingProfile));
+    builder.Services.AddGrpc();
 
-var app = builder.Build();
+    var app = builder.Build();
 
-app.MapGrpcService<DataAccessService>();
-app.MapGet("/", () => "Use GRPC, suka");
+    app.MapGrpcService<DataAccessGrpc>();
+    app.MapGet("/", () => "Use GRPC, suka");
 
-app.Run();
+    app.Run();
+}
+catch (Exception ex)
+{
+    logger.Error(ex);
+    throw;
+}
+finally
+{
+    LogManager.Shutdown();
+}

@@ -13,11 +13,11 @@ namespace CommonLib.Entities
         public string Description { get; set; }
         public AppStatusEnum Status { get; set; }
         public AppStatusEnum ApplicationTypeId { get; set; }
-        public int DepartamentId { get; set; }
+        public int? DepartamentId { get; set; }
         public int ApplicantId { get; set; }
         public int? ExecutorId { get; set; }
-        public DateTimeOffset DateCreate { get; set; }
-        public DateTimeOffset? DateConfirm { get; set; }
-        public DateTimeOffset? DateClose { get; set; }
+        public DateTime DateCreate { get; set; }
+        public DateTime? DateConfirm { get; set; }
+        public DateTime? DateClose { get; set; }
     }
 }
