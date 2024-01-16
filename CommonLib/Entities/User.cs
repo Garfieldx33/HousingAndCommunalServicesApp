@@ -1,6 +1,4 @@
-﻿using CommonLib.Helpers;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
+﻿using CommonLib.Enums;
 
 namespace CommonLib.Entities
 {
@@ -14,7 +12,7 @@ namespace CommonLib.Entities
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
-        public int TypeId { get; set; }
+        public UserTypeEnum TypeId { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
     }

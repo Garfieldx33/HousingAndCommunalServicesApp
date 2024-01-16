@@ -21,14 +21,15 @@ namespace DataAccessWebService.Controllers
         [HttpGet]
         public async Task<IEnumerable<Application>> GetApps(int applicantId)
         {
-            return await _repository.GetApplicationByUserId(applicantId);
+            return await _repository.GetApplicationByApplicantId(applicantId);
         }
 
         [HttpPost]
         public async Task<int> AddNewApp(ApplicationDTO applicationDTO)
         {
             Application newApp = _mapper.Map<Application>(applicationDTO);
-            newApp.DateCreate = DateTimeOffset.Parse(newApp.DateCreate.ToString());
+            //newApp.DateCreate = DateTimeOffset.Parse(newApp.DateCreate.ToString());
+            newApp.DateCreate = newApp.DateCreate;
             return await _repository.AddNewApplication(newApp);
         }
     }

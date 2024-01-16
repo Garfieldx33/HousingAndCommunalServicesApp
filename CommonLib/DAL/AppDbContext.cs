@@ -1,4 +1,5 @@
 ﻿using CommonLib.Entities;
+using CommonLib.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommonLib.DAL
@@ -6,13 +7,10 @@ namespace CommonLib.DAL
     public class AppDbContext : DbContext
     {
         public DbSet<Application> Apps => Set<Application>();
-        public DbSet<ApplicationStatus> AppStatus => Set<ApplicationStatus>();
-        public DbSet<ApplicationType> AppTypes => Set<ApplicationType>();
         public DbSet<Department> Departaments => Set<Department>();
         public DbSet<User> Users => Set<User>();
-        public DbSet<UserType> UserTypes => Set<UserType>();
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
@@ -20,11 +18,8 @@ namespace CommonLib.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ConfigureApplications(modelBuilder);
-            ConfigureApplicationStatus(modelBuilder);
-            ConfigureApplicationTypes(modelBuilder);
             ConfigureDepartmentTypes(modelBuilder);
             ConfigureUsers(modelBuilder);
-            ConfigureUserTypes(modelBuilder);
         }
 
         private void ConfigureApplications(ModelBuilder builder)
@@ -35,7 +30,7 @@ namespace CommonLib.DAL
             entity.Property(p => p.Id).HasColumnName("id");
             entity.Property(p => p.Subject).HasColumnName("subject");
             entity.Property(p => p.Description).HasColumnName("description");
-            entity.Property(p => p.StatusId).HasColumnName("status_id");
+            entity.Property(p => p.Status).HasColumnName("status_id");
             entity.Property(p => p.ApplicationTypeId).HasColumnName("app_type_id");
             entity.Property(p => p.DepartamentId).HasColumnName("department_id");
             entity.Property(p => p.ApplicantId).HasColumnName("applicant_id");
@@ -43,23 +38,6 @@ namespace CommonLib.DAL
             entity.Property(p => p.DateCreate).HasColumnName("date_create");
             entity.Property(p => p.DateConfirm).HasColumnName("date_confirm");
             entity.Property(p => p.DateClose).HasColumnName("date_close");
-        }
-        private void ConfigureApplicationStatus(ModelBuilder builder)
-        {
-            var entity = builder.Entity<ApplicationStatus>()
-                .ToTable("application_status");
-
-            entity.Property(p => p.Id).HasColumnName("id");
-            entity.Property(p => p.Name).HasColumnName("name");
-        }
-        private void ConfigureApplicationTypes(ModelBuilder builder)
-        {
-            var entity = builder.Entity<ApplicationType>()
-                .ToTable("application_type");
-
-            entity.Property(p => p.Id).HasColumnName("id");
-            entity.Property(p => p.Name).HasColumnName("name");
-
         }
         private void ConfigureDepartmentTypes(ModelBuilder builder)
         {
@@ -85,14 +63,6 @@ namespace CommonLib.DAL
             entity.Property(p => p.RegistrationDate).HasColumnName("registration_date");
             entity.Property(p => p.Login).HasColumnName("login");
             entity.Property(p => p.Password).HasColumnName("password");
-        }
-        private void ConfigureUserTypes(ModelBuilder builder)
-        {
-            var entity = builder.Entity<UserType>()
-                .ToTable("user_type");
-
-            entity.Property(p => p.Id).HasColumnName("id");
-            entity.Property(p => p.Name).HasColumnName("name");
         }
     }
 }
