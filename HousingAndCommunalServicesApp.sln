@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessWebService", "Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewAppPrepareService", "NewAppPrepareService\NewAppPrepareService.csproj", "{F1B66FF0-E1EC-4415-8889-F20BF394C04F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministratorService", "AdministratorService\AdministratorService.csproj", "{FB410E6B-0207-49CA-9474-C30342D6A5E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdministratorService", "AdministratorService\AdministratorService.csproj", "{FB410E6B-0207-49CA-9474-C30342D6A5E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessGrpcService", "DataAccessGrpcService\DataAccessGrpcService.csproj", "{C3EB971B-3014-4D69-9068-1F484B52F05C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessGrpcService", "DataAccessGrpcService\DataAccessGrpcService.csproj", "{C3EB971B-3014-4D69-9068-1F484B52F05C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffService", "StaffService\StaffService.csproj", "{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{C3EB971B-3014-4D69-9068-1F484B52F05C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3EB971B-3014-4D69-9068-1F484B52F05C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3EB971B-3014-4D69-9068-1F484B52F05C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
