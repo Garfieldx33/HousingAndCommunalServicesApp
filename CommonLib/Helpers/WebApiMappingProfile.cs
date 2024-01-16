@@ -5,12 +5,13 @@ using CommonLib.Enums;
 
 namespace CommonLib.Helpers
 {
-    public class MappingProfile : Profile
+    public class WebApiMappingProfile : Profile
     {
-        public MappingProfile()
+        public WebApiMappingProfile()
         {
             CreateMap<ApplicationDTO, Application>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => Enum.GetName(typeof(AppStatusEnum), source.StatusId)));
+
         }
     }
 }

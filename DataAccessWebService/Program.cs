@@ -28,7 +28,7 @@ try
         options.UseNpgsql(configuration.GetConnectionString("SrcConnectionString"));
     });
     builder.Services.AddScoped<PostgresRepository>();
-    builder.Services.AddAutoMapper(typeof(MappingProfile));
+    builder.Services.AddAutoMapper(typeof(WebApiMappingProfile));
     builder.Services.AddControllers(options =>
     {
         options.AllowEmptyInputInBodyModelBinding = true;

@@ -5,7 +5,6 @@ namespace CommonLib.DAL
 {
     public partial class PostgresRepository
     {
-
         public async Task<List<Application>> GetApplicationByApplicantId(int UserId, CancellationToken cancellation = default)
         {
             var query = context.Apps.AsNoTracking();
@@ -21,6 +20,5 @@ namespace CommonLib.DAL
             await context.Apps.AddAsync(newApplication, cancellation);
             return context.SaveChanges();
         }
-
     }
 }

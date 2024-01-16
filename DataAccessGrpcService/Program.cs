@@ -1,5 +1,5 @@
 using CommonLib.DAL;
-using CommonLib.Helpers;
+using DataAccessGrpcService;
 using DataAccessGrpcService.Services;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -27,7 +27,7 @@ try
         options.UseNpgsql(configuration.GetConnectionString("SrcConnectionString"));
     });
     builder.Services.AddScoped<PostgresRepository>();
-    builder.Services.AddAutoMapper(typeof(MappingProfile));
+    builder.Services.AddAutoMapper(typeof(GrpcMappingProfile));
     builder.Services.AddGrpc();
 
     var app = builder.Build();
