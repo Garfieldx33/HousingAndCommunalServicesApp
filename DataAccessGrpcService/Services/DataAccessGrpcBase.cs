@@ -1,26 +1,24 @@
 using AutoMapper;
 using CommonLib.DAL;
-using CommonLib.DTO;
 using CommonLib.Entities;
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
 
 namespace DataAccessGrpcService.Services
 {
-    public class DataAccessGrpc : DataAccessGrpcService.DataAccessGrpcServiceBase
+    public class DataAccessGrpcBase : DataAccessGrpcService.DataAccessGrpcServiceBase
     {
         PostgresRepository _repository;
         IMapper _mapper;
         Logger _logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-        public DataAccessGrpc(PostgresRepository repo, IMapper mapper)
+        public DataAccessGrpcBase(PostgresRepository repo, IMapper mapper)
         {
             _repository = repo;
             _mapper = mapper;
         }
 
+        //Applications
         public override async Task<GetAppsByUserIdResponce> GetAppsByUserId(GetAppsByUserIdRequest request, ServerCallContext context)
         {
             GetAppsByUserIdResponce responce = new();
@@ -61,6 +59,15 @@ namespace DataAccessGrpcService.Services
                 Status = (int)app.Status,
                 Subject = app.Subject
             };
+        }*/
+
+        //Dictionaries
+        /*public override DepartamentReply GetDepartamentById(DepartamentRequest request, ServerCallContext context)
+        {
+            DepartamentReply reply = new DepartamentReply();
+            reply.DepartamentName = "Some Department";
+
+            return reply;
         }*/
     }
 }
