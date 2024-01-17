@@ -20,8 +20,6 @@ namespace DataAccessGrpcService
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => (int)source.Status))
                 .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateCreate, DateTimeKind.Utc))));
 
-
-
             CreateMap<DateTime, Timestamp>().ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
 
         }
