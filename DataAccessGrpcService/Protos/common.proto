@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "DataAccessGrpcService";
+
+package DataAccessService;
+
+
+service DictionaryService {
+
+  rpc GetDepartamentById (DepartamentRequest) returns (DepartamentReply);
+
+}
+message DepartamentRequest {
+  int32 departamentId = 1;
+}
+message DepartamentReply {
+  string departamentName = 1;
+}

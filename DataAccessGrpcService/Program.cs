@@ -32,8 +32,8 @@ try
 
     var app = builder.Build();
 
-    app.MapGrpcService<DataAccessGrpc>();
-    app.MapGet("/", () => "Use GRPC, suka");
+    app.MapGrpcService<DataAccessGrpcBase>();
+    app.MapGet("/", () => "Use GRPC");
 
     app.Run();
 }

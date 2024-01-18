@@ -12,8 +12,7 @@ namespace CommonLib.DAL
             {
                 query = query.Where(q => q.ApplicantId == UserId);
             }
-            var res =  await query.ToListAsync(cancellation);
-            return res;
+            return await query.ToListAsync(cancellation);
         }
         public async Task<int> AddNewApplication(Application newApplication, CancellationToken cancellation = default)
         {
