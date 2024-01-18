@@ -17,7 +17,12 @@ namespace StaffService.Controllers
         public IActionResult Get()
         {
             //Как-то достаём все заявки
-            var apps = new Application[] { new Application(), new Application() }; 
+            var apps = new Application[] { new Application(), new Application() };
+
+            if (apps.Length == 0)
+            {
+                return NotFound();
+            }
             return Ok(apps);
         }
 
