@@ -1,13 +1,30 @@
-﻿{
+{
   "profiles": {
     "CommonGrpcService": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:5084;https://localhost:7228",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5084;https://localhost:7228"
+    },
+      "WSL": {
+        "commandName": "WSL2",
+        "launchUrl": "https://localhost:7228",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ASPNETCORE_URLS": "http://localhost:5084;https://localhost:7228"
+        },
+        "distributionName": ""
       }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:50058/",
+      "sslPort": 44360
     }
   }
 }

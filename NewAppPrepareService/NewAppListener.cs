@@ -121,6 +121,7 @@ namespace NewAppPrepareService
             using HttpResponseMessage response = httpClient.PostAsync(_addNewAppUrls["http"], jsonContent).Result;
             return response.EnsureSuccessStatusCode();
         }
+
         public void Dispose()
         {
             if (_channel is not null)

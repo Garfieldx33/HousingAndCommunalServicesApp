@@ -16,7 +16,8 @@ namespace CommonGrpcService.Controllers
         [HttpGet]
         public async Task<string> GetDepartmentById(int departmentId)
         {
-            return _dictionaryService.GetDepartmentById(departmentId);
+            int i = 0;
+            return await _dictionaryService.GetDepartmentByIdAsync(departmentId);
         }
     }
 }

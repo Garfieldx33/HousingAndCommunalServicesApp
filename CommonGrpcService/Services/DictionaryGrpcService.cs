@@ -8,14 +8,17 @@ namespace CommonGrpcService.Services
     {
         public DictionaryGrpcService() { }
 
-        public string GetDepartmentById(int deprtmentId)
+        public Task<string> GetDepartmentByIdAsync(int deprtmentId)
         {
+            return Task.Factory.StartNew(() => 
+            {
+                return "Котельная = 1";
+            });
             /*using var channel = GrpcChannel.ForAddress("https://localhost:7045");
             var client = new DictionaryService.DictionaryServiceClient(channel);
             var reply = client.GetDepartamentById(new DepartamentRequest { DepartamentId = deprtmentId });
             return reply.DepartamentName;*/
 
-            return "Котельная";
         }
        
     }
