@@ -7,7 +7,7 @@ using NLog.Web;
 
 namespace DataAccessGrpcService.Services
 {
-    public class DataAccessGrpcBase : DataAccessGrpcService.DataAccessGrpcServiceBase
+    public partial class DataAccessGrpcBase : DataAccessGrpcService.DataAccessGrpcServiceBase
     {
         PostgresRepository _repository;
         IMapper _mapper;
@@ -43,6 +43,7 @@ namespace DataAccessGrpcService.Services
             return new AddNewAppResponce { ResultOfInsert = res };
         }
 
+        //Это пример маппинга, после показа остальным членам команды удалить
         /*static ApplicationGrpc MapApp(Application app)
         {
             return new ApplicationGrpc
@@ -62,12 +63,7 @@ namespace DataAccessGrpcService.Services
         }*/
 
         //Dictionaries
-        /*public override DepartamentReply GetDepartamentById(DepartamentRequest request, ServerCallContext context)
-        {
-            DepartamentReply reply = new DepartamentReply();
-            reply.DepartamentName = "Some Department";
+        
 
-            return reply;
-        }*/
     }
 }
