@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessWebService", "Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewAppPrepareService", "NewAppPrepareService\NewAppPrepareService.csproj", "{F1B66FF0-E1EC-4415-8889-F20BF394C04F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdministratorService", "AdministratorService\AdministratorService.csproj", "{FB410E6B-0207-49CA-9474-C30342D6A5E0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessGrpcService", "DataAccessGrpcService\DataAccessGrpcService.csproj", "{C3EB971B-3014-4D69-9068-1F484B52F05C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffService", "StaffService\StaffService.csproj", "{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonGrpcService", "CommonGrpcService\CommonGrpcService.csproj", "{8AFA7628-841A-41FE-BDC7-3983F86F77D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonWebService", "CommonWebService\CommonWebService.csproj", "{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,18 +39,18 @@ Global
 		{F1B66FF0-E1EC-4415-8889-F20BF394C04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1B66FF0-E1EC-4415-8889-F20BF394C04F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1B66FF0-E1EC-4415-8889-F20BF394C04F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FB410E6B-0207-49CA-9474-C30342D6A5E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB410E6B-0207-49CA-9474-C30342D6A5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB410E6B-0207-49CA-9474-C30342D6A5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB410E6B-0207-49CA-9474-C30342D6A5E0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C3EB971B-3014-4D69-9068-1F484B52F05C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3EB971B-3014-4D69-9068-1F484B52F05C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3EB971B-3014-4D69-9068-1F484B52F05C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3EB971B-3014-4D69-9068-1F484B52F05C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02E039B4-ABF9-4CB6-A0F8-95DEF2876DDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AFA7628-841A-41FE-BDC7-3983F86F77D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AFA7628-841A-41FE-BDC7-3983F86F77D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AFA7628-841A-41FE-BDC7-3983F86F77D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AFA7628-841A-41FE-BDC7-3983F86F77D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

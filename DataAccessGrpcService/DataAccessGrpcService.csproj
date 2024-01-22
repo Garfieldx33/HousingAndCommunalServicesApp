@@ -11,18 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Protos\common.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\common.proto" GrpcServices="Client" />
-    <Protobuf Include="Protos\DataAccess.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\common.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
