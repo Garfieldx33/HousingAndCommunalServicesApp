@@ -12,8 +12,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         IConfiguration configuration = context.Configuration;
         services.Configure<RabbitMqConfig>(
           context.Configuration.GetSection("RabbitMQConf"));
-        services.Configure<Dictionary<string,string>>(
-          context.Configuration.GetSection("SaveMethodURLs"));
+        services.Configure<gRpcConfig>(
+                   configuration.GetSection("gRpcConfig"));
         services.AddHostedService<NewAppListener>();
     })
     .ConfigureLogging(logging =>
