@@ -24,6 +24,7 @@ namespace NewAppPrepareService
             _addNewAppUrls = urls.Value;
         }
 
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
             ConnectionFactory factory = CreateConnectionFactory(_rabbitMqConfig);
