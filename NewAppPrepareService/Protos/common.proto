@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+option csharp_namespace = "NewAppPrepareService";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/duration.proto"; 
+
+package DataAccessService;
+
+service DataAccessGrpcService {
+// Methods 
+
+ //Applications
+  rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (GetAppsByUserIdResponce);
+  rpc AddNewApp (AddNewAppRequest) returns (AddNewAppResponce);
+
+  //Dictionaries
+  rpc GetDepartments (DepartmentsRequest) returns (DepartmentsReply);
+  rpc GetDepartmentById (DepartmentRequest) returns (DepartmentReply);
+  rpc AddDepartment (DepartmentRequest) returns (DepartmentReply);
+  rpc UpdateDepartment (DepartmentRequest) returns (DepartmentReply);
+  rpc DeleteDepartment (DepartmentRequest) returns (DepartmentReply);
+}
+// Request messages
+
+//Applications
+message GetAppsByUserIdRequest { int32 applicant_id = 1;  }
+message AddNewAppRequest { ApplicationDtoGrpc application_dto = 1; }
+
+//Dictionaries
+message DepartmentRequest { int32 departmentId = 1; string departmentName = 2;}
+message DepartmentsRequest { }
+
+// Responce messages
+
+//Applications
+message GetAppsByUserIdResponce { repeated ApplicationGrpc applications = 1; }
+message AddNewAppResponce { int32 result_of_insert = 1; }
+
+//Dictionaries
+
+message DepartmentReply { int32 departmentId = 1; string departmentName = 2; }
+message DepartmentsReply { repeated DepartmentGrpc departments = 1; }
+
+
+message ApplicationGrpc {
+  int32 id = 1;
+  string subject = 2;
+  string description = 3;
+  int32 status = 4;
+  int32 application_type_id = 5;
+  int32 departament_id = 6;
+  int32 applicant_id = 7;
+  google.protobuf.Int32Value executor_id = 8;
+  google.protobuf.Timestamp date_create = 9;
+  google.protobuf.Timestamp date_confirm = 10;
+  google.protobuf.Timestamp date_close = 11;
+}
+
+message ApplicationDtoGrpc {
+  string subject = 1;
+  string description = 2;
+  int32 status = 3;
+  int32 application_type_id = 4;
+  int32 departament_id = 5;
+  int32 applicant_id = 6;
+  google.protobuf.Timestamp date_create = 7; 
+}
+
+message DepartmentGrpc{
+	int32 departamentId = 1;
+	string departamentName = 2;
+}

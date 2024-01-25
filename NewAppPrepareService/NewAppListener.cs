@@ -1,11 +1,10 @@
-
 using CommonLib.Config;
+using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Text;
 
 namespace NewAppPrepareService
 {
@@ -13,15 +12,15 @@ namespace NewAppPrepareService
     {
         Logger _logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         RabbitMqConfig _rabbitMqConfig;
-        Dictionary<string, string> _addNewAppUrls;
+        gRpcConfig _gRpcConfig;
         public IConnection? _rabbitConnection { get; set; }
         public IModel? _channel { get; set; }
 
 
-        public NewAppListener(IOptions<RabbitMqConfig> rabbitConfig, IOptions<Dictionary<string, string>> urls)
+        public NewAppListener(IOptions<RabbitMqConfig> rabbitConfig, IOptions<gRpcConfig> gRpcConfigSection)
         {
             _rabbitMqConfig = rabbitConfig.Value;
-            _addNewAppUrls = urls.Value;
+            _gRpcConfig = gRpcConfigSection.Value;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -108,18 +107,11 @@ namespace NewAppPrepareService
             {
                 throw new Exception("Канал закрыт, работа сервиса остановлена");
             }
-            var response = SendNewAppToSave(new HttpClient(), Encoding.UTF8.GetString(e.Body.ToArray()));
+            /*var response = SendNewAppToSave(new HttpClient(), Encoding.UTF8.GetString(e.Body.ToArray()));
             if (response.IsSuccessStatusCode)
             {
                 _channel.BasicAck(e.DeliveryTag, false);
-            }
-        }
-
-        HttpResponseMessage SendNewAppToSave(HttpClient httpClient, string newAppAsString)
-        {
-            using StringContent jsonContent = new(newAppAsString, Encoding.UTF8, "application/json");
-            using HttpResponseMessage response = httpClient.PostAsync(_addNewAppUrls["http"], jsonContent).Result;
-            return response.EnsureSuccessStatusCode();
+            }*/
         }
 
         public void Dispose()
@@ -149,5 +141,13 @@ namespace NewAppPrepareService
                 _logger.Warn("Функция восcтановления соеднинения с брокером сообщений целевой очереди отключена.");
             }
         }
+
+        /*public Task<string> AddDepartmentAsync(string departmentName)
+        {
+            using var channel = GrpcChannel.ForAddress(_gRpcConfig.httpsEndpoint);
+            var client = new DataAccessGrpcService(channel);
+            var reply = client.AddDepartment(new DepartmentRequest { DepartmentName = departmentName });
+            return Task.FromResult(reply.DepartmentName);
+        }*/
     }
 }
