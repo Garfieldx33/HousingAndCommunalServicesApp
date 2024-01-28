@@ -14,6 +14,7 @@ IHost host = Host.CreateDefaultBuilder(args)
           context.Configuration.GetSection("RabbitMQConf"));
         services.Configure<gRpcConfig>(
                    configuration.GetSection("gRpcConfig"));
+        services.AddAutoMapper(typeof(NewAppPrepareProfile));
         services.AddHostedService<NewAppListener>();
     })
     .ConfigureLogging(logging =>

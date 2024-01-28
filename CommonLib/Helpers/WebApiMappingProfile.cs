@@ -10,8 +10,7 @@ namespace CommonLib.Helpers
         public WebApiMappingProfile()
         {
             CreateMap<ApplicationDTO, Application>()
-                .ForMember(d => d.Status, opt => opt.MapFrom(source => Enum.GetName(typeof(AppStatusEnum), source.StatusId)));
-
+                .ForMember(d => d.Status, opt => opt.MapFrom(source => Enum.GetName(typeof(AppStatusEnum), source.StatusId))); 
         }
     }
 }

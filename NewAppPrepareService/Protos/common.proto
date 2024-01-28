@@ -9,13 +9,16 @@ import "google/protobuf/duration.proto";
 
 package DataAccessService;
 
+
 service DataAccessGrpcService {
-// Methods 
+ // Methods 
 
  //Applications
-  rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (GetAppsByUserIdResponce);
-  rpc AddNewApp (AddNewAppRequest) returns (AddNewAppResponce);
-
+  rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (GetAppsByUserIdReply);
+  rpc AddNewApp (AddNewAppRequest) returns (AddNewAppReply);
+  rpc UpdateApp (UpdateAppRequest) returns (UpdateAppReply);
+  rpc DeleteApp (DeleteAppRequest) returns (DeleteAppReply);
+  
   //Dictionaries
   rpc GetDepartments (DepartmentsRequest) returns (DepartmentsReply);
   rpc GetDepartmentById (DepartmentRequest) returns (DepartmentReply);
@@ -26,8 +29,10 @@ service DataAccessGrpcService {
 // Request messages
 
 //Applications
-message GetAppsByUserIdRequest { int32 applicant_id = 1;  }
-message AddNewAppRequest { ApplicationDtoGrpc application_dto = 1; }
+message GetAppsByUserIdRequest { int32 applicantId = 1;  }
+message AddNewAppRequest { ApplicationDtoGrpc applicationDto = 1; }
+message UpdateAppRequest { ApplicationGrpc updatedApplication = 1; }
+message DeleteAppRequest { int32 deleteAppId = 1; }
 
 //Dictionaries
 message DepartmentRequest { int32 departmentId = 1; string departmentName = 2;}
@@ -36,11 +41,12 @@ message DepartmentsRequest { }
 // Responce messages
 
 //Applications
-message GetAppsByUserIdResponce { repeated ApplicationGrpc applications = 1; }
-message AddNewAppResponce { int32 result_of_insert = 1; }
+message GetAppsByUserIdReply { repeated ApplicationGrpc applications = 1; }
+message AddNewAppReply { int32 resultOfInsert = 1; }
+message UpdateAppReply { ApplicationGrpc updatedApplication = 1; }
+message DeleteAppReply { int32 deletedAppId = 1; string message = 2; }
 
 //Dictionaries
-
 message DepartmentReply { int32 departmentId = 1; string departmentName = 2; }
 message DepartmentsReply { repeated DepartmentGrpc departments = 1; }
 

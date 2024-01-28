@@ -1,10 +1,14 @@
+using AutoMapper;
 using CommonLib.Config;
+using CommonLib.DTO;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NLog;
 using NLog.Web;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Text;
 
 namespace NewAppPrepareService
 {
@@ -13,14 +17,15 @@ namespace NewAppPrepareService
         Logger _logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         RabbitMqConfig _rabbitMqConfig;
         gRpcConfig _gRpcConfig;
+        IMapper _mapper;
         public IConnection? _rabbitConnection { get; set; }
         public IModel? _channel { get; set; }
 
-
-        public NewAppListener(IOptions<RabbitMqConfig> rabbitConfig, IOptions<gRpcConfig> gRpcConfigSection)
+        public NewAppListener(IOptions<RabbitMqConfig> rabbitConfig, IOptions<gRpcConfig> gRpcConfigSection, IMapper mapper)
         {
             _rabbitMqConfig = rabbitConfig.Value;
             _gRpcConfig = gRpcConfigSection.Value;
+            _mapper = mapper;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -107,11 +112,12 @@ namespace NewAppPrepareService
             {
                 throw new Exception("Канал закрыт, работа сервиса остановлена");
             }
-            /*var response = SendNewAppToSave(new HttpClient(), Encoding.UTF8.GetString(e.Body.ToArray()));
-            if (response.IsSuccessStatusCode)
+            var newApp = JsonConvert.DeserializeObject<ApplicationDTO>(Encoding.UTF8.GetString(e.Body.ToArray())); 
+            var savingSuccessful = SendNewAppToSave(newApp);
+            if (savingSuccessful)
             {
                 _channel.BasicAck(e.DeliveryTag, false);
-            }*/
+            }
         }
 
         public void Dispose()
@@ -142,12 +148,21 @@ namespace NewAppPrepareService
             }
         }
 
-        /*public Task<string> AddDepartmentAsync(string departmentName)
+        public bool SendNewAppToSave(ApplicationDTO newAppDTO)
         {
-            using var channel = GrpcChannel.ForAddress(_gRpcConfig.httpsEndpoint);
-            var client = new DataAccessGrpcService(channel);
-            var reply = client.AddDepartment(new DepartmentRequest { DepartmentName = departmentName });
-            return Task.FromResult(reply.DepartmentName);
-        }*/
+            bool result = false;
+            try
+            {
+                var appGrpcDto = _mapper.Map<ApplicationDtoGrpc>(newAppDTO);
+                using var channel = GrpcChannel.ForAddress(_gRpcConfig.httpsEndpoint);
+                var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
+                var reply = client.AddNewApp(new AddNewAppRequest { ApplicationDto = appGrpcDto });
+            }
+            catch (Exception ex) 
+            {
+                _logger.Warn($"Не удалось отправить новую заявку на сохранение.Подробнее {ex}");
+            }
+            return result;
+        }
     }
 }
