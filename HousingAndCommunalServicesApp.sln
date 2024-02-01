@@ -7,15 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLib", "CommonLib\Comm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncomingAppsService", "IncomingAppsService\IncomingAppsService.csproj", "{7E4904F1-6A66-4D0D-8FBB-FAC348182FCE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessWebService", "DataAccessWebService\DataAccessWebService.csproj", "{3F8E9E49-50D9-4DD9-BEC1-8D112BB306D8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewAppPrepareService", "NewAppPrepareService\NewAppPrepareService.csproj", "{F1B66FF0-E1EC-4415-8889-F20BF394C04F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessGrpcService", "DataAccessGrpcService\DataAccessGrpcService.csproj", "{C3EB971B-3014-4D69-9068-1F484B52F05C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonGrpcService", "CommonGrpcService\CommonGrpcService.csproj", "{8AFA7628-841A-41FE-BDC7-3983F86F77D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonWebService", "CommonWebService\CommonWebService.csproj", "{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonWebService", "CommonWebService\CommonWebService.csproj", "{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{7E4904F1-6A66-4D0D-8FBB-FAC348182FCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E4904F1-6A66-4D0D-8FBB-FAC348182FCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E4904F1-6A66-4D0D-8FBB-FAC348182FCE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F8E9E49-50D9-4DD9-BEC1-8D112BB306D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F8E9E49-50D9-4DD9-BEC1-8D112BB306D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F8E9E49-50D9-4DD9-BEC1-8D112BB306D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F8E9E49-50D9-4DD9-BEC1-8D112BB306D8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F1B66FF0-E1EC-4415-8889-F20BF394C04F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1B66FF0-E1EC-4415-8889-F20BF394C04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1B66FF0-E1EC-4415-8889-F20BF394C04F}.Release|Any CPU.ActiveCfg = Release|Any CPU
