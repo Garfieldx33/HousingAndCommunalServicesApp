@@ -7,12 +7,12 @@ namespace DataAccessGrpcService.Services
         //Users
 
         //Create 
-        public override async Task<AddNewUserReply> AddNewUser(AddNewUserRequest request, ServerCallContext context)
+        /*public override async Task<AddNewUserReply> AddNewUser(AddNewUserRequest request, ServerCallContext context)
         {
             User newUser= _mapper.Map<User>(request.UserDto);
             var res = await _repository.AddNewUser(newUser);
             return new AddNewUserReply { ResultOfInsert = res };
-        }
+        }*/
 
         //Read
         /*public override async Task<GetAppsByUserIdReply> GetAppsByUserId(GetAppsByUserIdRequest request, ServerCallContext context)
