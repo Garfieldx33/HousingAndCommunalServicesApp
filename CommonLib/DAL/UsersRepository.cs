@@ -15,24 +15,24 @@ namespace CommonLib.DAL
             return await context.Users.AsNoTracking().ToListAsync(cancellation);
         }
 
-        public User GetUserbyLogin(int userId, CancellationToken cancellation = default)
+        public User GetUserbyId(int userId, CancellationToken cancellation = default)
         {
             return (User)context.Users.AsNoTracking().Where(u => u.Id == userId);
         }
 
-        public User GetUserbyLogin(string login, CancellationToken cancellation = default)
+        public Task<User> GetUserbyLogin(string login, CancellationToken cancellation = default)
         {
-            return (User)context.Users.AsNoTracking().Where(u => u.Login == login);
+            return Task.FromResult((User)context.Users.AsNoTracking().Where(u => u.Login == login));
         }
 
-        public User GetUserbyEmail(string email, CancellationToken cancellation = default)
+        public Task<User> GetUserbyEmail(string email, CancellationToken cancellation = default)
         {
-            return (User)context.Users.AsNoTracking().Where(u => u.Email == email);
+            return Task.FromResult((User)context.Users.AsNoTracking().Where(u => u.Email == email));
         }
 
-        public User GetUserbyPhone(string phone, CancellationToken cancellation = default)
+        public Task<User> GetUserbyPhone(string phone, CancellationToken cancellation = default)
         {
-            return (User)context.Users.AsNoTracking().Where(u => u.Phone == phone);
+            return Task.FromResult((User)context.Users.AsNoTracking().Where(u => u.Phone == phone));
         }
 
         public async Task<int> AddNewUser(User newUser, CancellationToken cancellation = default)

@@ -62,6 +62,5 @@ namespace CommonWebService.Controllers
         {
             return await _dictionaryService.GetAppTypesAsync();
         }
-
     }
 }

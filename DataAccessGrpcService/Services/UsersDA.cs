@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using CommonLib.Entities;
+using Grpc.Core;
 
 namespace DataAccessGrpcService.Services
 {
@@ -7,69 +8,93 @@ namespace DataAccessGrpcService.Services
         //Users
 
         //Create 
-        /*public override async Task<AddNewUserReply> AddNewUser(AddNewUserRequest request, ServerCallContext context)
+        public override async Task<UserOperationReply> AddUser(UserRequest request, ServerCallContext context)
         {
-            User newUser= _mapper.Map<User>(request.UserDto);
+            string message = $"Пользоватиель с логином {request.User.Login} ";
+            UserOperationReply result = new UserOperationReply { Identificator = request.User.Login };
+            User newUser = _mapper.Map<User>(request.User);
             var res = await _repository.AddNewUser(newUser);
-            return new AddNewUserReply { ResultOfInsert = res };
-        }*/
+            result.Message = res > 0 ? message += "добавлен" : message += "не добавлен";
+            return result;
+        }
 
         //Read
-        /*public override async Task<GetAppsByUserIdReply> GetAppsByUserId(GetAppsByUserIdRequest request, ServerCallContext context)
+        public override async Task<UsersReply> GetUsers(UsersRequest request, ServerCallContext context)
         {
-            GetAppsByUserIdReply responce = new();
+            UsersReply responce = new();
             try
             {
-                var result = await _repository.GetApplicationByApplicantId(request.ApplicantId);
-                result.ForEach(i => responce.Applications.Add(_mapper.Map<ApplicationGrpc>(i)));
+                var result = await _repository.GetUsers();
+                result.ForEach(i => responce.Users.Add(_mapper.Map<UserGrpc>(i)));
             }
             catch (Exception ex)
             {
                 _logger.Warn(ex);
             }
             return responce;
-        }*/
+        }
+
+        public override async Task<UserReply> GetUser(UserDtoRequest request, ServerCallContext context)
+        {
+            UserReply responce = new();
+            try
+            {
+                if (request.UserDto.Login != string.Empty)
+                {
+                    responce.User = _mapper.Map<UserGrpc>(await _repository.GetUserbyLogin(request.UserDto.Login));
+                    return responce;
+                }
+
+                if (request.UserDto.Email != string.Empty)
+                {
+                    responce.User = _mapper.Map<UserGrpc>(await _repository.GetUserbyEmail(request.UserDto.Email));
+                    return responce;
+                }
+
+                if (request.UserDto.Phone != string.Empty)
+                {
+                    responce.User = _mapper.Map<UserGrpc>(await _repository.GetUserbyPhone(request.UserDto.Phone));
+                    return responce;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex);
+            }
+            return responce;
+        }
 
         //Update
-        /*public override async Task<UpdateAppReply> UpdateApp(UpdateAppRequest request, ServerCallContext context)
+        public override async Task<UserReply> UpdateUser(UserRequest request, ServerCallContext context)
         {
-            UpdateAppReply responce = new();
+            UserReply responce = new();
             try
             {
-                var result = await _repository.UpdateApplicationAsync(_mapper.Map<Application>(request.UpdatedApplication));
-                responce.UpdatedApplication = _mapper.Map<ApplicationGrpc>(result);
+                var result = await _repository.UpdateUserAsync(_mapper.Map<User>(request.User));
+                responce.User = _mapper.Map<UserGrpc>(result);
             }
             catch (Exception ex)
             {
                 _logger.Warn(ex);
             }
             return responce;
-        }*/
+        }
 
         //Delete
-        /*public override async Task<DeleteAppReply> DeleteApp(DeleteAppRequest request, ServerCallContext context)
+        public override async Task<UserOperationReply> DeleteUser(UserDtoRequest request, ServerCallContext context)
         {
-            DeleteAppReply responce = new();
+            UserOperationReply responce = new UserOperationReply { Identificator = request.UserDto.Login };
+            string message = $"Пользователь с логином {request.UserDto.Login} ";
             try
             {
-                var result = await _repository.DeleteApplicationAsync(request.DeleteAppId);
-                if (result > 0)
-                {
-                    responce.DeletedAppId = request.DeleteAppId;
-                    responce.Message = "Заявка удалена успешно";
-                }
-                else
-                {
-                    responce.DeletedAppId = 0;
-                    responce.Message = "Заявка не удалена";
-                }
+                var result = await _repository.DeleteUserAsync(request.UserDto.Id);
+                responce.Message = result > 0 ? message += "удален успешно" : message += "не удален";
             }
             catch (Exception ex)
             {
                 _logger.Warn(ex);
             }
             return responce;
-        }*/
-
+        }
     }
 }

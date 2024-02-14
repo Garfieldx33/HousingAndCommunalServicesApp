@@ -23,6 +23,9 @@ namespace DataAccessGrpcService
             CreateMap<Department, DepartmentGrpc>()
                 .ForMember(d => d.DepartamentId, opt => opt.MapFrom(source => source.Id))
                 .ForMember(d => d.DepartamentName, opt => opt.MapFrom(source => source.Name));
+            
+            CreateMap<UserGrpc, User>()
+            .ForMember(d => d.TypeId, opt => opt.MapFrom(source => System.Enum.GetName(typeof(UserTypeEnum), source.TypeId)));
 
             CreateMap<DateTime, Timestamp>().ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
 

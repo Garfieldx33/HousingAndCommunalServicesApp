@@ -2,8 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-import "google/protobuf/struct.proto";
-import "google/protobuf/duration.proto"; 
+
 
 option csharp_namespace = "DataAccessGrpcService";
 
@@ -47,7 +46,7 @@ message DepartmentsRequest { }
 
 //Users
 message UsersRequest {  }
-message UserDtoRequest { UserDtoGrpc user_dto = 1; }
+message UserDtoRequest { UserDtoGrpc userDto = 1; }
 message UserRequest { UserGrpc user = 1; }
 
 // Responce messages
@@ -109,14 +108,14 @@ message UserGrpc{
 	string login  = 10;
 	string password  = 11;
 	float balance  = 12;
-
+}
 message UserDtoGrpc{
-	int id = 1;
+	int32 id = 1;
     string first_name = 2;
-    int type_id = 3;
+    int32 type_id = 3;
     string email = 4;
     string phone = 5;
     string login = 6;
     string password = 7;
-	}
+	
 }
