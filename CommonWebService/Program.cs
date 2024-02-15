@@ -10,6 +10,9 @@ ConfigurationManager configuration = builder.Configuration;
 
 builder.Services.Configure<gRpcConfig>(
            configuration.GetSection("gRpcConfig"));
+
+builder.Services.AddScoped<AppServiceGrpc>();
+builder.Services.AddScoped<UserServiceGrpc>();
 builder.Services.AddScoped<DictionaryServiceGrpc>();
 
 builder.Services.AddControllers().AddJsonOptions(options => 

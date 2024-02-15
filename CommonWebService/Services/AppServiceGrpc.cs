@@ -37,11 +37,11 @@ namespace CommonWebService.Services
             return Task.FromResult(JsonConvert.SerializeObject(reply));
         }
 
-        public Task<string> DeleteAppAsync(UserDtoRequest user)
+        public Task<string> DeleteAppAsync(DeleteAppRequest request)
         {
             using var channel = GrpcChannel.ForAddress(_gRpcConfig.httpsEndpoint);
             var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
-            var reply = client.DeleteUser(user);
+            var reply = client.DeleteApp(request);
             return Task.FromResult(JsonConvert.SerializeObject(reply));
         }
 
