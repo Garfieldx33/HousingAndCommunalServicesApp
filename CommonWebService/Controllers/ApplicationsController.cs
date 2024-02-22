@@ -20,19 +20,19 @@ namespace CommonWebService.Controllers
         }
 
         [HttpPost]
-        public async Task<string> AddApplication(AddNewAppRequest newApp)
+        public async Task<string> AddApplication([FromQuery] AddNewAppRequest newApp)
         {
             return await _appService.AddAppAsync(newApp);
         }
 
         [HttpPatch]
-        public async Task<string> UpdateApplication(UpdateAppRequest updatingApp)
+        public async Task<string> UpdateApplication([FromQuery] UpdateAppRequest updatingApp)
         {
             return await _appService.UpdateAppAsync(updatingApp);
         }
 
         [HttpDelete]
-        public async Task<string> DeleteApplication(DeleteAppRequest deletingApp)
+        public async Task<string> DeleteApplication([FromQuery] DeleteAppRequest deletingApp)
         {
             return await _appService.DeleteAppAsync(deletingApp);
         }

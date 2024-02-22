@@ -14,9 +14,10 @@ namespace CommonWebService.Controllers
         }
 
         [HttpGet]
-        public async Task<string> GetUserByLogin(UserDtoGrpc user)
+        public async Task<string> GetUserByLogin(string login, string password)
         {
-            return await _usersService.GetUserAsync(user);
+            UserDtoGrpc dto = new UserDtoGrpc { Login = login , Password = password};
+            return await _usersService.GetUserAsync(dto);
         }
 
         [HttpGet]
@@ -26,19 +27,19 @@ namespace CommonWebService.Controllers
         }
 
         [HttpPost]
-        public async Task<string> AddUser(UserGrpc newUser)
+        public async Task<string> AddUser([FromQuery] UserGrpc newUser)
         {
             return await _usersService.AddUserAsync(newUser);
         }
 
         [HttpPatch]
-        public async Task<string> UpdateUserInfo(UserGrpc updatingUserInfo)
+        public async Task<string> UpdateUserInfo([FromQuery] UserGrpc updatingUserInfo)
         {
             return await _usersService.UpdateUserAsync(updatingUserInfo);
         }
 
         [HttpDelete]
-        public async Task<string> DeleteUser(UserDtoRequest deletingUserInfo)
+        public async Task<string> DeleteUser([FromQuery] UserDtoRequest deletingUserInfo)
         {
             return await _usersService.DeleteUserAsync(deletingUserInfo);
         }

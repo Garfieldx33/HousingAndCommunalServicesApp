@@ -50,7 +50,7 @@ namespace CommonLib.DAL
         private void ConfigureUsers(ModelBuilder builder)
         {
             var entity = builder.Entity<User>()
-                .ToTable("user");
+                .ToTable("users");
 
             entity.Property(p => p.Id).HasColumnName("id");
             entity.Property(p => p.TypeId).HasColumnName("type_id");

@@ -39,23 +39,7 @@ namespace DataAccessGrpcService.Services
             UserReply responce = new();
             try
             {
-                if (request.UserDto.Login != string.Empty)
-                {
-                    responce.User = _mapper.Map<UserGrpc>(await _repository.GetUserbyLogin(request.UserDto.Login));
-                    return responce;
-                }
-
-                if (request.UserDto.Email != string.Empty)
-                {
-                    responce.User = _mapper.Map<UserGrpc>(await _repository.GetUserbyEmail(request.UserDto.Email));
-                    return responce;
-                }
-
-                if (request.UserDto.Phone != string.Empty)
-                {
-                    responce.User = _mapper.Map<UserGrpc>(await _repository.GetUserbyPhone(request.UserDto.Phone));
-                    return responce;
-                }
+                responce.User = _mapper.Map<UserGrpc>(await _repository.GetUserbyLogin(request.UserDto.Login, request.UserDto.Password));
             }
             catch (Exception ex)
             {

@@ -20,20 +20,20 @@ namespace CommonLib.DAL
             return (User)context.Users.AsNoTracking().Where(u => u.Id == userId);
         }
 
-        public Task<User> GetUserbyLogin(string login, CancellationToken cancellation = default)
+        public Task<User> GetUserbyLogin(string login, string password, CancellationToken cancellation = default)
         {
-            return Task.FromResult((User)context.Users.AsNoTracking().Where(u => u.Login == login));
+            return context.Users.AsNoTracking().Where(u => u.Login == login && u.Password == password).SingleAsync(cancellation);
         }
 
-        public Task<User> GetUserbyEmail(string email, CancellationToken cancellation = default)
+        /*public Task<User> GetUserbyEmail(string email, CancellationToken cancellation = default)
         {
-            return Task.FromResult((User)context.Users.AsNoTracking().Where(u => u.Email == email));
+            return context.Users.AsNoTracking().Where(u => u.Email == email).SingleAsync(cancellation);
         }
 
         public Task<User> GetUserbyPhone(string phone, CancellationToken cancellation = default)
         {
-            return Task.FromResult((User)context.Users.AsNoTracking().Where(u => u.Phone == phone));
-        }
+            return context.Users.AsNoTracking().Where(u => u.Phone == phone).SingleAsync(cancellation);
+        }*/
 
         public async Task<int> AddNewUser(User newUser, CancellationToken cancellation = default)
         {

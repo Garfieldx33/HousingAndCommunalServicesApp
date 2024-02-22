@@ -98,11 +98,11 @@ message DepartmentGrpc{
 message UserGrpc{
 	int32 id = 1;
 	string first_name = 2;
-	string second_name = 3;
-	google.protobuf.Timestamp DateOfBirth = 4;
+	string second_name = 3;	
+    google.protobuf.Timestamp DateOfBirth = 4;
 	string address = 5;
 	string phone  = 6;
-	string email  = 7;
+	string email  = 7;	
 	google.protobuf.Timestamp registration_date  = 8;
 	int32 type_id  = 9;
 	string login  = 10;
