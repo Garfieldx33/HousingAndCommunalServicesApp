@@ -28,6 +28,7 @@ namespace NewAppPrepareService
             _mapper = mapper;
         }
 
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
             ConnectionFactory factory = CreateConnectionFactory(_rabbitMqConfig);
