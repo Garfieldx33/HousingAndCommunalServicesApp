@@ -50,7 +50,7 @@ namespace CommonLib.DAL
         private void ConfigureUsers(ModelBuilder builder)
         {
             var entity = builder.Entity<User>()
-                .ToTable("user");
+                .ToTable("users");
 
             entity.Property(p => p.Id).HasColumnName("id");
             entity.Property(p => p.TypeId).HasColumnName("type_id");
@@ -63,6 +63,7 @@ namespace CommonLib.DAL
             entity.Property(p => p.RegistrationDate).HasColumnName("registration_date");
             entity.Property(p => p.Login).HasColumnName("login");
             entity.Property(p => p.Password).HasColumnName("password");
+            entity.Property(p => p.Balance).HasColumnName("balance");
         }
     }
 }

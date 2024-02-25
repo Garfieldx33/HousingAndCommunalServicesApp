@@ -1,10 +1,11 @@
 syntax = "proto3";
 
+option csharp_namespace = "NewAppPrepareService";
+
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-
-
-option csharp_namespace = "DataAccessGrpcService";
+import "google/protobuf/struct.proto";
+import "google/protobuf/duration.proto"; 
 
 package DataAccessService;
 
@@ -35,17 +36,9 @@ service DataAccessGrpcService {
 // Request messages
 
 //Applications
-message GetAppsByUserIdRequest { int32 applicant_id = 1;  }
-message AddNewAppRequest { ApplicationDtoGrpc application_dto = 1; }
-message UpdateAppRequest {
-  int32 status = 1;
-  int32 application_type_id = 2;
-  int32 department_id = 3;
-  google.protobuf.Int32Value executor_id = 4;
-  google.protobuf.Timestamp date_confirm = 5;
-  google.protobuf.Timestamp date_close = 6;
-  int32 id = 7;
-}
+message GetAppsByUserIdRequest { int32 applicantId = 1;  }
+message AddNewAppRequest { ApplicationDtoGrpc applicationDto = 1; }
+message UpdateAppRequest { ApplicationGrpc updatedApplication = 1; }
 message DeleteAppRequest { int32 deleteAppId = 1; }
 
 //Dictionaries
@@ -80,7 +73,7 @@ message ApplicationGrpc {
   string description = 3;
   int32 status = 4;
   int32 application_type_id = 5;
-  int32 department_id = 6;
+  int32 departament_id = 6;
   int32 applicant_id = 7;
   google.protobuf.Int32Value executor_id = 8;
   google.protobuf.Timestamp date_create = 9;
@@ -93,14 +86,14 @@ message ApplicationDtoGrpc {
   string description = 2;
   int32 status = 3;
   int32 application_type_id = 4;
-  int32 department_id = 5;
+  int32 departament_id = 5;
   int32 applicant_id = 6;
   google.protobuf.Timestamp date_create = 7; 
 }
 
 message DepartmentGrpc{
-	int32 departmentId = 1;
-	string departmentName = 2;
+	int32 departamentId = 1;
+	string departamentName = 2;
 }
 
 message UserGrpc{

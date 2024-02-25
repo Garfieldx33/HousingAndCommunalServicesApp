@@ -34,13 +34,13 @@ namespace CommonWebService.Controllers
         }
         
         [HttpPatch]
-        public async Task<string> UpdateDepartment(Department department)
+        public async Task<string> UpdateDepartment([FromQuery] Department department)
         {
             return await _dictionaryService.UpdateDepartmentAsync(department);
         }
 
         [HttpDelete]
-        public async Task<string> DeleteDepartment(Department department)
+        public async Task<string> DeleteDepartment([FromQuery] Department department)
         {
             return await _dictionaryService.DeleteDepartmentAsync(department);
         }
@@ -62,6 +62,5 @@ namespace CommonWebService.Controllers
         {
             return await _dictionaryService.GetAppTypesAsync();
         }
-
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,14 @@
     <UserSecretsId>dotnet-NewAppPrepareService-0df76000-30a2-40f3-94e2-981ed58e080d</UserSecretsId>
   </PropertyGroup>
 
+	<ItemGroup>
+		<Protobuf Include="Protos\common.proto" GrpcServices="Client" />
+	</ItemGroup>
+	
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
@@ -23,5 +30,11 @@
     <Content Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Protos\common.proto">
+      <GrpcServices>Client</GrpcServices>
+    </None>
   </ItemGroup>
 </Project>

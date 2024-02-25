@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 
 namespace CommonWebService.Services
 {
-
     public class DictionaryServiceGrpc
     {
         gRpcConfig _gRpcConfig;

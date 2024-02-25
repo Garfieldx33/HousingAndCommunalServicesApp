@@ -4,46 +4,75 @@ option csharp_namespace = "CommonWebService.Services";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-import "google/protobuf/struct.proto";
-import "google/protobuf/duration.proto"; 
+
 
 package DataAccessService;
 
+
 service DataAccessGrpcService {
-// Methods 
+ // Methods 
 
  //Applications
-  rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (GetAppsByUserIdResponce);
-  rpc AddNewApp (AddNewAppRequest) returns (AddNewAppResponce);
-
+  rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (GetAppsByUserIdReply);
+  rpc AddNewApp (AddNewAppRequest) returns (AddNewAppReply);
+  rpc UpdateApp (UpdateAppRequest) returns (UpdateAppReply);
+  rpc DeleteApp (DeleteAppRequest) returns (DeleteAppReply);
+  
   //Dictionaries
   rpc GetDepartments (DepartmentsRequest) returns (DepartmentsReply);
   rpc GetDepartmentById (DepartmentRequest) returns (DepartmentReply);
   rpc AddDepartment (DepartmentRequest) returns (DepartmentReply);
   rpc UpdateDepartment (DepartmentRequest) returns (DepartmentReply);
   rpc DeleteDepartment (DepartmentRequest) returns (DepartmentReply);
+
+  //Users
+  rpc GetUsers (UsersRequest) returns (UsersReply);
+  rpc GetUser (UserDtoRequest) returns (UserReply);
+  rpc AddUser (UserRequest) returns (UserOperationReply);
+  rpc UpdateUser (UserRequest) returns (UserReply);
+  rpc DeleteUser (UserDtoRequest) returns (UserOperationReply);
 }
 // Request messages
 
 //Applications
 message GetAppsByUserIdRequest { int32 applicant_id = 1;  }
 message AddNewAppRequest { ApplicationDtoGrpc application_dto = 1; }
+message UpdateAppRequest {
+  int32 status = 1;
+  int32 application_type_id = 2;
+  int32 department_id = 3;
+  google.protobuf.Int32Value executor_id = 4;
+  google.protobuf.Timestamp date_confirm = 5;
+  google.protobuf.Timestamp date_close = 6;
+  int32 id = 7;
+}
+message DeleteAppRequest { int32 deleteAppId = 1; }
 
 //Dictionaries
 message DepartmentRequest { int32 departmentId = 1; string departmentName = 2;}
 message DepartmentsRequest { }
 
+//Users
+message UsersRequest {  }
+message UserDtoRequest { UserDtoGrpc userDto = 1; }
+message UserRequest { UserGrpc user = 1; }
+
 // Responce messages
 
 //Applications
-message GetAppsByUserIdResponce { repeated ApplicationGrpc applications = 1; }
-message AddNewAppResponce { int32 result_of_insert = 1; }
+message GetAppsByUserIdReply { repeated ApplicationGrpc applications = 1; }
+message AddNewAppReply { int32 result_of_insert = 1; }
+message UpdateAppReply { ApplicationGrpc updated_application = 1; }
+message DeleteAppReply { int32 deleted_app_id = 1; string message = 2; }
 
 //Dictionaries
-
 message DepartmentReply { int32 departmentId = 1; string departmentName = 2; }
 message DepartmentsReply { repeated DepartmentGrpc departments = 1; }
 
+//Users
+message UsersReply { repeated UserGrpc users = 1; }
+message UserReply { UserGrpc user = 1; }
+message UserOperationReply {string identificator = 1; string message = 2;}
 
 message ApplicationGrpc {
   int32 id = 1;
@@ -51,7 +80,7 @@ message ApplicationGrpc {
   string description = 3;
   int32 status = 4;
   int32 application_type_id = 5;
-  int32 departament_id = 6;
+  int32 department_id = 6;
   int32 applicant_id = 7;
   google.protobuf.Int32Value executor_id = 8;
   google.protobuf.Timestamp date_create = 9;
@@ -64,12 +93,36 @@ message ApplicationDtoGrpc {
   string description = 2;
   int32 status = 3;
   int32 application_type_id = 4;
-  int32 departament_id = 5;
+  int32 department_id = 5;
   int32 applicant_id = 6;
   google.protobuf.Timestamp date_create = 7; 
 }
 
 message DepartmentGrpc{
-	int32 departamentId = 1;
-	string departamentName = 2;
+	int32 departmentId = 1;
+	string departmentName = 2;
+}
+
+message UserGrpc{
+	int32 id = 1;
+	string first_name = 2;
+	string second_name = 3;	
+    google.protobuf.Timestamp DateOfBirth = 4;
+	string address = 5;
+	string phone  = 6;
+	string email  = 7;	
+	google.protobuf.Timestamp registration_date  = 8;
+	int32 type_id  = 9;
+	string login  = 10;
+	string password  = 11;
+	float balance  = 12;
+}
+message UserDtoGrpc{
+	int32 id = 1;
+    string first_name = 2;
+    int32 type_id = 3;
+    string email = 4;
+    string phone = 5;
+    string login = 6;
+    string password = 7;
 }
