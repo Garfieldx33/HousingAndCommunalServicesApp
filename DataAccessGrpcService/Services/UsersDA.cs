@@ -10,9 +10,10 @@ namespace DataAccessGrpcService.Services
         //Create 
         public override async Task<UserOperationReply> AddUser(UserRequest request, ServerCallContext context)
         {
-            string message = $"Пользоватиель с логином {request.User.Login} ";
+            string message = $"Пользователь с логином {request.User.Login} ";
             UserOperationReply result = new UserOperationReply { Identificator = request.User.Login };
             User newUser = _mapper.Map<User>(request.User);
+            newUser.RegistrationDate = DateTime.Now;
             var res = await _repository.AddNewUser(newUser);
             result.Message = res > 0 ? message += "добавлен" : message += "не добавлен";
             return result;
@@ -67,8 +68,8 @@ namespace DataAccessGrpcService.Services
         //Delete
         public override async Task<UserOperationReply> DeleteUser(UserDtoRequest request, ServerCallContext context)
         {
-            UserOperationReply responce = new UserOperationReply { Identificator = request.UserDto.Login };
-            string message = $"Пользователь с логином {request.UserDto.Login} ";
+            UserOperationReply responce = new UserOperationReply { Identificator = request.UserDto.Id.ToString() };
+            string message = $"Пользователь с ID {request.UserDto.Id} ";
             try
             {
                 var result = await _repository.DeleteUserAsync(request.UserDto.Id);

@@ -1,4 +1,5 @@
-﻿using CommonLib.Entities;
+﻿using CommonLib.DTO;
+using CommonLib.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommonLib.DAL
@@ -14,26 +15,38 @@ namespace CommonLib.DAL
             }
             return await query.ToListAsync(cancellation);
         }
-        
+
         public async Task<int> AddNewApplication(Application newApplication, CancellationToken cancellation = default)
         {
             await context.Apps.AddAsync(newApplication, cancellation);
             return context.SaveChanges();
         }
 
-        public async Task<Application> UpdateApplicationAsync(Application appUpdate, CancellationToken cancellation = default)
+        public async Task<Application> UpdateApplicationAsync(UpdateAppDto request, CancellationToken cancellation = default)
         {
-            Application? updatedApp;
-            if (appUpdate.Id > 0)
+            if (request.Id > 0)
             {
-                updatedApp = context.Apps.Single(q => q.Id == appUpdate.Id); 
+                Application updatedApp = context.Apps.Single(q => q.Id == request.Id);
                 if (updatedApp != null)
                 {
-                    context.Apps.Update(appUpdate);
+                    if (request.ApplicationTypeId > 0)
+                        { updatedApp.ApplicationTypeId = (Enums.AppTypeEnum)request.ApplicationTypeId; }
+                    if (request.Status > 0)
+                        { updatedApp.Status = (Enums.AppStatusEnum)request.Status; }
+                    if (request.DepartmentId > 0)
+                        { updatedApp.DepartamentId = request.DepartmentId; }
+                    if (request.ExecutorId > 0)
+                        { updatedApp.ExecutorId = request.ExecutorId; }
+                    if (request.DateClose != DateTime.MinValue)
+                        { updatedApp.DateClose = request.DateClose; }
+                    if (request.DateConfirm != DateTime.MinValue)
+                        { updatedApp.DateConfirm = request.DateConfirm; }
+
+                    context.Apps.Update(updatedApp);
                     await context.SaveChangesAsync(cancellation);
                 }
             }
-            return context.Apps.Single(a => a.Id == appUpdate.Id);
+            return context.Apps.Single(q => q.Id == request.Id);
         }
 
         public async Task<int> DeleteApplicationAsync(int appId, CancellationToken cancellation = default)

@@ -43,17 +43,24 @@ namespace CommonLib.DAL
 
         public async Task<User> UpdateUserAsync(User userUpdate, CancellationToken cancellation = default)
         {
-            User? updatedApp;
-            if (userUpdate.Id > 0)
+            if (userUpdate.Login != string.Empty)
             {
-                updatedApp = context.Users.Single(q => q.Id == userUpdate.Id);
-                if (updatedApp != null)
+                User updatedUser = context.Users.Single(q => q.Login == userUpdate.Login);
+                if (updatedUser != null)
                 {
-                    context.Users.Update(userUpdate);
+                    if (userUpdate.FirstName != string.Empty) updatedUser.FirstName = userUpdate.FirstName;
+                    if (userUpdate.SecondName != string.Empty) updatedUser.SecondName = userUpdate.SecondName;
+                    if (userUpdate.Password != string.Empty) updatedUser.Password = userUpdate.Password;
+                    if (userUpdate.Email != string.Empty)  updatedUser.Email = userUpdate.Email; 
+                    if (userUpdate.Address != string.Empty) updatedUser.Address = userUpdate.Address;
+                    if (userUpdate.Phone != string.Empty) updatedUser.Phone = userUpdate.Phone;
+                    if (!float.IsNaN(userUpdate.Balance)) updatedUser.Balance = userUpdate.Balance;
+
+                    context.Users.Update(updatedUser);
                     await context.SaveChangesAsync(cancellation);
                 }
             }
-            return context.Users.Single(a => a.Id == userUpdate.Id);
+            return context.Users.Single(q => q.Login == userUpdate.Login);
         }
 
         public async Task<int> DeleteUserAsync(int userId, CancellationToken cancellation = default)

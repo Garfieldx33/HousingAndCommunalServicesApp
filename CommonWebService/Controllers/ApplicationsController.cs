@@ -1,4 +1,5 @@
-﻿using CommonWebService.Services;
+﻿using CommonLib.DTO;
+using CommonWebService.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommonWebService.Controllers
@@ -19,14 +20,14 @@ namespace CommonWebService.Controllers
             return await _appService.GetAppAsync(applicantId);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<string> AddApplication([FromQuery] AddNewAppRequest newApp)
         {
             return await _appService.AddAppAsync(newApp);
-        }
+        }*/
 
         [HttpPatch]
-        public async Task<string> UpdateApplication([FromQuery] UpdateAppRequest updatingApp)
+        public async Task<string> UpdateApplication([FromQuery] UpdateAppDto updatingApp)
         {
             return await _appService.UpdateAppAsync(updatingApp);
         }

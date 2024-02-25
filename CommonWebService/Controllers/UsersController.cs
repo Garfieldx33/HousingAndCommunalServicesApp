@@ -1,4 +1,6 @@
-﻿using CommonWebService.Services;
+﻿using CommonLib.DTO;
+using CommonLib.Entities;
+using CommonWebService.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommonWebService.Controllers
@@ -16,8 +18,7 @@ namespace CommonWebService.Controllers
         [HttpGet]
         public async Task<string> GetUserByLogin(string login, string password)
         {
-            UserDtoGrpc dto = new UserDtoGrpc { Login = login , Password = password};
-            return await _usersService.GetUserAsync(dto);
+            return await _usersService.GetUserAsync(new UserDtoGrpc { Login = login , Password = password});
         }
 
         [HttpGet]
@@ -27,21 +28,21 @@ namespace CommonWebService.Controllers
         }
 
         [HttpPost]
-        public async Task<string> AddUser([FromQuery] UserGrpc newUser)
+        public async Task<string> AddUser([FromQuery] UserDTO newUser)
         {
             return await _usersService.AddUserAsync(newUser);
         }
 
         [HttpPatch]
-        public async Task<string> UpdateUserInfo([FromQuery] UserGrpc updatingUserInfo)
+        public async Task<string> UpdateUserInfo([FromQuery] UserDTO updatingUserInfo)
         {
             return await _usersService.UpdateUserAsync(updatingUserInfo);
         }
 
         [HttpDelete]
-        public async Task<string> DeleteUser([FromQuery] UserDtoRequest deletingUserInfo)
+        public async Task<string> DeleteUser([FromQuery] int userId)
         {
-            return await _usersService.DeleteUserAsync(deletingUserInfo);
+            return await _usersService.DeleteUserAsync(userId);
         }
     }
 }
