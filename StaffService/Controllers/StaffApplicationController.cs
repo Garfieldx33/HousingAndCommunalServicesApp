@@ -5,6 +5,7 @@ using CommonLib.Entities;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Channels;
 using Grpc.Net.Client;
+using StaffService.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,11 +19,12 @@ namespace StaffService.Controllers
         [HttpGet]
         public IActionResult GetAllApplications()
         {
+            var grpc = new StaffSerciceGrpc();
 
-            //Как-то достаём все заявки
-            var apps = new Application[] { new Application(), new Application() };
+            //Достаём все заявки
+            var apps = grpc.GetAllApplications();
 
-            if (apps.Length == 0)
+            if (apps.Count == 0)
             {
                 return NotFound();
             }
@@ -33,10 +35,12 @@ namespace StaffService.Controllers
         [HttpGet("{id}")]
         public IActionResult GetApplicationById(int id)
         {
+            var grpc = new StaffSerciceGrpc();
+
             //Достаём заявку по id
+            var app = grpc.GetApplicationById(id);
 
-
-            return Ok(new Application());
+            return Ok(app);
         }
 
         //// POST api/<ValuesController>
@@ -47,9 +51,12 @@ namespace StaffService.Controllers
 
         // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
-        public IActionResult PutApplication(int id, Application application)
+        public IActionResult PutApplication(Application application)
         {
-            //Как-то находим заявку по id и изменяем статус
+            var grpc = new StaffSerciceGrpc();
+
+            grpc.UpdateApplication(application);//Находим заявку по id и изменяем статус
+
             return Ok();
         }
 
