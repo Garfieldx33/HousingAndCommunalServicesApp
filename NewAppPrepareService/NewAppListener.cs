@@ -1,6 +1,9 @@
-
+using AutoMapper;
 using CommonLib.Config;
+using CommonLib.DTO;
+using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NLog;
 using NLog.Web;
 using RabbitMQ.Client;
@@ -13,16 +16,18 @@ namespace NewAppPrepareService
     {
         Logger _logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         RabbitMqConfig _rabbitMqConfig;
-        Dictionary<string, string> _addNewAppUrls;
+        gRpcConfig _gRpcConfig;
+        IMapper _mapper;
         public IConnection? _rabbitConnection { get; set; }
         public IModel? _channel { get; set; }
 
-
-        public NewAppListener(IOptions<RabbitMqConfig> rabbitConfig, IOptions<Dictionary<string, string>> urls)
+        public NewAppListener(IOptions<RabbitMqConfig> rabbitConfig, IOptions<gRpcConfig> gRpcConfigSection, IMapper mapper)
         {
             _rabbitMqConfig = rabbitConfig.Value;
-            _addNewAppUrls = urls.Value;
+            _gRpcConfig = gRpcConfigSection.Value;
+            _mapper = mapper;
         }
+
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
@@ -108,18 +113,12 @@ namespace NewAppPrepareService
             {
                 throw new Exception("Канал закрыт, работа сервиса остановлена");
             }
-            var response = SendNewAppToSave(new HttpClient(), Encoding.UTF8.GetString(e.Body.ToArray()));
-            if (response.IsSuccessStatusCode)
+            var newApp = JsonConvert.DeserializeObject<ApplicationDTO>(Encoding.UTF8.GetString(e.Body.ToArray())); 
+            var savingSuccessful = SendNewAppToSave(newApp);
+            if (savingSuccessful)
             {
                 _channel.BasicAck(e.DeliveryTag, false);
             }
-        }
-
-        HttpResponseMessage SendNewAppToSave(HttpClient httpClient, string newAppAsString)
-        {
-            using StringContent jsonContent = new(newAppAsString, Encoding.UTF8, "application/json");
-            using HttpResponseMessage response = httpClient.PostAsync(_addNewAppUrls["http"], jsonContent).Result;
-            return response.EnsureSuccessStatusCode();
         }
 
         public void Dispose()
@@ -148,6 +147,23 @@ namespace NewAppPrepareService
             {
                 _logger.Warn("Функция восcтановления соеднинения с брокером сообщений целевой очереди отключена.");
             }
+        }
+
+        public bool SendNewAppToSave(ApplicationDTO newAppDTO)
+        {
+            bool result = false;
+            try
+            {
+                var appGrpcDto = _mapper.Map<ApplicationDtoGrpc>(newAppDTO);
+                using var channel = GrpcChannel.ForAddress(_gRpcConfig.httpsEndpoint);
+                var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
+                var reply = client.AddNewApp(new AddNewAppRequest { ApplicationDto = appGrpcDto });
+            }
+            catch (Exception ex) 
+            {
+                _logger.Warn($"Не удалось отправить новую заявку на сохранение.Подробнее {ex}");
+            }
+            return result;
         }
     }
 }

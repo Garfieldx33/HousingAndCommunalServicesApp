@@ -7,6 +7,17 @@ namespace DataAccessGrpcService.Services
 {
     public partial class DataAccessGrpcBase
     {
+        //Departments
+
+        //Create
+        public override async Task<DepartmentReply> AddDepartment(DepartmentRequest request, ServerCallContext context)
+        {
+            var dept = await _repository.AddDepartamentAsync(request.DepartmentName);
+            DepartmentReply reply = new() { DepartmentId = dept.Id, DepartmentName = dept.Name };
+            return reply;
+        }
+
+        //Read
         public override async Task<DepartmentsReply> GetDepartments(DepartmentsRequest request, ServerCallContext context)
         {
             DepartmentsReply reply = new DepartmentsReply();
@@ -22,12 +33,7 @@ namespace DataAccessGrpcService.Services
             return reply;
         }
 
-        public override async Task<DepartmentReply> AddDepartment(DepartmentRequest request, ServerCallContext context)
-        {
-            var dept = await _repository.AddDepartamentAsync(request.DepartmentName);
-            DepartmentReply reply = new() { DepartmentId = dept.Id, DepartmentName = dept.Name };
-            return reply;
-        }
+        //Update
 
         public override async Task<DepartmentReply> UpdateDepartment(DepartmentRequest request, ServerCallContext context)
         {
@@ -36,6 +42,7 @@ namespace DataAccessGrpcService.Services
             return reply;
         }
 
+        //Delete
         public override async Task<DepartmentReply> DeleteDepartment(DepartmentRequest request, ServerCallContext context)
         {
             var dept = await _repository.DeleteDepartamentAsync(new Department { Id = request.DepartmentId, Name = request.DepartmentName });

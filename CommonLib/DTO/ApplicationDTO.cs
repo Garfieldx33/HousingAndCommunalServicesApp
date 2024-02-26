@@ -4,19 +4,12 @@ namespace CommonLib.DTO
 {
     public class ApplicationDTO
     {
-        [Required(ErrorMessage = "Необходимо указать тему.")]
-        [Display(Name = "Тема")]
         public string Subject { get; set; }
-
-        [Required(ErrorMessage = "Необходимо описать вопрос.")]
-        [Display(Name = "Описание")]
         public string Description { get; set; }
-
         public int StatusId { get; set; } = 1;
         public int ApplicationTypeId { get; set; }
-        public int DepartamentId { get; set; }
+        public int DepartmentId { get; set; }
         public int ApplicantId { get; set; }
-        public DateTimeOffset DateCreate { get; set; }
-
+        public DateTime DateCreate { get; set; }
     }
 }
