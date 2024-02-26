@@ -3,19 +3,22 @@ using CommonLib.DAL;
 using CommonLib.DTO;
 using CommonLib.Entities;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Channels;
+using Grpc.Net.Client;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace StaffService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class StaffApplicationController : ControllerBase
     {
         // GET: api/<ValuesController>
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllApplications()
         {
+
             //Как-то достаём все заявки
             var apps = new Application[] { new Application(), new Application() };
 
@@ -28,9 +31,11 @@ namespace StaffService.Controllers
 
         // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetApplicationById(int id)
         {
-            //Как-то достаём заявку по id
+            //Достаём заявку по id
+
+
             return Ok(new Application());
         }
 
@@ -42,7 +47,7 @@ namespace StaffService.Controllers
 
         // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Application application)
+        public IActionResult PutApplication(int id, Application application)
         {
             //Как-то находим заявку по id и изменяем статус
             return Ok();

@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessGrpcService", "Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonGrpcService", "CommonGrpcService\CommonGrpcService.csproj", "{8AFA7628-841A-41FE-BDC7-3983F86F77D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonWebService", "CommonWebService\CommonWebService.csproj", "{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonWebService", "CommonWebService\CommonWebService.csproj", "{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffService", "StaffService\StaffService.csproj", "{DEC3B542-1B61-4250-B03E-7F806EF88E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEC3B542-1B61-4250-B03E-7F806EF88E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEC3B542-1B61-4250-B03E-7F806EF88E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEC3B542-1B61-4250-B03E-7F806EF88E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEC3B542-1B61-4250-B03E-7F806EF88E7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
