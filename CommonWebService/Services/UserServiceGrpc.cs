@@ -30,7 +30,7 @@ namespace CommonWebService.Services
             using var channel = GrpcChannel.ForAddress(_gRpcConfig.httpsEndpoint);
             var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
             var reply = client.GetUser(new UserDtoRequest { UserDto = user });
-            return Task.FromResult(JsonConvert.SerializeObject(reply.User));
+            return Task.FromResult(JsonConvert.SerializeObject(_mapper.Map<UserDTO>(reply.User)));
         }
 
         public Task<string> AddUserAsync(UserDTO newUserDto)

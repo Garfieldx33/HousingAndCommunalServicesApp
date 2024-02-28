@@ -1,40 +1,47 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using CommonLib.DTO;
+using CommonLib.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Data.SqlTypes;
 using System.Net;
 using System.Net.Http.Json;
+using UiConsole.Strategy;
+using UiConsole.Strategy.StrategyImpl;
 
 Console.Write("Логин: ");
-string login = Console.ReadLine();
-
+string? login = Console.ReadLine();
 Console.Write("Пароль: ");
-string pwd = Console.ReadLine();
+string? pwd = Console.ReadLine();
+string logPass = JsonConvert.SerializeObject(
+    new AuthDTO 
+    { 
+        Login = login != null ? login : string.Empty,
+        Pwd = pwd != null ? pwd : string.Empty
+    });
+var user = GetInfoFromWebAPI<UserDTO>("https://127.0.0.1:7001/Users/GetUserByLogin", HttpMethodsEnum.Get, logPass);
+if (user != null )
+{
+    Console.WriteLine($"Добро пожаловать {user?.Result?.FirstName} {user?.Result?.Surname}");
+}
 
-Console.WriteLine($"Добро пожаловать {login}");
 
 Console.ReadKey();
 
 
 
-static async Task<T?> GetInfoFromWebAPI<T>(string uri, string method, string content) where T : class
+static async Task<T?> GetInfoFromWebAPI<T>(string uri, HttpMethodsEnum method, string content)
 {
-    var httpClient = new HttpClient();
-
     switch (method)
     {
-        case "GET":
-            HttpResponseMessage responceGet = await httpClient.GetAsync(uri);
-            return await responceGet.Content.ReadFromJsonAsync<T>();
-        case "POST":
-            HttpResponseMessage responcePost = await httpClient.PostAsync(uri, JsonContent.Create(content));
-            return await responcePost.Content.ReadFromJsonAsync<T>();
-        case "PUT":
-            HttpResponseMessage responcePut = await httpClient.PutAsync(uri, JsonContent.Create(content));
-            return await responcePut.Content.ReadFromJsonAsync<T>();
-        case "DELETE":
-            HttpResponseMessage responceDelete = await httpClient.DeleteAsync(uri);
-            return await responceDelete.Content.ReadFromJsonAsync<T>();
+        case HttpMethodsEnum.Get:
+            return await new Requester<T>(new GetRequester<T>()).GetRequestResult(uri, content);
+        case HttpMethodsEnum.Post:
+        case HttpMethodsEnum.Put:
+            
+        case HttpMethodsEnum.Delete:
+            
         default: 
             return null;
     }
