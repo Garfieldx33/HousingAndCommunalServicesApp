@@ -15,10 +15,16 @@ namespace CommonWebService.Controllers
             _usersService = usersService;
         }
 
+        /* [HttpGet]
+         public async Task<string> GetUserByLogin(string login, string password)
+         {
+             return await _usersService.GetUserAsync(new UserDtoGrpc { Login = login , Password = password});
+         }*/
+
         [HttpGet]
-        public async Task<string> GetUserByLogin(string login, string password)
+        public async Task<string> GetUserByLogin([FromBody] AuthDTO logPass)
         {
-            return await _usersService.GetUserAsync(new UserDtoGrpc { Login = login , Password = password});
+            return await _usersService.GetUserAsync(new UserDtoGrpc { Login = logPass.Login, Password = logPass.Pwd });
         }
 
         [HttpGet]
@@ -28,19 +34,19 @@ namespace CommonWebService.Controllers
         }
 
         [HttpPost]
-        public async Task<string> AddUser([FromQuery] UserDTO newUser)
+        public async Task<string> AddUser([FromBody] UserDTO newUser)
         {
             return await _usersService.AddUserAsync(newUser);
         }
 
         [HttpPatch]
-        public async Task<string> UpdateUserInfo([FromQuery] UserDTO updatingUserInfo)
+        public async Task<string> UpdateUserInfo([FromBody] UserDTO updatingUserInfo)
         {
             return await _usersService.UpdateUserAsync(updatingUserInfo);
         }
 
         [HttpDelete]
-        public async Task<string> DeleteUser([FromQuery] int userId)
+        public async Task<string> DeleteUser([FromBody] int userId)
         {
             return await _usersService.DeleteUserAsync(userId);
         }

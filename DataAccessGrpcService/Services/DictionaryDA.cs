@@ -1,5 +1,4 @@
-﻿using CommonGrpcService.Services;
-using CommonLib.Entities;
+﻿using CommonLib.Entities;
 using Google.Protobuf;
 using Grpc.Core;
 
