@@ -31,17 +31,18 @@ Console.ReadKey();
 
 
 
-static async Task<T?> GetInfoFromWebAPI<T>(string uri, HttpMethodsEnum method, string content)
+static async Task<T?> GetInfoFromWebAPI<T>(string uri, HttpMethodsEnum method, string content) where T : class
 {
     switch (method)
     {
         case HttpMethodsEnum.Get:
-            return await new Requester<T>(new GetRequester<T>()).GetRequestResult(uri, content);
+            return await new Requester<T?>(new GetRequester<T?>()).GetRequestResult(uri, content);
         case HttpMethodsEnum.Post:
+            return await new Requester<T?>(new PostRequester<T?>()).GetRequestResult(uri, content);
         case HttpMethodsEnum.Put:
-            
+            return await new Requester<T?>(new PutRequester<T?>()).GetRequestResult(uri, content);
         case HttpMethodsEnum.Delete:
-            
+            return await new Requester<T?>(new GetRequester<T?>()).GetRequestResult(uri, content);
         default: 
             return null;
     }
