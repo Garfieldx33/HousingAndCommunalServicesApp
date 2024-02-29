@@ -1,17 +1,10 @@
-﻿using CommonLib.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UiConsole.Strategy
+﻿namespace UiConsole.Strategy
 {
     public class Requester<T>
     {
-        IStrategy<T> RequestingActor { get; set; }
+        IRequestStrategy<T> RequestingActor { get; set; }
 
-        public Requester(IStrategy<T> requestingActor)
+        public Requester(IRequestStrategy<T> requestingActor)
         {
             RequestingActor = requestingActor;
         }

@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 
 namespace UiConsole.Strategy.StrategyImpl
 {
-    public class GetRequester<T> : RequesterBase, IStrategy<T>
+    public class GetRequester<T> : RequesterBase, IRequestStrategy<T>
     {
         public async Task<T?> GetResponce(string uri, string? content)
         {

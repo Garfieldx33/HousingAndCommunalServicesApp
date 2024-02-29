@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UiConsole.Strategy.StrategyImpl
 {
-    public abstract class RequesterBase
+    public abstract class RequesterBase 
     {
         protected HttpClient _httpClient;
         public RequesterBase()

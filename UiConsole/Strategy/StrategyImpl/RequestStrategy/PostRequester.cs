@@ -1,5 +1,4 @@
-﻿using CommonLib.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -9,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace UiConsole.Strategy.StrategyImpl
 {
-    public class PutRequester<T> : RequesterBase, IStrategy<T>
+    public class PostRequester<T> : RequesterBase, IRequestStrategy<T>
     {
         public async Task<T?> GetResponce(string uri, string? content)
         {
-            HttpResponseMessage responcePut = await _httpClient.PutAsync(uri, JsonContent.Create(content));
-            return await responcePut.Content.ReadFromJsonAsync<T>();
+            HttpResponseMessage responcePost = await _httpClient.PostAsync(uri, JsonContent.Create(content));
+            return await responcePost.Content.ReadFromJsonAsync<T>();
         }
     }
 }
