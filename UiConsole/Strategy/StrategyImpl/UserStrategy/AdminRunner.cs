@@ -14,9 +14,10 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
         }
 
+        //To do реализовать
         public void RunUser()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Запуск с правами администратора");
         }
     }
 }

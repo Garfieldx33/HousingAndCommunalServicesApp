@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace UiConsole.Strategy.StrategyImpl.UserStrategy
 {
-    internal class InhabitantRunnes : UserBase, IUserStrategy
+    internal class InhabitantRunner : UserBase, IUserStrategy
     {
-        public InhabitantRunnes(UserDTO user) : base(user)
+        public InhabitantRunner(UserDTO user) : base(user)
         {
         }
-
+        //To do реализовать
         public void RunUser()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Запуск с правами жителя");
         }
     }
 }

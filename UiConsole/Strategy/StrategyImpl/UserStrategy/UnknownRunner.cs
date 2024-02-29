@@ -1,5 +1,4 @@
 ﻿using CommonLib.DTO;
-using CommonLib.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace UiConsole.Strategy.StrategyImpl.UserStrategy
 {
-    internal class EmployeeRunner : UserBase, IUserStrategy
+    internal class UnknownRunner : UserBase, IUserStrategy
     {
-        public EmployeeRunner(UserDTO user) : base(user)
+        public UnknownRunner(UserDTO user) : base(user)
         {
         }
-        //To do реализовать
+
         public void RunUser()
         {
-            Console.WriteLine("Запуск с правами сотрудника УК");
+            Console.WriteLine($"Получите права в кабинете номер 101");
         }
     }
 }

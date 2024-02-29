@@ -5,6 +5,7 @@ using CommonLib.Enums;
 using Newtonsoft.Json;
 using UiConsole.Strategy;
 using UiConsole.Strategy.StrategyImpl;
+using UiConsole.Strategy.StrategyImpl.UserStrategy;
 
 Console.Write("Логин: ");
 string? login = Console.ReadLine();
@@ -22,43 +23,34 @@ if (userResult != null)
     if (userResult.Result != null)
     {
         UserDTO userInfo = userResult.Result;
+
         Console.WriteLine($"Добро пожаловать {userInfo.FirstName} {userInfo.Surname}");
-        switch ((UserTypeEnum)userInfo.UserTypeId)
-        {
-            case UserTypeEnum.Administrator:
-                Console.WriteLine();
-                break;
-            case UserTypeEnum.Employee:
-                Console.WriteLine();
-                break;
-            case UserTypeEnum.Inhabitant:
-                Console.WriteLine();
-                break;
-            default: 
-                Console.WriteLine("У введенного пользователя отсутствует права на взаимодействие");
-                break;
-        }
+        
+        UserRunner userRunner = GetUserRunner(userInfo);
+        userRunner.RunUser();
     }
 }
-
-
+Console.WriteLine("Для выхода нажмите любую клавишу");
 Console.ReadKey();
 
-
-
+static UserRunner GetUserRunner(UserDTO userInfo)
+{
+    return (UserTypeEnum)userInfo.UserTypeId switch
+    {
+        UserTypeEnum.Administrator => new UserRunner(new AdminRunner(userInfo)),
+        UserTypeEnum.Employee => new UserRunner(new EmployeeRunner(userInfo)),
+        UserTypeEnum.Inhabitant => new UserRunner(new InhabitantRunner(userInfo)),
+        _ => new UserRunner(new UnknownRunner(userInfo)),
+    };
+}
 static async Task<T?> GetInfoFromWebAPI<T>(string uri, HttpMethodsEnum method, string content) where T : class
 {
-    switch (method)
+    return method switch
     {
-        case HttpMethodsEnum.Get:
-            return await new Requester<T?>(new GetRequester<T?>()).GetRequestResult(uri, content);
-        case HttpMethodsEnum.Post:
-            return await new Requester<T?>(new PostRequester<T?>()).GetRequestResult(uri, content);
-        case HttpMethodsEnum.Put:
-            return await new Requester<T?>(new PutRequester<T?>()).GetRequestResult(uri, content);
-        case HttpMethodsEnum.Delete:
-            return await new Requester<T?>(new GetRequester<T?>()).GetRequestResult(uri, content);
-        default:
-            return null;
-    }
+        HttpMethodsEnum.Get => await new Requester<T?>(new GetRequester<T?>()).GetRequestResult(uri, content),
+        HttpMethodsEnum.Post => await new Requester<T?>(new PostRequester<T?>()).GetRequestResult(uri, content),
+        HttpMethodsEnum.Put => await new Requester<T?>(new PutRequester<T?>()).GetRequestResult(uri, content),
+        HttpMethodsEnum.Delete => await new Requester<T?>(new GetRequester<T?>()).GetRequestResult(uri, content),
+        _ => null,
+    };
 }
