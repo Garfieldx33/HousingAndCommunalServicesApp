@@ -10,7 +10,7 @@ using IModel = RabbitMQ.Client.IModel;
 
 namespace CommonLib.Abstracts
 {
-    public class NotificationServiceBase : INotificationService
+    public class NotificationServiceBase : INotificationService, IDisposable
     {
         readonly RabbitMqConfig _incomingExchageConfig;
         readonly IMapper _mapper;
@@ -22,17 +22,12 @@ namespace CommonLib.Abstracts
             _mapper = mapper;
         }
 
-        public MessageDTO GetMessageFromQueue()
-        {
-            throw new NotImplementedException();
-        }
-
         public virtual void SendMessage(MessageDTO message)
         {
             throw new NotImplementedException();
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public virtual Task StartAsync(CancellationToken cancellationToken)
         {
             ConnectionFactory factory = CreateConnectionFactory(_incomingExchageConfig);
             RabbitConnection = CreateRabbitMqConnection(factory);
@@ -49,7 +44,7 @@ namespace CommonLib.Abstracts
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public virtual Task StopAsync(CancellationToken cancellationToken)
         {
             Dispose();
             return Task.CompletedTask;
@@ -101,7 +96,7 @@ namespace CommonLib.Abstracts
                 throw new Exception("Требуется передать действие на событие нового сообщения от RabbitMQ");
             }
             var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += new EventHandler<BasicDeliverEventArgs>(action);
+            consumer.Received += new EventHandler<BasicDeliverEventArgs>(action!);
             channel.BasicConsume(queue: queueName, autoAck: false, consumer: consumer);
             return consumer;
         }
@@ -117,7 +112,7 @@ namespace CommonLib.Abstracts
             Channel.BasicAck(e.DeliveryTag, false);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (Channel is not null)
             {
@@ -130,6 +125,5 @@ namespace CommonLib.Abstracts
                 RabbitConnection.Dispose();
             }
         }
-
     }
 }
