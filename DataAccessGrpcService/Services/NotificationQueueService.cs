@@ -1,15 +1,18 @@
 ﻿using CommonLib.Config;
 using CommonLib.DTO;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NLog;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using IModel = RabbitMQ.Client.IModel;
 
-namespace IncomingAppsService
+namespace DataAccessGrpcService.Services
 {
-    public class RabbitMqPublisherService
+    //Сервис отправки уведомлений в очередь
+    public class NotificationQueueService
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -17,7 +20,7 @@ namespace IncomingAppsService
         public IConnection Connection { get; set; }
         public IModel Channel { get; set; }
 
-        public RabbitMqPublisherService(IOptions<RabbitMqConfig> rabbitConfig)
+        public NotificationQueueService(IOptions<RabbitMqConfig> rabbitConfig)
         {
             _rabbitConfig = rabbitConfig.Value;
         }
@@ -61,43 +64,42 @@ namespace IncomingAppsService
             try
             {
                 Channel = connection.CreateModel();
-                _logger.Debug(nameof(RabbitMqPublisherService) + $" канал создан успешно");
+                _logger.Debug(nameof(NotificationQueueService) + $" канал создан успешно");
                 return Channel;
             }
             catch (Exception ex)
             {
-                _logger.Error(nameof(RabbitMqPublisherService) + $" при создании канала произошла ошибка: {ex.Message}");
+                _logger.Error(nameof(NotificationQueueService) + $" при создании канала произошла ошибка: {ex.Message}");
                 return null;
             }
         }
 
-        private bool PublishMessage(ApplicationDTO newApplication, IModel channel)
+        private bool PublishMessage(MessageDTO newMessage, IModel channel)
         {
             try
             {
-                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newApplication));
+                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newMessage));
                 IBasicProperties prop = channel.CreateBasicProperties();
                 prop.ContentType = "application/json";
                 prop.Persistent = true;
 
                 channel.BasicPublish(exchange: _rabbitConfig.ExchangeName,
-                              routingKey: _rabbitConfig.QueueName,
+                              routingKey: _rabbitConfig.RoutingKey,
                               basicProperties: prop,
                               body: body);
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.Warn($"Не удалось выполнить отправку заявки на обработку. {e.Message}");
+                _logger.Warn($"Не удалось выполнить отправку уведомления. {e.Message}");
                 return false;
             }
         }
-
-        public bool SendNewApplication(ApplicationDTO newApplication)
+        public bool SendNewMessage(MessageDTO newMessage)
         {
             var connect = CreateConnection();
             var channel = CreateChannel(connect);
-            return PublishMessage(newApplication, channel);
+            return PublishMessage(newMessage, channel);
         }
 
         private void ConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
