@@ -1,3 +1,4 @@
+using CommonLib.Config;
 using CommonLib.DAL;
 using DataAccessGrpcService;
 using DataAccessGrpcService.Services;
@@ -16,6 +17,9 @@ builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 try
 {
+    builder.Services.Configure<RabbitMqConfig>(
+       configuration.GetSection("RabbitMQConf"));
+
     builder.Services.AddLogging(log => log.AddNLog());
     builder.Services.AddControllers().AddJsonOptions(options =>
     {
@@ -27,6 +31,7 @@ try
         options.UseNpgsql(configuration.GetConnectionString("SrcConnectionString"));
     });
     builder.Services.AddScoped<PostgresRepository>();
+    builder.Services.AddScoped<NotificationQueueService>();
     builder.Services.AddAutoMapper(typeof(GrpcMappingProfile));
     builder.Services.AddGrpc();
 

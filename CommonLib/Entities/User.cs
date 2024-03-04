@@ -16,5 +16,7 @@ namespace CommonLib.Entities
         public string Login { get; set; }
         public string Password { get; set; }
         public float Balance { get; set; }
+        public int MessagingMethodId { get; set; } = 1;
+        public string MessagingDestination { get; set; } = string.Empty;
     }
 }

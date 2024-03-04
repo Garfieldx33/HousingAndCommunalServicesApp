@@ -6,10 +6,12 @@ using NLog;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using IModel = RabbitMQ.Client.IModel;
 
-namespace IncomingAppsService
+namespace DataAccessGrpcService.Services
 {
-    public class RabbitMqPublisherService
+    //Сервис отправки уведомлений в очередь
+    public class NotificationQueueService
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -17,9 +19,13 @@ namespace IncomingAppsService
         public IConnection Connection { get; set; }
         public IModel Channel { get; set; }
 
-        public RabbitMqPublisherService(IOptions<RabbitMqConfig> rabbitConfig)
+        delegate void MessageHandler(MessageDTO message);
+        event MessageHandler _mesageQueueSender;
+
+        public NotificationQueueService(IOptions<RabbitMqConfig> rabbitConfig)
         {
             _rabbitConfig = rabbitConfig.Value;
+            _mesageQueueSender += SendNewMessage;
         }
 
         private IConnection CreateConnection()
@@ -48,7 +54,7 @@ namespace IncomingAppsService
             var prop = rabbitConnection.ServerProperties;
             rabbitConnection.ConnectionShutdown += ConnectionShutdown;
             rabbitConnection.ConnectionBlocked += ConnectionBlocked;
-            _logger.Info(nameof(RabbitMqPublisherService) + " Соединение с RabbitMQ установлено успешно");
+            _logger.Info(nameof(NotificationQueueService) + " Соединение с RabbitMQ установлено успешно");
             return rabbitConnection;
         }
 
@@ -61,50 +67,49 @@ namespace IncomingAppsService
             try
             {
                 Channel = connection.CreateModel();
-                _logger.Debug(nameof(RabbitMqPublisherService) + $" канал создан успешно");
+                _logger.Debug(nameof(NotificationQueueService) + $" канал создан успешно");
                 return Channel;
             }
             catch (Exception ex)
             {
-                _logger.Error(nameof(RabbitMqPublisherService) + $" при создании канала произошла ошибка: {ex.Message}");
+                _logger.Error(nameof(NotificationQueueService) + $" при создании канала произошла ошибка: {ex.Message}");
                 return null;
             }
         }
 
-        private bool PublishMessage(ApplicationDTO newApplication, IModel channel)
+        private void PublishMessage(MessageDTO newMessage, IModel channel)
         {
+            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newMessage));
+            IBasicProperties prop = channel.CreateBasicProperties();
+            prop.ContentType = "application/json";
+            prop.Persistent = true;
             try
             {
-                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newApplication));
-                IBasicProperties prop = channel.CreateBasicProperties();
-                prop.ContentType = "application/json";
-                prop.Persistent = true;
-
                 channel.BasicPublish(exchange: _rabbitConfig.ExchangeName,
-                              routingKey: _rabbitConfig.QueueName,
+                              routingKey: _rabbitConfig.RoutingKey,
                               basicProperties: prop,
                               body: body);
-                return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.Warn($"Не удалось выполнить отправку заявки на обработку. {e.Message}");
-                return false;
+                _logger.Warn($"Не удалось выполнить отправку уведомления {body}. {e.Message}");
             }
         }
-
-        public bool SendNewApplication(ApplicationDTO newApplication)
+        private void SendNewMessage(MessageDTO newMessage)
         {
             var connect = CreateConnection();
             var channel = CreateChannel(connect);
-            return PublishMessage(newApplication, channel);
+            PublishMessage(newMessage, channel!);
         }
 
+        public void SendNewMessageInvoke(MessageDTO newMessage)
+        {
+            _mesageQueueSender.Invoke(newMessage);
+        }
         private void ConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
         {
             _logger.Warn($"Соединение с Rabbit блокировано {e.Reason}");
         }
-
         private void ConnectionShutdown(object? sender, ShutdownEventArgs e)
         {
             _logger.Warn($"Соединение с Rabbit потеряно {e.ReplyText} Инициатор {e.Initiator} {e.ReplyCode}");

@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessGrpcService", "Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonWebService", "CommonWebService\CommonWebService.csproj", "{FD4B7BFC-B87A-47AD-ABA1-703EB368BFFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UiConsole", "UiConsole\UiConsole.csproj", "{0B7BC77E-8FF2-44B0-B2F3-7914B43A17C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UiConsole", "UiConsole\UiConsole.csproj", "{0B7BC77E-8FF2-44B0-B2F3-7914B43A17C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
