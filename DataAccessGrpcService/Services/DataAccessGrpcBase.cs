@@ -11,11 +11,13 @@ namespace DataAccessGrpcService.Services
     {
         PostgresRepository _repository;
         IMapper _mapper;
+        NotificationQueueService _notificationQueueService;
         Logger _logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-        public DataAccessGrpcBase(PostgresRepository repo, IMapper mapper)
+        public DataAccessGrpcBase(PostgresRepository repo, IMapper mapper, NotificationQueueService notifyQueueService)
         {
             _repository = repo;
             _mapper = mapper;
+            _notificationQueueService = notifyQueueService;
         }
     }
 }

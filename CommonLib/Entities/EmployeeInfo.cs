@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Entities
 {
-    public class NotificationType
+    public class EmployeeInfo
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int EmployeeUserId { get; set; }
+        public int DepartmentId { get; set; }
     }
 }

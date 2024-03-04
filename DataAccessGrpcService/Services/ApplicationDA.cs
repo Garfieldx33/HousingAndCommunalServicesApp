@@ -12,7 +12,13 @@ namespace DataAccessGrpcService.Services
         public override async Task<AddNewAppReply> AddNewApp(AddNewAppRequest request, ServerCallContext context)
         {
             _logger.Info($"Пришла новая заявка {request.ApplicationDto.Description}");
-            var res = await _repository.AddNewApplication(_mapper.Map<Application>(request.ApplicationDto));
+            var newApplication = _mapper.Map<Application>(request.ApplicationDto);
+            var res = await _repository.AddNewApplication(newApplication);
+            if (res > 0 )
+            {
+                var newMessage = PrepareNewMessage(newApplication);
+                _notificationQueueService.SendNewMessageInvoke(newMessage);
+            }
             return new AddNewAppReply { ResultOfInsert = res };
         }
 

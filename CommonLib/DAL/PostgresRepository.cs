@@ -12,7 +12,6 @@ namespace CommonLib.DAL
         public PostgresRepository(AppDbContext context) 
         { 
             this.context = context;
-
         }
     }
 }

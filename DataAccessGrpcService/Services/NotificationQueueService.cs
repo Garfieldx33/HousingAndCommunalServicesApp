@@ -1,6 +1,5 @@
 ﻿using CommonLib.Config;
 using CommonLib.DTO;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NLog;
@@ -20,9 +19,13 @@ namespace DataAccessGrpcService.Services
         public IConnection Connection { get; set; }
         public IModel Channel { get; set; }
 
+        delegate void MessageHandler(MessageDTO message);
+        event MessageHandler _mesageQueueSender;
+
         public NotificationQueueService(IOptions<RabbitMqConfig> rabbitConfig)
         {
             _rabbitConfig = rabbitConfig.Value;
+            _mesageQueueSender += SendNewMessage;
         }
 
         private IConnection CreateConnection()
@@ -51,7 +54,7 @@ namespace DataAccessGrpcService.Services
             var prop = rabbitConnection.ServerProperties;
             rabbitConnection.ConnectionShutdown += ConnectionShutdown;
             rabbitConnection.ConnectionBlocked += ConnectionBlocked;
-            _logger.Info(nameof(RabbitMqPublisherService) + " Соединение с RabbitMQ установлено успешно");
+            _logger.Info(nameof(NotificationQueueService) + " Соединение с RabbitMQ установлено успешно");
             return rabbitConnection;
         }
 
@@ -74,39 +77,39 @@ namespace DataAccessGrpcService.Services
             }
         }
 
-        private bool PublishMessage(MessageDTO newMessage, IModel channel)
+        private void PublishMessage(MessageDTO newMessage, IModel channel)
         {
+            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newMessage));
+            IBasicProperties prop = channel.CreateBasicProperties();
+            prop.ContentType = "application/json";
+            prop.Persistent = true;
             try
             {
-                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newMessage));
-                IBasicProperties prop = channel.CreateBasicProperties();
-                prop.ContentType = "application/json";
-                prop.Persistent = true;
-
                 channel.BasicPublish(exchange: _rabbitConfig.ExchangeName,
                               routingKey: _rabbitConfig.RoutingKey,
                               basicProperties: prop,
                               body: body);
-                return true;
             }
             catch (Exception e)
             {
-                _logger.Warn($"Не удалось выполнить отправку уведомления. {e.Message}");
-                return false;
+                _logger.Warn($"Не удалось выполнить отправку уведомления {body}. {e.Message}");
             }
         }
-        public bool SendNewMessage(MessageDTO newMessage)
+        private void SendNewMessage(MessageDTO newMessage)
         {
             var connect = CreateConnection();
             var channel = CreateChannel(connect);
-            return PublishMessage(newMessage, channel);
+            PublishMessage(newMessage, channel!);
         }
 
+        public void SendNewMessageInvoke(MessageDTO newMessage)
+        {
+            _mesageQueueSender.Invoke(newMessage);
+        }
         private void ConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
         {
             _logger.Warn($"Соединение с Rabbit блокировано {e.Reason}");
         }
-
         private void ConnectionShutdown(object? sender, ShutdownEventArgs e)
         {
             _logger.Warn($"Соединение с Rabbit потеряно {e.ReplyText} Инициатор {e.Initiator} {e.ReplyCode}");

@@ -8,7 +8,6 @@ namespace CommonLib.DTO
 {
     public class MessageDTO
     {
-        public int Id { get; set; }
         public string MessagingMethod { get; set; }
         public string Destination { get; set; }
         public int ApplicationId { get; set; }
