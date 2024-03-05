@@ -12,6 +12,7 @@ namespace CommonLib.DAL
         public DbSet<NotificationType> NotificationTypes => Set<NotificationType>();
         public DbSet<Message> Messages => Set<Message>();
         public DbSet<EmployeeInfo> EmployeeInfos => Set<EmployeeInfo>();
+       
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -37,7 +38,7 @@ namespace CommonLib.DAL
             entity.Property(p => p.Description).HasColumnName("description");
             entity.Property(p => p.Status).HasColumnName("status_id");
             entity.Property(p => p.ApplicationTypeId).HasColumnName("app_type_id");
-            entity.Property(p => p.DepartamentId).HasColumnName("department_id");
+            entity.Property(p => p.DepartmentId).HasColumnName("department_id");
             entity.Property(p => p.ApplicantId).HasColumnName("applicant_id");
             entity.Property(p => p.ExecutorId).HasColumnName("executor_id");
             entity.Property(p => p.DateCreate).HasColumnName("date_create");
@@ -72,7 +73,6 @@ namespace CommonLib.DAL
             entity.Property(p => p.MessagingMethodId).HasColumnName("messaging_method_id");
             entity.Property(p => p.MessagingDestination).HasColumnName("messaging_destination");
         }
-
         private void ConfigureNotificationTypes(ModelBuilder builder)
         {
             var entity = builder.Entity<NotificationType>()
@@ -81,7 +81,6 @@ namespace CommonLib.DAL
             entity.Property(p => p.Id).HasColumnName("id");
             entity.Property(p => p.Name).HasColumnName("name");
         }
-
         private void ConfigureMessages(ModelBuilder builder)
         {
             var entity = builder.Entity<Message>()
@@ -94,7 +93,6 @@ namespace CommonLib.DAL
             entity.Property(p => p.MessagingMethodId).HasColumnName("notification_type_id");
             entity.Property(p => p.Destination).HasColumnName("destination");
         }
-
         private void ConfigureEmployers(ModelBuilder builder)
         {
             var entity = builder.Entity<EmployeeInfo>()
@@ -102,6 +100,7 @@ namespace CommonLib.DAL
 
             entity.Property(p => p.EmployeeUserId).HasColumnName("user_id");
             entity.Property(p => p.DepartmentId).HasColumnName("department_id");
+            entity.Property(p => p.Position).HasColumnName("position");
         }
     }
 }

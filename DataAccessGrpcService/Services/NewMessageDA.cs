@@ -5,35 +5,38 @@ namespace DataAccessGrpcService.Services
 {
     public partial class DataAccessGrpcBase
     {
-        //todo сделать методы для сообщения для персонала и для пользователей
-        private async Task<List<MessageDTO>> ProcessNewApplicationMessages(Application newApplication)
+        private async Task<List<MessageDTO>> ProcessNewMessagesForEmployers(Application newApplication)
         {
-            //todo 
-            /*User applicantInfo = _repository.GetUserbyId(newApplication.Id);
-            NotificationType messagingMethod = await _repository.GetNotificationTypeByIdAsync(applicantInfo.MessagingMethodId);
-            
-            Message message = _repository.CreateNewMessage(applicantInfo, messagingMethod, newApplication);
-            await _repository.AddNewMessage(message);
-            
-            return new MessageDTO
+            List<MessageDTO> messages = new();
+            User applicantInfo = _repository.GetUserbyId(newApplication.ApplicantId);
+            List<User> employers = _repository.GetUserbyDepartmentId(newApplication.DepartmentId);
+            foreach (User employee in employers) 
             {
-                ApplicantAddress = applicantInfo.Address,
-                ApplicantFullName = $"{applicantInfo.SecondName} {applicantInfo.FirstName}",
-                Destination = applicantInfo.Email,
-                ApplicationId = newApplication.Id,
-                Body = newApplication.Description,
-                MessagingMethod = messagingMethod.Name,
-                Subject = newApplication.Subject,
-                TelephoneNumber = applicantInfo.Phone
-            };*/
+                NotificationType messagingMethod = await _repository.GetNotificationTypeByIdAsync(employee.MessagingMethodId);
+                Message message = _repository.CreateNewMessage(applicantInfo, messagingMethod, newApplication);
+                await _repository.AddNewMessage(message);
+
+                MessageDTO messageDTO = new()
+                {
+                    ApplicantAddress = applicantInfo.Address,
+                    ApplicantFullName = $"{applicantInfo.SecondName} {applicantInfo.FirstName}",
+                    Destination = applicantInfo.Email,
+                    ApplicationId = newApplication.Id,
+                    Body = newApplication.Description,
+                    MessagingMethod = messagingMethod.Name,
+                    Subject = newApplication.Subject,
+                    TelephoneNumber = applicantInfo.Phone
+                };
+                messages.Add(messageDTO);
+            }
+            return messages;
         }
 
         private async Task<MessageDTO> ProcessNewMessagesForApplicant(Application newApplication)
         {
             //todo 
-            User applicantInfo = _repository.GetUserbyId(newApplication.Id);
+            User applicantInfo = _repository.GetUserbyId(newApplication.ApplicantId);
             NotificationType messagingMethod = await _repository.GetNotificationTypeByIdAsync(applicantInfo.MessagingMethodId);
-
             Message message = _repository.CreateNewMessage(applicantInfo, messagingMethod, newApplication);
             await _repository.AddNewMessage(message);
 

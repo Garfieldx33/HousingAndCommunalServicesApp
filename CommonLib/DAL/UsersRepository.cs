@@ -25,12 +25,13 @@ namespace CommonLib.DAL
             return context.Users.AsNoTracking().Where(u => u.Login == login && u.Password == password).SingleAsync(cancellation);
         }
 
-        /*public Task<User> GetUserbyEmail(string email, CancellationToken cancellation = default)
+        public List<User> GetUserbyDepartmentId(int departmentId)
         {
-            return context.Users.AsNoTracking().Where(u => u.Email == email).SingleAsync(cancellation);
+            List<int> userIds = context.EmployeeInfos.AsNoTracking().Where(u => u.DepartmentId == departmentId).Select(i => i.EmployeeUserId).ToList();
+            return context.Users.AsNoTracking().Where(u => userIds.Contains(u.Id)).ToList();
         }
 
-        public Task<User> GetUserbyPhone(string phone, CancellationToken cancellation = default)
+        /*public Task<User> GetUserbyPhone(string phone, CancellationToken cancellation = default)
         {
             return context.Users.AsNoTracking().Where(u => u.Phone == phone).SingleAsync(cancellation);
         }*/

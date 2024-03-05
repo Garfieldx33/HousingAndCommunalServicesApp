@@ -13,7 +13,7 @@ namespace CommonLib.Entities
         public string Description { get; set; }
         public AppStatusEnum Status { get; set; }
         public AppTypeEnum ApplicationTypeId { get; set; }
-        public int? DepartamentId { get; set; }
+        public int DepartmentId { get; set; }
         public int ApplicantId { get; set; }
         public int? ExecutorId { get; set; }
         public DateTime DateCreate { get; set; }

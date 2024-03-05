@@ -10,5 +10,6 @@ namespace CommonLib.Entities
     {
         public int EmployeeUserId { get; set; }
         public int DepartmentId { get; set; }
+        public string Position { get; set; }
     }
 }

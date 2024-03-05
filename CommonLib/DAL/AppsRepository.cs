@@ -34,7 +34,7 @@ namespace CommonLib.DAL
                     if (request.Status > 0)
                         { updatedApp.Status = (Enums.AppStatusEnum)request.Status; }
                     if (request.DepartmentId > 0)
-                        { updatedApp.DepartamentId = request.DepartmentId; }
+                        { updatedApp.DepartmentId = request.DepartmentId; }
                     if (request.ExecutorId > 0)
                         { updatedApp.ExecutorId = request.ExecutorId; }
                     if (request.DateClose != DateTime.MinValue)
