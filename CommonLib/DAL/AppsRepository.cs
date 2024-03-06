@@ -16,10 +16,22 @@ public partial class PostgresRepository
         return await query.ToListAsync(cancellation);
     }
 
-    public async Task<int> AddNewApplication(Application newApplication, CancellationToken cancellation = default)
+    public async Task<Application> GetApplicationById(int applicationId, CancellationToken cancellation = default)
     {
-        await _context.Apps.AddAsync(newApplication, cancellation);
-        return _context.SaveChanges();
+        var query = _context.Apps.AsNoTracking();
+        if (applicationId > 0)
+        {
+            query = query.Where(q => q.Id == applicationId);
+        }
+        return await query.SingleAsync(cancellation);
+    }
+
+    public async Task<Application> AddNewApplication(Application newApplication, CancellationToken cancellation = default)
+    {
+        Application newApp = newApplication;
+        await _context.Apps.AddAsync(newApp, cancellation);
+        await _context.SaveChangesAsync(cancellation);
+        return newApp;
     }
 
     public async Task<Application> UpdateApplicationAsync(UpdateAppDTO request, CancellationToken cancellation = default)

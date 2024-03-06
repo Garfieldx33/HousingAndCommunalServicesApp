@@ -19,13 +19,17 @@ namespace DataAccessGrpcService.Services
         public IConnection Connection { get; set; }
         public IModel Channel { get; set; }
 
-        delegate void MessageHandler(MessageDTO message);
-        event MessageHandler _mesageQueueSender;
+        delegate void OneMessageHandler(MessageDTO message);
+        event OneMessageHandler _oneMessageQueueSender;
+
+        delegate void MultipleMessageHandler(List<MessageDTO> messages);
+        event MultipleMessageHandler _multipleMessagesQueueSender;
 
         public NotificationQueueService(IOptions<RabbitMqConfig> rabbitConfig)
         {
             _rabbitConfig = rabbitConfig.Value;
-            _mesageQueueSender += SendNewMessage;
+            _oneMessageQueueSender += SendNewMessage;
+            _multipleMessagesQueueSender += SendMultipleMessages;
         }
 
         private IConnection CreateConnection()
@@ -57,7 +61,6 @@ namespace DataAccessGrpcService.Services
             _logger.Info(nameof(NotificationQueueService) + " Соединение с RabbitMQ установлено успешно");
             return rabbitConnection;
         }
-
         private IModel? CreateChannel(IConnection connection)
         {
             if (connection == null)
@@ -76,7 +79,6 @@ namespace DataAccessGrpcService.Services
                 return null;
             }
         }
-
         private void PublishMessage(MessageDTO newMessage, IModel channel)
         {
             var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newMessage));
@@ -101,10 +103,14 @@ namespace DataAccessGrpcService.Services
             var channel = CreateChannel(connect);
             PublishMessage(newMessage, channel!);
         }
-
-        public void SendNewMessageInvoke(MessageDTO newMessage)
+        private void SendMultipleMessages(List<MessageDTO> messages)
         {
-            _mesageQueueSender.Invoke(newMessage);
+            var connect = CreateConnection();
+            var channel = CreateChannel(connect);
+            foreach (var message in messages)
+            {
+                PublishMessage(message, channel!);
+            }
         }
         private void ConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
         {
@@ -119,5 +125,13 @@ namespace DataAccessGrpcService.Services
             }
         }
 
+        public void SendNewMessageInvoke(MessageDTO newMessage)
+        {
+            _oneMessageQueueSender.Invoke(newMessage);
+        }
+        public void SendMultipleMessagesInvoke(List<MessageDTO> messages)
+        {
+            _multipleMessagesQueueSender.Invoke(messages);
+        }
     }
 }

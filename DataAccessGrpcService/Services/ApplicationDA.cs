@@ -11,9 +11,20 @@ namespace DataAccessGrpcService.Services
         //Create 
         public override async Task<AddNewAppReply> AddNewApp(AddNewAppRequest request, ServerCallContext context)
         {
+            AddNewAppReply reply = new() { ResultOfInsert = 0};
+
             _logger.Info($"Пришла новая заявка {request.ApplicationDto.Description}");
+
             var res = await _repository.AddNewApplication(_mapper.Map<Application>(request.ApplicationDto));
-            return new AddNewAppReply { ResultOfInsert = res };
+            
+            if (res != null )
+            {
+                reply.ResultOfInsert = res.Id;
+                List<MessageDTO> messages = await ProcessNewMessagesForEmployers(res);
+                _notificationQueueService.SendMultipleMessagesInvoke(messages);
+            }
+            
+            return reply;
         }
 
         //Read
@@ -38,10 +49,16 @@ namespace DataAccessGrpcService.Services
             UpdateAppReply responce = new();
             try
             {
-                _logger.Info($"UpdateApp Id = {request.Id}  Status {request.Status } AppTypeId = {request.ApplicationTypeId} Dept Id = {request.DepartmentId} ExecId = {request.ExecutorId} {request.DateConfirm} {request.DateClose}");
-                var req = _mapper.Map<UpdateAppDTO>(request);
-                _logger.Info($"UpdateApp Id = {req.Id} AppTypeId = {req.ApplicationTypeId} Status {req.Status} Dept Id = {req.DepartmentId} ExecId = {req.ExecutorId} {req.DateConfirm} {req.DateClose}");
-                var result = await _repository.UpdateApplicationAsync(_mapper.Map<UpdateAppDTO>(request));
+                var updatingInfo = _mapper.Map<UpdateAppDTO>(request);
+                var currentApplicationInfo = await _repository.GetApplicationById(updatingInfo.Id);
+                
+                if(updatingInfo.Status != (int)currentApplicationInfo.Status)
+                {
+                    //Добавить логики и вынести в отдельный метод
+                    _notificationQueueService.SendNewMessageInvoke();
+                }
+
+                var result = await _repository.UpdateApplicationAsync(updatingInfo);
                 responce.UpdatedApplication = _mapper.Map<ApplicationGrpc>(result);
                 
             }
@@ -51,6 +68,7 @@ namespace DataAccessGrpcService.Services
             }
             return responce;
         }
+
 
         //Delete
         public override async Task<DeleteAppReply> DeleteApp(DeleteAppRequest request, ServerCallContext context)

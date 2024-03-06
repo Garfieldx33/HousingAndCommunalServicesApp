@@ -20,6 +20,13 @@ public partial class PostgresRepository
         return _context.Users.AsNoTracking().Where(u => u.Login == login && u.Password == password).SingleAsync(cancellation);
     }
 
+    public List<User> GetUsersByDepartmentId(int departmentId)
+    {
+        List<int> userIds = _context.EmployeeInfos.AsNoTracking().Where(u => u.DepartmentId == departmentId).Select(i => i.EmployeeUserId).ToList();
+        return _context.Users.AsNoTracking().Where(u => userIds.Contains(u.Id)).ToList();
+
+    }
+
     public async Task<int> AddNewUser(User newUser, CancellationToken cancellation = default)
     {
         await _context.Users.AddAsync(newUser, cancellation);
@@ -36,7 +43,7 @@ public partial class PostgresRepository
                 if (userUpdate.FirstName != string.Empty) updatedUser.FirstName = userUpdate.FirstName;
                 if (userUpdate.SecondName != string.Empty) updatedUser.SecondName = userUpdate.SecondName;
                 if (userUpdate.Password != string.Empty) updatedUser.Password = userUpdate.Password;
-                if (userUpdate.Email != string.Empty)  updatedUser.Email = userUpdate.Email; 
+                if (userUpdate.Email != string.Empty) updatedUser.Email = userUpdate.Email;
                 if (userUpdate.Address != string.Empty) updatedUser.Address = userUpdate.Address;
                 if (userUpdate.Phone != string.Empty) updatedUser.Phone = userUpdate.Phone;
                 if (!float.IsNaN(userUpdate.Balance)) updatedUser.Balance = userUpdate.Balance;
