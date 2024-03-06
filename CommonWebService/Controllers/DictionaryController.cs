@@ -1,66 +1,64 @@
 using CommonLib.Entities;
 using CommonWebService.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace CommonWebService.Controllers
+namespace CommonWebService.Controllers;
+
+[ApiController]
+[Route("[controller]/[action]")]
+public class DictionaryController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/[action]")]
-    public class DictionaryController : ControllerBase
+    DictionaryServiceGrpc _dictionaryService;
+    public DictionaryController(DictionaryServiceGrpc dictionaryGrpcService)
     {
-        DictionaryServiceGrpc _dictionaryService;
-        public DictionaryController(DictionaryServiceGrpc dictionaryGrpcService)
-        {
-            _dictionaryService = dictionaryGrpcService;
-        }
+        _dictionaryService = dictionaryGrpcService;
+    }
 
-        [HttpGet]
-        public async Task<string> GetDepartmentById(int departmentId)
-        {
-            return await _dictionaryService.GetDepartmentByIdAsync(departmentId);
-        }
+    [HttpGet]
+    public async Task<string> GetDepartmentById(int departmentId)
+    {
+        return await _dictionaryService.GetDepartmentByIdAsync(departmentId);
+    }
 
-        [HttpGet]
-        public async Task<string> GetAllDepartments()
-        {
-            return await _dictionaryService.GetAllDepartmentsAsync();
-        }
-        
-        [HttpPost]
-        public async Task<string> AddDepartment(string departmentName)
-        {
-            return await _dictionaryService.AddDepartmentAsync(departmentName);
-        }
-        
-        [HttpPatch]
-        public async Task<string> UpdateDepartment([FromQuery] Department department)
-        {
-            return await _dictionaryService.UpdateDepartmentAsync(department);
-        }
+    [HttpGet]
+    public async Task<string> GetAllDepartments()
+    {
+        return await _dictionaryService.GetAllDepartmentsAsync();
+    }
+    
+    [HttpPost]
+    public async Task<string> AddDepartment(string departmentName)
+    {
+        return await _dictionaryService.AddDepartmentAsync(departmentName);
+    }
+    
+    [HttpPatch]
+    public async Task<string> UpdateDepartment([FromQuery] Department department)
+    {
+        return await _dictionaryService.UpdateDepartmentAsync(department);
+    }
 
-        [HttpDelete]
-        public async Task<string> DeleteDepartment([FromQuery] Department department)
-        {
-            return await _dictionaryService.DeleteDepartmentAsync(department);
-        }
+    [HttpDelete]
+    public async Task<string> DeleteDepartment([FromQuery] Department department)
+    {
+        return await _dictionaryService.DeleteDepartmentAsync(department);
+    }
 
-        [HttpGet]
-        public async Task<string> GetAppStatuses()
-        {
-            return await _dictionaryService.GetAppStatusesAsync();
-        }
+    [HttpGet]
+    public async Task<string> GetAppStatuses()
+    {
+        return await _dictionaryService.GetAppStatusesAsync();
+    }
 
-        [HttpGet]
-        public async Task<string> GetAppTypes()
-        {
-            return await _dictionaryService.GetAppTypesAsync();
-        }
+    [HttpGet]
+    public async Task<string> GetAppTypes()
+    {
+        return await _dictionaryService.GetAppTypesAsync();
+    }
 
-        [HttpGet]
-        public async Task<string> GetUserTypes()
-        {
-            return await _dictionaryService.GetAppTypesAsync();
-        }
+    [HttpGet]
+    public async Task<string> GetUserTypes()
+    {
+        return await _dictionaryService.GetAppTypesAsync();
     }
 }

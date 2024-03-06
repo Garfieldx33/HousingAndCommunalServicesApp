@@ -12,13 +12,7 @@ namespace DataAccessGrpcService.Services
         public override async Task<AddNewAppReply> AddNewApp(AddNewAppRequest request, ServerCallContext context)
         {
             _logger.Info($"Пришла новая заявка {request.ApplicationDto.Description}");
-            var newApplication = _mapper.Map<Application>(request.ApplicationDto);
-            var res = await _repository.AddNewApplication(newApplication);
-            if (res > 0 )
-            {
-                var newMessage = PrepareNewMessage(newApplication);
-                _notificationQueueService.SendNewMessageInvoke(newMessage);
-            }
+            var res = await _repository.AddNewApplication(_mapper.Map<Application>(request.ApplicationDto));
             return new AddNewAppReply { ResultOfInsert = res };
         }
 
@@ -45,9 +39,9 @@ namespace DataAccessGrpcService.Services
             try
             {
                 _logger.Info($"UpdateApp Id = {request.Id}  Status {request.Status } AppTypeId = {request.ApplicationTypeId} Dept Id = {request.DepartmentId} ExecId = {request.ExecutorId} {request.DateConfirm} {request.DateClose}");
-                var req = _mapper.Map<UpdateAppDto>(request);
+                var req = _mapper.Map<UpdateAppDTO>(request);
                 _logger.Info($"UpdateApp Id = {req.Id} AppTypeId = {req.ApplicationTypeId} Status {req.Status} Dept Id = {req.DepartmentId} ExecId = {req.ExecutorId} {req.DateConfirm} {req.DateClose}");
-                var result = await _repository.UpdateApplicationAsync(_mapper.Map<UpdateAppDto>(request));
+                var result = await _repository.UpdateApplicationAsync(_mapper.Map<UpdateAppDTO>(request));
                 responce.UpdatedApplication = _mapper.Map<ApplicationGrpc>(result);
                 
             }

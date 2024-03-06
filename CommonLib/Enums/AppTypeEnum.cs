@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
-namespace CommonLib.Enums
+namespace CommonLib.Enums;
+
+public enum AppTypeEnum
 {
-    public enum AppTypeEnum
-    {
-        [Description("Жалоба")]
-        Complaint = 1,
+    [Description("Жалоба")]
+    Complaint = 1,
 
-        [Description("Авария")]
-        Accident = 2,
+    [Description("Авария")]
+    Accident = 2,
 
-        [Description("Платные услуги")]
-        PaidServices = 3,
+    [Description("Платные услуги")]
+    PaidServices = 3,
 
-        [Description("Плановые работы")]
-        ScheduledWorks = 4,
-    }
+    [Description("Плановые работы")]
+    ScheduledWorks = 4,
 }

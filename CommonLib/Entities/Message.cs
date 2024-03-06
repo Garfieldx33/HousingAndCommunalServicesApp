@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CommonLib.Entities;
 
-namespace CommonLib.Entities
+public class Message
 {
-    public class Message
-    {
-        public int Id { get; set; }
-        public int MessagingMethodId { get; set; }
-        public string Destination { get; set; }
-        public int ApplicationId { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
-    }
+    public int Id { get; set; }
+    public int MessagingMethodId { get; set; }
+    public string Destination { get; set; }
+    public int ApplicationId { get; set; }
+    public string Subject { get; set; }
+    public string Body { get; set; }
 }

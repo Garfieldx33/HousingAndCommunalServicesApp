@@ -2,40 +2,33 @@
 using CommonWebService.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CommonWebService.Controllers
+namespace CommonWebService.Controllers;
+
+[ApiController]
+[Route("[controller]/[action]")]
+public class ApplicationsController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/[action]")]
-    public class ApplicationsController : ControllerBase
+    private readonly AppServiceGrpc _appService;
+    public ApplicationsController(AppServiceGrpc appService)
     {
-        AppServiceGrpc _appService;
-        public ApplicationsController(AppServiceGrpc appService)
-        {
-            _appService = appService;
-        }
+        _appService = appService;
+    }
 
-        [HttpGet]
-        public async Task<string> GetAppByApplicantId(int applicantId)
-        {
-            return await _appService.GetAppAsync(applicantId);
-        }
+    [HttpGet]
+    public async Task<string> GetAppByApplicantId(int applicantId)
+    {
+        return await _appService.GetAppAsync(applicantId);
+    }
 
-        /*[HttpPost]
-        public async Task<string> AddApplication([FromQuery] AddNewAppRequest newApp)
-        {
-            return await _appService.AddAppAsync(newApp);
-        }*/
+    [HttpPatch]
+    public async Task<string> UpdateApplication([FromQuery] UpdateAppDTO updatingApp)
+    {
+        return await _appService.UpdateAppAsync(updatingApp);
+    }
 
-        [HttpPatch]
-        public async Task<string> UpdateApplication([FromQuery] UpdateAppDto updatingApp)
-        {
-            return await _appService.UpdateAppAsync(updatingApp);
-        }
-
-        [HttpDelete]
-        public async Task<string> DeleteApplication([FromQuery] DeleteAppRequest deletingApp)
-        {
-            return await _appService.DeleteAppAsync(deletingApp);
-        }
+    [HttpDelete]
+    public async Task<string> DeleteApplication([FromQuery] DeleteAppRequest deletingApp)
+    {
+        return await _appService.DeleteAppAsync(deletingApp);
     }
 }

@@ -38,13 +38,13 @@ namespace DataAccessGrpcService
             CreateMap<User, UserGrpc>()
                 .ForMember(d => d.TypeId, opt => opt.MapFrom(source => (int)source.TypeId));
 
-            CreateMap<UpdateAppDto, UpdateAppRequest>()
+            CreateMap<UpdateAppDTO, UpdateAppRequest>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => source.Status))
                 .ForMember(d => d.DepartmentId, opt => opt.MapFrom(source => source.DepartmentId))
                 .ForMember(d => d.DateClose, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateClose, DateTimeKind.Utc))))
                 .ForMember(d => d.DateConfirm, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateConfirm, DateTimeKind.Utc))));
 
-            CreateMap<UpdateAppRequest, UpdateAppDto>()
+            CreateMap<UpdateAppRequest, UpdateAppDTO>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => source.Status))
                 .ForMember(d => d.DateClose, opt => opt.MapFrom(source => source.DateClose.ToDateTime()))
                 .ForMember(d => d.DateConfirm, opt => opt.MapFrom(source => source.DateConfirm.ToDateTime()));

@@ -1,10 +1,9 @@
 ﻿using CommonLib.DTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CommonLib.Interfaces
+namespace CommonLib.Interfaces;
+
+public interface INewAppService
 {
-    public interface INewAppService
-    {
-        public Task<IActionResult> AddNewApplication([FromQuery] ApplicationDTO dataClass);
-    }
+    public Task<IActionResult> AddNewApplication([FromQuery] ApplicationDTO dataClass);
 }

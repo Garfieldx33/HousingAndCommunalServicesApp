@@ -10,24 +10,19 @@ using IModel = RabbitMQ.Client.IModel;
 
 namespace CommonLib.Abstracts
 {
-    public class NotificationServiceBase : INotificationService, IDisposable
+    public abstract class NotificationServiceBase : INotificationService, IDisposable
     {
-        readonly RabbitMqConfig _incomingExchageConfig;
-        readonly IMapper _mapper;
-        public IConnection? RabbitConnection { get; set; }
-        public IModel? Channel { get; set; }
-        public NotificationServiceBase(RabbitMqConfig rabbitMqConfig, IMapper mapper) 
+        private readonly RabbitMqConfig _incomingExchageConfig;
+        private IConnection? RabbitConnection;
+        private IModel? Channel;
+        public NotificationServiceBase(RabbitMqConfig rabbitMqConfig)
         {
             _incomingExchageConfig = rabbitMqConfig;
-            _mapper = mapper;
         }
 
-        public virtual void SendMessage(MessageDTO message)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void SendMessage(MessageDTO message);
 
-        public virtual Task StartAsync(CancellationToken cancellationToken)
+        protected virtual Task StartAsync(CancellationToken cancellationToken)
         {
             ConnectionFactory factory = CreateConnectionFactory(_incomingExchageConfig);
             RabbitConnection = CreateRabbitMqConnection(factory);
@@ -44,13 +39,27 @@ namespace CommonLib.Abstracts
             return Task.CompletedTask;
         }
 
-        public virtual Task StopAsync(CancellationToken cancellationToken)
+        protected virtual Task StopAsync(CancellationToken cancellationToken)
         {
             Dispose();
             return Task.CompletedTask;
         }
 
-        private ConnectionFactory CreateConnectionFactory(RabbitMqConfig options)
+        public virtual void Dispose()
+        {
+            if (Channel is not null)
+            {
+                Channel.Close();
+                Channel.Dispose();
+            }
+            if (RabbitConnection is not null)
+            {
+                RabbitConnection.Close();
+                RabbitConnection.Dispose();
+            }
+        }
+
+        protected ConnectionFactory CreateConnectionFactory(RabbitMqConfig options)
         {
             ConnectionFactory factory = new ConnectionFactory()
             {
@@ -75,7 +84,7 @@ namespace CommonLib.Abstracts
             return factory;
         }
 
-        private IConnection? CreateRabbitMqConnection(ConnectionFactory factory)
+        protected IConnection? CreateRabbitMqConnection(ConnectionFactory factory)
         {
             if (factory is not null)
             {
@@ -89,7 +98,7 @@ namespace CommonLib.Abstracts
             }
         }
 
-        private EventingBasicConsumer CreateConsumer(IModel channel, string queueName, Action<object, BasicDeliverEventArgs> action)
+        protected EventingBasicConsumer CreateConsumer(IModel channel, string queueName, Action<object, BasicDeliverEventArgs> action)
         {
             if (action is null)
             {
@@ -101,7 +110,7 @@ namespace CommonLib.Abstracts
             return consumer;
         }
 
-        private void ReceivedNewAppData(object? sender, BasicDeliverEventArgs e)
+        protected void ReceivedNewAppData(object? sender, BasicDeliverEventArgs e)
         {
             if (Channel is null)
             {
@@ -110,20 +119,6 @@ namespace CommonLib.Abstracts
             var message = JsonConvert.DeserializeObject<MessageDTO>(Encoding.UTF8.GetString(e.Body.ToArray()));
             SendMessage(message);
             Channel.BasicAck(e.DeliveryTag, false);
-        }
-
-        public virtual void Dispose()
-        {
-            if (Channel is not null)
-            {
-                Channel.Close();
-                Channel.Dispose();
-            }
-            if (RabbitConnection is not null)
-            {
-                RabbitConnection.Close();
-                RabbitConnection.Dispose();
-            }
         }
     }
 }

@@ -155,7 +155,7 @@ namespace NewAppPrepareService
             try
             {
                 var appGrpcDto = _mapper.Map<ApplicationDtoGrpc>(newAppDTO);
-                using var channel = GrpcChannel.ForAddress(_gRpcConfig.httpsEndpoint);
+                using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
                 var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
                 var reply = client.AddNewApp(new AddNewAppRequest { ApplicationDto = appGrpcDto });
             }
