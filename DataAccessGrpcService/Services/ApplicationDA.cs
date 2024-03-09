@@ -52,15 +52,21 @@ namespace DataAccessGrpcService.Services
                 var updatingInfo = _mapper.Map<UpdateAppDTO>(request);
                 var currentApplicationInfo = await _repository.GetApplicationById(updatingInfo.Id);
                 
-                if(updatingInfo.Status != (int)currentApplicationInfo.Status)
-                {
-                    //Добавить логики и вынести в отдельный метод
-                    _notificationQueueService.SendNewMessageInvoke();
-                }
-
                 var result = await _repository.UpdateApplicationAsync(updatingInfo);
                 responce.UpdatedApplication = _mapper.Map<ApplicationGrpc>(result);
-                
+
+                if (updatingInfo.Status != (int)currentApplicationInfo.Status)
+                {
+                    MessageDTO message = await ProcessChangeStatusMessageForApplicant(currentApplicationInfo);
+                    _notificationQueueService.SendNewMessageInvoke(message);
+                }
+
+                if (updatingInfo.ExecutorId > 0 && currentApplicationInfo.ExecutorId is null)
+                {
+                    MessageDTO message = await ProcessExecutorAppointedForApplicant(currentApplicationInfo);
+                    _notificationQueueService.SendNewMessageInvoke(message);
+                }
+
             }
             catch (Exception ex)
             {
@@ -68,7 +74,6 @@ namespace DataAccessGrpcService.Services
             }
             return responce;
         }
-
 
         //Delete
         public override async Task<DeleteAppReply> DeleteApp(DeleteAppRequest request, ServerCallContext context)
