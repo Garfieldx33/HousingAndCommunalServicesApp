@@ -29,7 +29,7 @@ public partial class PostgresRepository
     public async Task<Application> AddNewApplication(Application newApplication, CancellationToken cancellation = default)
     {
         Application newApp = newApplication;
-        await _context.Apps.AddAsync(newApp, cancellation);
+        await _context.Apps.AddAsync(newApplication, cancellation);
         await _context.SaveChangesAsync(cancellation);
         return newApp;
     }
@@ -42,17 +42,17 @@ public partial class PostgresRepository
             if (updatedApp != null)
             {
                 if (request.ApplicationTypeId > 0)
-                    { updatedApp.ApplicationTypeId = (Enums.AppTypeEnum)request.ApplicationTypeId; }
+                { updatedApp.ApplicationTypeId = (Enums.AppTypeEnum)request.ApplicationTypeId; }
                 if (request.Status > 0)
-                    { updatedApp.Status = (Enums.AppStatusEnum)request.Status; }
+                { updatedApp.Status = (Enums.AppStatusEnum)request.Status; }
                 if (request.DepartmentId > 0)
-                    { updatedApp.DepartmentId = request.DepartmentId; }
+                { updatedApp.DepartmentId = request.DepartmentId; }
                 if (request.ExecutorId > 0)
-                    { updatedApp.ExecutorId = request.ExecutorId; }
+                { updatedApp.ExecutorId = request.ExecutorId; }
                 if (request.DateClose != DateTime.MinValue)
-                    { updatedApp.DateClose = request.DateClose; }
+                { updatedApp.DateClose = request.DateClose; }
                 if (request.DateConfirm != DateTime.MinValue)
-                    { updatedApp.DateConfirm = request.DateConfirm; }
+                { updatedApp.DateConfirm = request.DateConfirm; }
 
                 _context.Apps.Update(updatedApp);
                 await _context.SaveChangesAsync(cancellation);

@@ -95,7 +95,7 @@ public class AppDbContext : DbContext
     private void ConfigureEmployers(ModelBuilder builder)
     {
         var entity = builder.Entity<EmployeeInfo>()
-            .ToTable("employers_info");
+            .ToTable("employers_info").HasNoKey();
 
         entity.Property(p => p.EmployeeUserId).HasColumnName("user_id");
         entity.Property(p => p.DepartmentId).HasColumnName("department_id");

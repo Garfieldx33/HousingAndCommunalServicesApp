@@ -10,9 +10,9 @@ public partial class PostgresRepository
         return await _context.Users.AsNoTracking().ToListAsync(cancellation);
     }
 
-    public User GetUserbyId(int userId, CancellationToken cancellation = default)
+    public  User GetUserbyId(int userId, CancellationToken cancellation = default)
     {
-        return (User)_context.Users.AsNoTracking().Where(u => u.Id == userId);
+        return  _context.Users.AsNoTracking().Where(u => u.Id == userId).Single();
     }
 
     public Task<User> GetUserbyLogin(string login, string password, CancellationToken cancellation = default)

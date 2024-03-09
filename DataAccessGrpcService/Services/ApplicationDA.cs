@@ -12,17 +12,20 @@ namespace DataAccessGrpcService.Services
         public override async Task<AddNewAppReply> AddNewApp(AddNewAppRequest request, ServerCallContext context)
         {
             AddNewAppReply reply = new() { ResultOfInsert = 0};
-
-            _logger.Info($"Пришла новая заявка {request.ApplicationDto.Description}");
-
-            var res = await _repository.AddNewApplication(_mapper.Map<Application>(request.ApplicationDto));
-            
-            if (res != null )
+            try
             {
-                reply.ResultOfInsert = res.Id;
-                List<MessageDTO> messages = await ProcessNewMessagesForEmployers(res);
-                _notificationQueueService.SendMultipleMessagesInvoke(messages);
+                _logger.Info($"Пришла новая заявка {request.ApplicationDto.Description}");
+
+                Application? res = await _repository.AddNewApplication(_mapper.Map<Application>(request.ApplicationDto));
+                _logger.Info($"заявка сохранена");
+                if (res != null)
+                {
+                    reply.ResultOfInsert = res.Id;
+                    List<MessageDTO> messages = await ProcessNewMessagesForEmployers(res);
+                    _notificationQueueService.SendMultipleMessagesInvoke(messages);
+                }
             }
+            catch (Exception ex) { _logger.Warn(ex); }
             
             return reply;
         }
