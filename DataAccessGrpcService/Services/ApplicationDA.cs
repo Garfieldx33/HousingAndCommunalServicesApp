@@ -15,9 +15,7 @@ namespace DataAccessGrpcService.Services
             try
             {
                 _logger.Info($"Пришла новая заявка {request.ApplicationDto.Description}");
-
                 Application? res = await _repository.AddNewApplication(_mapper.Map<Application>(request.ApplicationDto));
-                _logger.Info($"заявка сохранена");
                 if (res != null)
                 {
                     reply.ResultOfInsert = res.Id;
