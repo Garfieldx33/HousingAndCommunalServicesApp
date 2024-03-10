@@ -124,7 +124,6 @@ namespace DataAccessGrpcService.Services
                 _logger.Warn("Функция восcтановления соеднинения с брокером сообщений целевой очереди отключена.");
             }
         }
-
         public void SendNewMessageInvoke(MessageDTO newMessage)
         {
             _oneMessageQueueSender.Invoke(newMessage);

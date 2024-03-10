@@ -4,5 +4,5 @@ namespace CommonLib.Interfaces;
 
 public interface INotificationService
 {
-    public void SendMessage(MessageDTO message);
+    public bool SendMessage(MessageDTO message);
 }
