@@ -56,15 +56,15 @@ namespace DataAccessGrpcService.Services
                 var result = await _repository.UpdateApplicationAsync(updatingInfo);
                 responce.UpdatedApplication = _mapper.Map<ApplicationGrpc>(result);
 
-                if (updatingInfo.Status != (int)currentApplicationInfo.Status)
+                if (updatingInfo.Status > 0 && updatingInfo.Status != (int)currentApplicationInfo.Status)
                 {
                     MessageDTO message = await ProcessChangeStatusMessageForApplicant(currentApplicationInfo);
                     _notificationQueueService.SendNewMessageInvoke(message);
                 }
-
+                
                 if (updatingInfo.ExecutorId > 0 && currentApplicationInfo.ExecutorId is null)
                 {
-                    MessageDTO message = await ProcessExecutorAppointedForApplicant(currentApplicationInfo);
+                    MessageDTO message = await ProcessExecutorAppointedForApplicant(currentApplicationInfo, updatingInfo.ExecutorId);
                     _notificationQueueService.SendNewMessageInvoke(message);
                 }
 

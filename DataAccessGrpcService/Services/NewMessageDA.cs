@@ -65,10 +65,10 @@ public partial class DataAccessGrpcBase
         return messageDto;
     }
 
-    private async Task<MessageDTO> ProcessExecutorAppointedForApplicant(Application applicationInfo)
+    private async Task<MessageDTO> ProcessExecutorAppointedForApplicant(Application applicationInfo, int executorId)
     {
         User applicantInfo = _repository.GetUserbyId(applicationInfo.ApplicantId);
-        User executorInfo = _repository.GetUserbyId((int)applicationInfo.ExecutorId);
+        User executorInfo = _repository.GetUserbyId(executorId);
         NotificationType messagingMethod = await _repository.GetNotificationTypeByIdAsync(applicantInfo.MessagingMethodId);
         
         string fullName = $"{applicantInfo.SecondName} {applicantInfo.FirstName}";
