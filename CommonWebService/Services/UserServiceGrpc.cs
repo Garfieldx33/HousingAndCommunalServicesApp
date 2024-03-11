@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CommonLib.Config;
 using CommonLib.DTO;
+using CommonLib.Entities;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -17,47 +18,58 @@ public class UserServiceGrpc
         _mapper = mapper;
     }
 
-    public Task<string> GetAllUsersAsync()
+    public Task<List<User>> GetAllUsersAsync()
     {
+        List<User> result = new();
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.GetUsers(new UsersRequest());
-        return Task.FromResult(JsonConvert.SerializeObject(reply.Users));
+        
+        if (reply is not null)
+        {
+            if(reply.Users.Any())
+            {
+                foreach (var user in reply.Users)
+                {
+                    result.Add(_mapper.Map<User>(user));
+                }
+            }
+        }
+        return Task.FromResult(result);
     }
 
-    public Task<string> GetUserAsync(UserDtoGrpc user)
+    public Task<UserDTO> GetUserAsync(UserDtoGrpc user)
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.GetUser(new UserDtoRequest { UserDto = user });
-        return Task.FromResult(JsonConvert.SerializeObject(_mapper.Map<UserDTO>(reply.User)));
+        return Task.FromResult(_mapper.Map<UserDTO>(reply.User));
     }
 
-    public Task<string> AddUserAsync(UserDTO newUserDto)
+    public Task<(int, string)> AddUserAsync(UserDTO newUserDto)
     {
         var user = _mapper.Map<UserGrpc>(newUserDto);
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.AddUser(new UserRequest { User = user });
-        return Task.FromResult(JsonConvert.SerializeObject(reply));
+        return Task.FromResult((int.Parse(reply.Identificator),reply.Message));
     }
 
-    public Task<string> UpdateUserAsync(UserDTO updateUserDto)
+    public Task<UserDTO> UpdateUserAsync(UserDTO updateUserDto)
     {
         var user = _mapper.Map<UserGrpc>(updateUserDto);
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.UpdateUser(new UserRequest { User = user });
-        return Task.FromResult(JsonConvert.SerializeObject(reply));
+        return Task.FromResult(_mapper.Map<UserDTO>(reply.User));
     }
 
-    public Task<string> DeleteUserAsync(int deleteUserId)
+    public Task<(int, string)> DeleteUserAsync(int deleteUserId)
     {
-        UserDtoGrpc userDtoGrpc = new UserDtoGrpc { Id = deleteUserId };
-        UserDtoRequest request = new UserDtoRequest { UserDto = userDtoGrpc };
+        UserDtoRequest request = new() { UserDto = new UserDtoGrpc { Id = deleteUserId } };
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.DeleteUser(request);
-        return Task.FromResult(JsonConvert.SerializeObject(reply));
+        return Task.FromResult((int.Parse(reply.Identificator), reply.Message));
     }
 }

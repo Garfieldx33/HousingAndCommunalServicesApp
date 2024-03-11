@@ -116,6 +116,8 @@ message UserGrpc{
 	string login  = 10;
 	string password  = 11;
 	float balance  = 12;
+	int32 messaging_method_id = 13;
+	string messaging_destination = 14;
 }
 message UserDtoGrpc{
 	int32 id = 1;

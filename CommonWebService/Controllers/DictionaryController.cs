@@ -33,13 +33,13 @@ public class DictionaryController : ControllerBase
     }
     
     [HttpPatch]
-    public async Task<string> UpdateDepartment([FromQuery] Department department)
+    public async Task<string> UpdateDepartment([FromBody] Department department)
     {
         return await _dictionaryService.UpdateDepartmentAsync(department);
     }
 
     [HttpDelete]
-    public async Task<string> DeleteDepartment([FromQuery] Department department)
+    public async Task<string> DeleteDepartment([FromBody] Department department)
     {
         return await _dictionaryService.DeleteDepartmentAsync(department);
     }

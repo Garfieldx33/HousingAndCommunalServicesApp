@@ -26,5 +26,8 @@ public enum AppStatusEnum
     Closed = 7,
 
     [Description("Отклонена")]
-    Rejected = 8
+    Rejected = 8,
+
+    [Description("Отменена")]
+    Canceled = 9
 }

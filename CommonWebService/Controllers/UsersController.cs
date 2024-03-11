@@ -1,6 +1,8 @@
 ﻿using CommonLib.DTO;
+using CommonLib.Entities;
 using CommonWebService.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CommonWebService.Controllers;
 
@@ -21,13 +23,13 @@ public class UsersController : ControllerBase
      }*/
 
     [HttpGet]
-    public async Task<string> GetUserByLogin([FromBody] AuthDTO logPass)
+    public async Task<UserDTO> GetUserByLoginPwd([FromBody] AuthDTO logPass)
     {
         return await _usersService.GetUserAsync(new UserDtoGrpc { Login = logPass.Login, Password = logPass.Pwd });
     }
 
     [HttpGet]
-    public async Task<string> GetAllUsers()
+    public async Task<List<User>> GetAllUsers()
     {
         return await _usersService.GetAllUsersAsync();
     }
@@ -35,11 +37,12 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<string> AddUser([FromBody] UserDTO newUser)
     {
-        return await _usersService.AddUserAsync(newUser);
+        var result = await _usersService.AddUserAsync(newUser);
+        return JsonConvert.SerializeObject(result); ;
     }
 
     [HttpPatch]
-    public async Task<string> UpdateUserInfo([FromBody] UserDTO updatingUserInfo)
+    public async Task<UserDTO> UpdateUserInfo([FromBody] UserDTO updatingUserInfo)
     {
         return await _usersService.UpdateUserAsync(updatingUserInfo);
     }
@@ -47,6 +50,7 @@ public class UsersController : ControllerBase
     [HttpDelete]
     public async Task<string> DeleteUser([FromBody] int userId)
     {
-        return await _usersService.DeleteUserAsync(userId);
+        var result = await _usersService.DeleteUserAsync(userId);
+        return JsonConvert.SerializeObject(result);
     }
 }

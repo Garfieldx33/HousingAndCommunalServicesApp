@@ -21,13 +21,13 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpPatch]
-    public async Task<string> UpdateApplication([FromQuery] UpdateAppDTO updatingApp)
+    public async Task<string> UpdateApplication([FromBody] UpdateAppDTO updatingApp)
     {
         return await _appService.UpdateAppAsync(updatingApp);
     }
 
     [HttpDelete]
-    public async Task<string> DeleteApplication([FromQuery] DeleteAppRequest deletingApp)
+    public async Task<string> DeleteApplication([FromBody] DeleteAppRequest deletingApp)
     {
         return await _appService.DeleteAppAsync(deletingApp);
     }
