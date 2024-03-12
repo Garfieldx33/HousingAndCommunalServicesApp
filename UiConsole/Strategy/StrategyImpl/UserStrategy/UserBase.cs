@@ -26,7 +26,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
             }
             return users;
         }
-
+        /*
         protected static async Task<string> AddUserAsync(UserDTO userDTO)
         {
             string userDtoString = JsonConvert.SerializeObject(userDTO);
@@ -134,6 +134,6 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Dictionary<int, string>>("https://127.0.0.1:7001/Dictionary/GetUserTypes", HttpMethodsEnum.Get, string.Empty);
         }
-
+        */
     }
 }

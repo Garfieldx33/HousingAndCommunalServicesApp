@@ -6,28 +6,39 @@ namespace CommonLib.DAL;
 public partial class PostgresRepository
 {
 
-    public List<int> GetUserIdsByDepartmentId(int departmentId, CancellationToken cancellation = default)
+    public async Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId, CancellationToken cancellation = default)
     {
-        return _context.EmployeeInfos.AsNoTracking().Where(u => u.DepartmentId == departmentId).Select(i => i.EmployeeUserId).ToList();
+        var emplList = _context.EmployeeInfos.AsNoTracking().Where(u => u.DepartmentId == departmentId).Select(i => i.EmployeeUserId).ToList();
+        return await _context.Users.Where(u => emplList.Contains(u.Id)).ToListAsync(cancellationToken: cancellation);
     }
 
-    public int GetDepartmentIdByUserId(int employeeId, CancellationToken cancellation = default)
+    public async Task<string> GetDepartmentByUserIdAsync(int employeeId, CancellationToken cancellation = default)
     {
-        return _context.EmployeeInfos.AsNoTracking().Where(u => u.EmployeeUserId == employeeId).Select(i => i.DepartmentId).First();
+        if (_context.EmployeeInfos.Any(o => o.EmployeeUserId == employeeId))
+        {
+            int deptId = _context.EmployeeInfos.AsNoTracking().Where(u => u.EmployeeUserId == employeeId).Select(i => i.DepartmentId).First();
+            return await _context.Departaments.AsNoTracking().Where(d => d.Id == deptId).Select(i => i.Name).FirstAsync(cancellationToken: cancellation);
+        }
+        else
+        {
+            return $"Работник с ID {employeeId} не найден";
+        }
     }
 
-    public async Task<int> AddNewEmployee(int employeeId, int departmentId, CancellationToken cancellation = default)
+    public async Task<int> AddNewEmployeeAsync(EmployeeInfo newEmployee, CancellationToken cancellation = default)
     {
-        await _context.EmployeeInfos.AddAsync(new EmployeeInfo { DepartmentId = departmentId, EmployeeUserId = employeeId }, cancellation);
+        await _context.EmployeeInfos.AddAsync(newEmployee, cancellation);
         return _context.SaveChanges();
     }
 
-    public async Task<EmployeeInfo> UpdateEmployeeDepartmentAsync(int employeeId, int departmentId, CancellationToken cancellation = default)
+    public async Task<EmployeeInfo> UpdateEmployeeAsync(EmployeeInfo updatingEmployee, CancellationToken cancellation = default)
     {
-        EmployeeInfo updatedEmployee = _context.EmployeeInfos.Single(q => q.EmployeeUserId == employeeId);
+        EmployeeInfo updatedEmployee = _context.EmployeeInfos.Single(q => q.EmployeeUserId == updatingEmployee.EmployeeUserId);
         if (updatedEmployee != null)
         {
-            updatedEmployee.DepartmentId = departmentId;
+            updatedEmployee.DepartmentId = updatingEmployee.DepartmentId;
+            updatedEmployee.Position = updatingEmployee.Position;
+
             _context.EmployeeInfos.Update(updatedEmployee);
             await _context.SaveChangesAsync(cancellation);
         }

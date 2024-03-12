@@ -35,5 +35,10 @@ public class WebApiMappingProfile : Profile
         CreateMap<Application, ApplicationGrpc>()
             .ForMember(d => d.Status, opt => opt.MapFrom(source => (int)source.Status))
             .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateCreate, DateTimeKind.Utc))));
+
+        CreateMap<EmployeeInfoGrpc, EmployeeInfo>().ReverseMap()
+            .ForMember(d => d.EmployeeUserId, opt => opt.MapFrom(source => source.EmployeeUserId))
+            .ForMember(d => d.DepartmentId, opt => opt.MapFrom(source => source.DepartmentId))
+            .ForMember(d => d.Position, opt => opt.MapFrom(source => source.Position));
     }
 }
