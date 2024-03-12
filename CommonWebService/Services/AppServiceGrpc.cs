@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CommonLib.Config;
 using CommonLib.DTO;
+using CommonLib.Entities;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -17,37 +18,45 @@ public class AppServiceGrpc
         _mapper = mapper;
     }
 
-    public Task<string> GetAppAsync(int userId)
+    public Task<List<Application>> GetAppAsync(int userId)
     {
+        List<Application> resultList = new();
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.GetAppsByUserId(new GetAppsByUserIdRequest { ApplicantId = userId});
-        return Task.FromResult(JsonConvert.SerializeObject(reply));
+        if (reply is not null)
+        {
+            foreach (var app in reply.Applications)
+            {
+                resultList.Add(_mapper.Map<Application>(app));
+            }
+        }
+        return Task.FromResult(resultList);
     }
 
-    public Task<string> AddAppAsync(AddNewAppRequest request)
+    /*public Task<string> AddAppAsync(AddNewAppRequest request) //Depricated
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.AddNewApp(request);
         return Task.FromResult(JsonConvert.SerializeObject(reply));
-    }
+    }*/
 
-    public Task<string> UpdateAppAsync(UpdateAppDTO request)
+    public Task<Application> UpdateAppAsync(UpdateAppDTO request)
     {
         var updateAppRequest = _mapper.Map<UpdateAppRequest>(request);
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.UpdateApp(updateAppRequest);
-        return Task.FromResult(JsonConvert.SerializeObject(reply));
+        return Task.FromResult(_mapper.Map<Application>(reply.UpdatedApplication));
     }
 
-    public Task<string> DeleteAppAsync(DeleteAppRequest request)
+    public Task<(int, string)> DeleteAppAsync(DeleteAppRequest request)
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.DeleteApp(request);
-        return Task.FromResult(JsonConvert.SerializeObject(reply));
+        return Task.FromResult((reply.DeletedAppId, reply.Message));
     }
 
 }

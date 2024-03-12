@@ -5,6 +5,7 @@ using CommonLib.Helpers;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CommonWebService.Services;
 
@@ -17,28 +18,33 @@ public class DictionaryServiceGrpc
     }
 
     #region Departments
-    public Task<string> GetAllDepartmentsAsync()
+    public Task<List<Department>> GetAllDepartmentsAsync()
     {
+        List<Department> resultList = new();
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.GetDepartments(new DepartmentsRequest());
-        return Task.FromResult(JsonConvert.SerializeObject(reply.Departments));
+        foreach(var dept in reply.Departments)
+        {
+            resultList.Add(new Department { Id = dept.DepartmentId, Name = dept.DepartmentName });
+        }
+        return Task.FromResult(resultList);
     }
 
-    public Task<string> AddDepartmentAsync(string departmentName)
+    public Task<Department> AddDepartmentAsync(string departmentName)
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.AddDepartment(new DepartmentRequest { DepartmentName = departmentName });
-        return Task.FromResult(reply.DepartmentName);
+        return Task.FromResult(new Department { Id = reply.DepartmentId, Name = reply.DepartmentName });
     }
 
-    public Task<string> GetDepartmentByIdAsync(int departmentId)
+    public Task<Department> GetDepartmentByIdAsync(int departmentId)
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.GetDepartmentById(new DepartmentRequest { DepartmentId = departmentId });
-        return Task.FromResult(reply.DepartmentName);
+        return Task.FromResult(new Department { Id = reply.DepartmentId, Name = reply.DepartmentName });
     }
 
     public Task<string> UpdateDepartmentAsync(Department department)
@@ -49,30 +55,30 @@ public class DictionaryServiceGrpc
         return Task.FromResult(reply.DepartmentName);
     }
 
-    public Task<string> DeleteDepartmentAsync(Department department)
+    public Task<Department> DeleteDepartmentAsync(Department department)
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.DeleteDepartment(new DepartmentRequest { DepartmentId = department.Id, DepartmentName = department.Name });
-        return Task.FromResult(reply.DepartmentName);
+        return Task.FromResult(new Department { Id = reply.DepartmentId, Name = reply.DepartmentName});
     }
     #endregion
 
     #region Enums
 
-    public Task<string> GetAppStatusesAsync()
+    public Task<Dictionary<int,string>> GetAppStatusesAsync()
     {
-        return Task.FromResult(JsonConvert.SerializeObject(EnumConverter.EnumToDictionary<AppStatusEnum>()));
+        return Task.FromResult(EnumConverter.EnumToDictionary<AppStatusEnum>());
     }
 
-    public Task<string> GetAppTypesAsync()
+    public Task<Dictionary<int, string>> GetAppTypesAsync()
     {
-        return Task.FromResult(JsonConvert.SerializeObject(EnumConverter.EnumToDictionary<AppTypeEnum>()));
+        return Task.FromResult(EnumConverter.EnumToDictionary<AppTypeEnum>());
     }
 
-    public Task<string> GetUserTypesAsync()
+    public Task<Dictionary<int, string>> GetUserTypesAsync()
     {
-        return Task.FromResult(JsonConvert.SerializeObject(EnumConverter.EnumToDictionary<UserTypeEnum>()));
+        return Task.FromResult(EnumConverter.EnumToDictionary<UserTypeEnum>());
     }
 
     #endregion

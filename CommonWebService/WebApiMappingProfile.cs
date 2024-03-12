@@ -28,5 +28,12 @@ public class WebApiMappingProfile : Profile
             .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)));
 
         CreateMap<DateTime, Timestamp>().ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
+
+        CreateMap<ApplicationGrpc, Application>()
+                .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)));
+
+        CreateMap<Application, ApplicationGrpc>()
+            .ForMember(d => d.Status, opt => opt.MapFrom(source => (int)source.Status))
+            .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateCreate, DateTimeKind.Utc))));
     }
 }

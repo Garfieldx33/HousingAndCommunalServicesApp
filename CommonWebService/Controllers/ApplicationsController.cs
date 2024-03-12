@@ -1,4 +1,5 @@
 ﻿using CommonLib.DTO;
+using CommonLib.Entities;
 using CommonWebService.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,20 +16,21 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<string> GetAppByApplicantId(int applicantId)
+    public async Task<List<Application>> GetAppByApplicantId(int applicantId)
     {
         return await _appService.GetAppAsync(applicantId);
     }
 
     [HttpPatch]
-    public async Task<string> UpdateApplication([FromBody] UpdateAppDTO updatingApp)
+    public async Task<Application> UpdateApplication([FromBody] UpdateAppDTO updatingApp)
     {
         return await _appService.UpdateAppAsync(updatingApp);
     }
 
     [HttpDelete]
-    public async Task<string> DeleteApplication([FromBody] DeleteAppRequest deletingApp)
+    public async Task<string> DeleteApplication(int deletingAppId)
     {
-        return await _appService.DeleteAppAsync(deletingApp);
+        var result = await _appService.DeleteAppAsync(new DeleteAppRequest { DeleteAppId = deletingAppId });
+        return result.Item2;
     }
 }

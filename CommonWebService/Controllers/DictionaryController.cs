@@ -15,19 +15,19 @@ public class DictionaryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<string> GetDepartmentById(int departmentId)
+    public async Task<Department> GetDepartmentById(int departmentId)
     {
         return await _dictionaryService.GetDepartmentByIdAsync(departmentId);
     }
 
     [HttpGet]
-    public async Task<string> GetAllDepartments()
+    public async Task<List<Department>> GetAllDepartments()
     {
         return await _dictionaryService.GetAllDepartmentsAsync();
     }
     
     [HttpPost]
-    public async Task<string> AddDepartment(string departmentName)
+    public async Task<Department> AddDepartment(string departmentName)
     {
         return await _dictionaryService.AddDepartmentAsync(departmentName);
     }
@@ -39,25 +39,25 @@ public class DictionaryController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<string> DeleteDepartment([FromBody] Department department)
+    public async Task<Department> DeleteDepartment([FromBody] Department department)
     {
         return await _dictionaryService.DeleteDepartmentAsync(department);
     }
 
     [HttpGet]
-    public async Task<string> GetAppStatuses()
+    public async Task<Dictionary<int,string>> GetAppStatuses()
     {
         return await _dictionaryService.GetAppStatusesAsync();
     }
 
     [HttpGet]
-    public async Task<string> GetAppTypes()
+    public async Task<Dictionary<int, string>> GetAppTypes()
     {
         return await _dictionaryService.GetAppTypesAsync();
     }
 
     [HttpGet]
-    public async Task<string> GetUserTypes()
+    public async Task<Dictionary<int, string>> GetUserTypes()
     {
         return await _dictionaryService.GetAppTypesAsync();
     }
