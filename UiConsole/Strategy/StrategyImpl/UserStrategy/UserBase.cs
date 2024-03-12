@@ -1,6 +1,7 @@
 ﻿using CommonLib.DTO;
 using CommonLib.Entities;
 using CommonLib.Enums;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace UiConsole.Strategy.StrategyImpl.UserStrategy
@@ -14,6 +15,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
             _user = user;
         }
 
+        //Users 
         protected static async Task<List<User>> GetUsersAsync()
         {
             var users = new List<User>();
@@ -41,5 +43,93 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>("https://127.0.0.1:7001/Users/DeleteUser", HttpMethodsEnum.Post, userId.ToString());
         }
+
+        //Applications
+        protected static async GetAppByApplicantId(int applicantId)
+        {
+
+        }
+
+        public async Task<string> UpdateApplication([FromBody] UpdateAppDTO updatingApp)
+        {
+
+        }
+
+        public async Task<string> DeleteApplication([FromBody] DeleteAppRequest deletingApp)
+        {
+
+        }
+
+        protected static Task AddNewApp(ApplicationDTO newApplication)
+        {
+
+        }
+
+        //Departments
+        public async Task<string> GetDepartmentById(int departmentId)
+        {
+
+        }
+
+        public async Task<string> GetAllDepartments()
+        {
+
+        }
+        public async Task<string> AddDepartment(string departmentName)
+        {
+
+        }
+
+        public async Task<string> UpdateDepartment(Department department)
+        {
+
+        }
+
+        public async Task<string> DeleteDepartment([FromBody] Department department)
+        {
+
+        }
+        
+        //Employers
+
+        public static Task GetAllEmployers()
+        {
+
+        }
+        public static Task GetEmployee()
+        {
+
+        }
+
+        public static Task AddNewEmployee()
+        {
+
+        }
+
+        public static Task UpdateEmployee()
+        {
+
+        }
+
+        public static Task DeleteEmployee()
+        {
+
+        }
+        //Dictionaries
+        public async Task<string> GetAppStatuses()
+        {
+
+        }
+
+        public async Task<string> GetAppTypes()
+        {
+
+        }
+
+        public async Task<string> GetUserTypes()
+        {
+
+        }
+
     }
 }
