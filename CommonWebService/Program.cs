@@ -15,6 +15,7 @@ builder.Services.AddAutoMapper(typeof(WebApiMappingProfile));
 builder.Services.AddScoped<AppServiceGrpc>();
 builder.Services.AddScoped<UserServiceGrpc>();
 builder.Services.AddScoped<DictionaryServiceGrpc>();
+builder.Services.AddScoped<EmployeeServiceGrpc>();
 
 builder.Services.AddControllers().AddJsonOptions(options => 
 { 

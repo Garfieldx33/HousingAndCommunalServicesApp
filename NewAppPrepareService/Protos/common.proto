@@ -32,6 +32,13 @@ service DataAccessGrpcService {
   rpc AddUser (UserRequest) returns (UserOperationReply);
   rpc UpdateUser (UserRequest) returns (UserReply);
   rpc DeleteUser (UserDtoRequest) returns (UserOperationReply);
+
+  //Employers
+  rpc AddEmployee (EmployeeInfoGrpc) returns (EmployeeOperationResultInfo);
+  rpc GetEmployersInfoByDepartmentId (EmployeeInfoRequest) returns (UsersReply);
+  rpc GetDepartmentByUserId (EmployeeInfoRequest) returns (DepartmentReply);
+  rpc UpdateEmployee (EmployeeInfoGrpc) returns (EmployeeOperationResultInfo);
+  rpc DeleteEmployee (EmployeeInfoRequest) returns (EmployeeOperationResultInfo);
 }
 // Request messages
 
@@ -58,6 +65,15 @@ message UsersRequest {  }
 message UserDtoRequest { UserDtoGrpc userDto = 1; }
 message UserRequest { UserGrpc user = 1; }
 
+//Employers
+message EmployeeInfoGrpc {
+  int32 employee_user_id = 1;
+  int32 department_id = 2;
+  string position = 3;
+}
+
+message EmployeeInfoRequest{ int32 searching_id = 1; }
+
 // Responce messages
 
 //Applications
@@ -74,6 +90,9 @@ message DepartmentsReply { repeated DepartmentGrpc departments = 1; }
 message UsersReply { repeated UserGrpc users = 1; }
 message UserReply { UserGrpc user = 1; }
 message UserOperationReply {string identificator = 1; string message = 2;}
+
+//Employers 
+message EmployeeOperationResultInfo { string operation_result = 1; }
 
 message ApplicationGrpc {
   int32 id = 1;
@@ -117,6 +136,8 @@ message UserGrpc{
 	string login  = 10;
 	string password  = 11;
 	float balance  = 12;
+	int32 messaging_method_id = 13;
+	string messaging_destination = 14;
 }
 message UserDtoGrpc{
 	int32 id = 1;

@@ -38,11 +38,11 @@ namespace DataAccessGrpcService.Services
             var updatedEmployee = await _repository.UpdateEmployeeAsync(updtEmplInfo);
             if (updtEmplInfo.Equals(updatedEmployee))
             {
-                result.OperationResult = $"Успешное обновление работника c Id {updtEmplInfo.EmployeeUserId}";
+                result.OperationResult = $"Успешное обновление информации о работнике c Id {updtEmplInfo.EmployeeUserId}";
             }
             else
             {
-                result.OperationResult = $"Не удалось обновить информацию о работнике с ID {updtEmplInfo.EmployeeUserId}";
+                result.OperationResult = $"Не удалось обновить информацию о работнике с Id {updtEmplInfo.EmployeeUserId}";
             }
             return result;
         }
