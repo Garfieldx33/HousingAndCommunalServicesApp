@@ -1,11 +1,11 @@
-﻿using CommonLib.DTO;
-using CommonLib.Entities;
+﻿using CommonLib.Entities;
 using CommonWebService.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace CommonWebService.Controllers
 {
+    [ApiController]
+    [Route("[controller]/[action]")]
     public class EmployeeController
     {
         private readonly EmployeeServiceGrpc _employeeService;
@@ -40,7 +40,7 @@ namespace CommonWebService.Controllers
         }
 
         [HttpDelete]
-        public async Task<string> DeleteApplication(int employeeId)
+        public async Task<string> DeleteEmployee(int employeeId)
         {
             return await _employeeService.DeleteEmployee(employeeId);
         }

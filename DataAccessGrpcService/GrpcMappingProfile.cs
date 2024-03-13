@@ -49,6 +49,11 @@ namespace DataAccessGrpcService
                 .ForMember(d => d.DateClose, opt => opt.MapFrom(source => source.DateClose.ToDateTime()))
                 .ForMember(d => d.DateConfirm, opt => opt.MapFrom(source => source.DateConfirm.ToDateTime()));
 
+            CreateMap<EmployeeInfoGrpc, EmployeeInfo>().ReverseMap()
+                .ForMember(d => d.EmployeeUserId, opt => opt.MapFrom(source => source.EmployeeUserId))
+                .ForMember(d => d.DepartmentId, opt => opt.MapFrom(source => source.DepartmentId))
+                .ForMember(d => d.Position, opt => opt.MapFrom(source => source.Position));
+
             CreateMap<DateTime, Timestamp>().ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
 
         }

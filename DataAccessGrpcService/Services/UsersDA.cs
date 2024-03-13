@@ -11,10 +11,10 @@ namespace DataAccessGrpcService.Services
         public override async Task<UserOperationReply> AddUser(UserRequest request, ServerCallContext context)
         {
             string message = $"Пользователь с логином {request.User.Login} ";
-            UserOperationReply result = new UserOperationReply { Identificator = request.User.Login };
             User newUser = _mapper.Map<User>(request.User);
             newUser.RegistrationDate = DateTime.Now;
             var res = await _repository.AddNewUser(newUser);
+            UserOperationReply result = new UserOperationReply { Identificator = res.ToString() };
             result.Message = res > 0 ? message += "добавлен" : message += "не добавлен";
             return result;
         }

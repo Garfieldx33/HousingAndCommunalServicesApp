@@ -9,10 +9,18 @@ namespace DataAccessGrpcService.Services
         //Create 
         public override async Task<EmployeeOperationResultInfo> AddEmployee(EmployeeInfoGrpc newEmployee, ServerCallContext context)
         {
-            var newEmpl = _mapper.Map<EmployeeInfo>(newEmployee);
-            var id = await _repository.AddNewEmployeeAsync(newEmpl);
-            string addingResult = id > 0 ? "Работник успешно добавлен" : "Ошибка при добавлении работника";
-            return new EmployeeOperationResultInfo { OperationResult = addingResult };
+            try
+            {
+                var newEmpl = _mapper.Map<EmployeeInfo>(newEmployee);
+                var id = await _repository.AddNewEmployeeAsync(newEmpl);
+                string addingResult = id > 0 ? "Работник успешно добавлен" : "Ошибка при добавлении работника";
+                return new EmployeeOperationResultInfo { OperationResult = addingResult };
+            }
+           catch (Exception ex) 
+            {
+                return new EmployeeOperationResultInfo { OperationResult = $"Ошибка выполнения операции добавления работника. {ex.Message}"};
+            }
+            
         }
 
         //Read
@@ -35,8 +43,8 @@ namespace DataAccessGrpcService.Services
         {
             EmployeeOperationResultInfo result = new();
             var updtEmplInfo = _mapper.Map<EmployeeInfo>(updateEmplInfo);
-            var updatedEmployee = await _repository.UpdateEmployeeAsync(updtEmplInfo);
-            if (updtEmplInfo.Equals(updatedEmployee))
+            var res = await _repository.UpdateEmployeeAsync(updtEmplInfo);
+            if (res > 0)
             {
                 result.OperationResult = $"Успешное обновление информации о работнике c Id {updtEmplInfo.EmployeeUserId}";
             }
@@ -58,7 +66,7 @@ namespace DataAccessGrpcService.Services
             }
             else
             {
-                resultInfo.OperationResult = $"Не удалось удалить работника с ID {request.SearchingId}";
+                resultInfo.OperationResult = $"Не удалось удалить работника с Id {request.SearchingId}";
             }
             return resultInfo;
         }

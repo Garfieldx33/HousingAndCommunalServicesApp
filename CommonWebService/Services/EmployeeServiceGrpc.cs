@@ -3,7 +3,6 @@ using CommonLib.Config;
 using CommonLib.Entities;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
 
 namespace CommonWebService.Services
 {
@@ -22,7 +21,8 @@ namespace CommonWebService.Services
         {
             using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
             var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
-            var reply = client.AddEmployee(_mapper.Map<EmployeeInfoGrpc>(newEmployee));
+            var er = _mapper.Map<EmployeeInfoGrpc>(newEmployee);
+            var reply = client.AddEmployee(er);
             return Task.FromResult(reply.OperationResult);
         }
 

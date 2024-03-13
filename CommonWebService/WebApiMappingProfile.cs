@@ -15,7 +15,10 @@ public class WebApiMappingProfile : Profile
             .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.StatusId)));
 
         CreateMap<UserGrpc, User>()
-        .ForMember(d => d.TypeId, opt => opt.MapFrom(source => System.Enum.GetName(typeof(UserTypeEnum), source.TypeId)));
+           .ForMember(d => d.TypeId, opt => opt.MapFrom(source => System.Enum.GetName(typeof(UserTypeEnum), source.TypeId)))
+           .ForMember(d => d.SecondName, opt => opt.MapFrom(source => source.SecondName))
+           .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth.ToDateTime()))
+           .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.RegistrationDate.ToDateTime()));
 
         CreateMap<User, UserGrpc>()
         .ForMember(d => d.TypeId, opt => opt.MapFrom(source => (int)source.TypeId));
