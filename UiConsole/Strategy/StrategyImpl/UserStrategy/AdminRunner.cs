@@ -10,7 +10,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
 {
     internal class AdminRunner : UserBase, IUserStrategy
     {
-        public AdminRunner(UserDTO user) : base(user)
+        public AdminRunner(User user) : base(user)
         {
         }
 
@@ -18,7 +18,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         public void RunUser()
         {
             Console.WriteLine($@"Запуск с правами администратора
-Здравствуйте, {_user.FirstName} {_user.Surname}
+Здравствуйте, {_user.FirstName} {_user.SecondName}
 Выберите раздел: 1 - Пользователи, 2 - Заявки, 3 - Департаменты,  Q - выход");
             char s = Console.ReadKey().KeyChar;
             switch (s)

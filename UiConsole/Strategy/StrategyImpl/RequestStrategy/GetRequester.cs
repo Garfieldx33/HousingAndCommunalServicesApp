@@ -1,5 +1,9 @@
 ﻿using CommonLib.Enums;
+using Newtonsoft.Json;
 using System.Net.Http.Json;
+using System.Net.Mime;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace UiConsole.Strategy.StrategyImpl
 {
@@ -8,7 +12,9 @@ namespace UiConsole.Strategy.StrategyImpl
         public async Task<T?> GetResponce(string uri, string? content)
         {
             HttpResponseMessage responceGet = await _httpClient.GetAsync(uri);
-            return await responceGet.Content.ReadFromJsonAsync<T>();
+            responceGet.EnsureSuccessStatusCode();
+             string data = await responceGet.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(data);
         }
     }
 }

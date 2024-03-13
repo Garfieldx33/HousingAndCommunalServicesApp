@@ -14,7 +14,7 @@ public class DictionaryController : ControllerBase
         _dictionaryService = dictionaryGrpcService;
     }
 
-    [HttpGet]
+    [HttpGet("{departmentId}")]
     public async Task<Department> GetDepartmentById(int departmentId)
     {
         return await _dictionaryService.GetDepartmentByIdAsync(departmentId);

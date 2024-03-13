@@ -15,7 +15,7 @@ public class ApplicationsController : ControllerBase
         _appService = appService;
     }
 
-    [HttpGet]
+    [HttpGet("{applicantId}")]
     public async Task<List<Application>> GetAppByApplicantId(int applicantId)
     {
         return await _appService.GetAppAsync(applicantId);
@@ -27,7 +27,7 @@ public class ApplicationsController : ControllerBase
         return await _appService.UpdateAppAsync(updatingApp);
     }
 
-    [HttpDelete]
+    [HttpDelete("{deletingAppId}")]
     public async Task<string> DeleteApplication(int deletingAppId)
     {
         var result = await _appService.DeleteAppAsync(new DeleteAppRequest { DeleteAppId = deletingAppId });

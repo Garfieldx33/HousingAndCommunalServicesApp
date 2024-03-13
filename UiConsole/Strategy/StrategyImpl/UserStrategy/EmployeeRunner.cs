@@ -10,7 +10,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
 {
     internal class EmployeeRunner : UserBase, IUserStrategy
     {
-        public EmployeeRunner(UserDTO user) : base(user)
+        public EmployeeRunner(User user) : base(user)
         {
         }
         //To do реализовать

@@ -22,10 +22,10 @@ public class UsersController : ControllerBase
          return await _usersService.GetUserAsync(new UserDtoGrpc { Login = login , Password = password});
      }*/
 
-    [HttpGet]
-    public async Task<UserDTO> GetUserByLoginPwd([FromBody] AuthDTO logPass)
+    [HttpGet("{login}/{password}")]
+    public async Task<User> GetUserByLoginPwd(string login, string password)
     {
-        return await _usersService.GetUserAsync(new UserDtoGrpc { Login = logPass.Login, Password = logPass.Pwd });
+        return await _usersService.GetUserAsync(new UserDtoGrpc { Login = login, Password = password });
     }
 
     [HttpGet]

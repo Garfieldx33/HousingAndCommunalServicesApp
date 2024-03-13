@@ -38,12 +38,12 @@ public class UserServiceGrpc
         return Task.FromResult(result);
     }
 
-    public Task<UserDTO> GetUserAsync(UserDtoGrpc user)
+    public Task<User> GetUserAsync(UserDtoGrpc user)
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.GetUser(new UserDtoRequest { UserDto = user });
-        return Task.FromResult(_mapper.Map<UserDTO>(reply.User));
+        return Task.FromResult(_mapper.Map<User>(reply.User));
     }
 
     public Task<(int, string)> AddUserAsync(UserDTO newUserDto)
