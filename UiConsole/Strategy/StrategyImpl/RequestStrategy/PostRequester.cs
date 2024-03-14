@@ -12,8 +12,18 @@ namespace UiConsole.Strategy.StrategyImpl
     {
         public async Task<T?> GetResponce(string uri, string? content)
         {
-            HttpResponseMessage responcePost = await _httpClient.PostAsync(uri, JsonContent.Create(content));
-            return await responcePost.Content.ReadFromJsonAsync<T>();
+            try
+            {
+                var cont = JsonContent.Create(content);
+                //cont.Headers.Add("Content-Type", "application/json");
+                using HttpResponseMessage responcePost = await _httpClient.PostAsync(uri, cont);
+                return await responcePost.Content.ReadFromJsonAsync<T>();
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.Message + ex.StackTrace);
+                return default;
+            }
         }
     }
 }

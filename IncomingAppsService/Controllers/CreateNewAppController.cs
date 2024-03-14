@@ -1,6 +1,6 @@
 using CommonLib.DTO;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata;
+using NLog;
 
 namespace IncomingAppsService.Controllers;
 
@@ -8,30 +8,32 @@ namespace IncomingAppsService.Controllers;
 [Route("[controller]/[action]")]
 public class CreateNewAppController : ControllerBase
 {
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly RabbitMqPublisherService _publisherService;
     public CreateNewAppController(RabbitMqPublisherService rabbitMqPublisherService)
     {
         _publisherService = rabbitMqPublisherService;
     }
 
-    [HttpPost(Name = "PostNew")]
-    public IActionResult AddNewApp([FromBody] ApplicationDTO newApplication, CancellationToken cancellationToken = default)
+    [HttpPost()]
+    public string AddNewApp([FromBody] ApplicationDTO newApplication, CancellationToken cancellationToken = default)
     {
         try
         {
             var sendSuccess = _publisherService.SendNewApplication(newApplication);
             if (sendSuccess)
             {
-                return Ok("Поздравляем! Ваша заявка успешно зарегистрирована");
+                return "Поздравляем! Ваша заявка успешно зарегистрирована";
             }
             else
             {
-                return BadRequest("Произошла ошибка при отправке заявки на обработку, повторите позже");
+                return "Произошла ошибка при отправке заявки на обработку, повторите позже";
             }
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            _logger.Warn(ex);
+            return ex.Message;
         }
     }
 }

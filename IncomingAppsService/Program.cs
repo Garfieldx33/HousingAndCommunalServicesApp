@@ -23,22 +23,22 @@ try
            configuration.GetSection("RabbitMQConf"));
 
     builder.Services.AddScoped<RabbitMqPublisherService>();
-    builder.Services.AddControllers().AddJsonOptions(options =>
+    /*builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    });*/
     builder.Services.AddControllers(options =>
     {
         options.AllowEmptyInputInBodyModelBinding = true;
     });
-
+    builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
     builder.WebHost.ConfigureKestrel((context, options) =>
     {
-        options.Listen(IPAddress.Any, 7000);
-        options.Listen(IPAddress.Any, 7001);
+        options.Listen(IPAddress.Any, 7770);
+        options.Listen(IPAddress.Any, 7771);
     });
 
     var app = builder.Build();
@@ -49,8 +49,7 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
-    app.UseAuthorization();
+    //app.UseHttpsRedirection();
     app.MapControllers();
     app.Run();
 }

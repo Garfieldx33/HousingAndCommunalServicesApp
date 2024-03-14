@@ -14,9 +14,10 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
         }
         //To do реализовать
-        public void RunUser()
+        public Task RunUser()
         {
             Console.WriteLine("Запуск с правами сотрудника УК");
+            return Task.CompletedTask;
         }
     }
 }

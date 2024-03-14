@@ -17,7 +17,7 @@ namespace UiConsole.Strategy
 
         public void RunUser()
         {
-            UserRunnerStrategy?.RunUser();
+            UserRunnerStrategy?.RunUser().Wait();
         }
     }
 }

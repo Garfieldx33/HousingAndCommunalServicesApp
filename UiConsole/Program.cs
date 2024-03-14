@@ -9,16 +9,15 @@ using UiConsole.Strategy;
 using UiConsole.Strategy.StrategyImpl.UserStrategy;
 
 Console.Write("Логин: ");
-string? login = Console.ReadLine();
+//string? login = Console.ReadLine();
+string? login = "ALeon";
 Console.Write("Пароль: ");
-string? pwd = Console.ReadLine();
-string logPass = JsonConvert.SerializeObject(
-    new AuthDTO
-    {
-        Login = login != null ? login : string.Empty,
-        Pwd = pwd != null ? pwd : string.Empty
-    });
-var userResult = await CommonMethodsInvoker.GetInfoFromWebAPI<User>($"http://127.0.0.1:7000/Users/GetUserByLoginPwd/{login}/{pwd}", HttpMethodsEnum.Get, logPass);
+//string? pwd = Console.ReadLine();
+string? pwd = "somePass";
+var userResult = await CommonMethodsInvoker.GetInfoFromWebAPI<User>(
+    $"http://127.0.0.1:7001/Users/GetUserByLoginPwd/{login}/{pwd}",
+    HttpMethodsEnum.Get,
+    null);
 if (userResult != null)
 {
     User userInfo = userResult;

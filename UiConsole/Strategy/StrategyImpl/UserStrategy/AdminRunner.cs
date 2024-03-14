@@ -15,7 +15,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         }
 
         //To do реализовать
-        public void RunUser()
+        public Task RunUser()
         {
             Console.WriteLine($@"Запуск с правами администратора
 Здравствуйте, {_user.FirstName} {_user.SecondName}
@@ -32,11 +32,12 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
 
                     break;
                 case ('Q'):
-                    return;
+                    return Task.CompletedTask;
                 default:
                     Console.WriteLine("Введите валидную команду");
                     break;
             }
+            return Task.CompletedTask;
         }
 
 

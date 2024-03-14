@@ -8,8 +8,9 @@ internal class UnknownRunner : UserBase, IUserStrategy
     {
     }
 
-    public void RunUser()
+    public Task RunUser()
     {
         Console.WriteLine($"Получите права в кабинете номер 101");
+        return Task.CompletedTask;
     }
 }

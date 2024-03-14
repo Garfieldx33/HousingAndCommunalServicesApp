@@ -1,4 +1,5 @@
 ﻿using CommonLib.Enums;
+using CommonLib.Helpers;
 using System.ComponentModel.DataAnnotations;
 
 namespace CommonLib.Entities;
@@ -17,4 +18,9 @@ public class Application
     public DateTime DateCreate { get; set; }
     public DateTime? DateConfirm { get; set; }
     public DateTime? DateClose { get; set; }
+
+    public override string ToString()
+    {
+        return $"Номер:{Id}|Описание:{Description}|Статус:{EnumConverter.GetEnumDescription(Status)}|Дата создания:{DateCreate}";
+    }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace UiConsole.Strategy.StrategyImpl.UserStrategy
@@ -14,36 +15,45 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
         }
         //To do реализовать
-        public void RunUser()
+        public async Task RunUser()
         {
             Console.WriteLine("Запуск с правами жителя");
             Console.WriteLine($@"Здравствуйте, { _user.FirstName}{ _user.SecondName}.
-            Выберите действие: 1 - Подать заявку, 2 - Просмотреть статус заявки, 3 - Отменить заявку,  Q - выход");
+            Выберите действие: 1 - Подать заявку, 2 - Просмотреть Ваши заявки, 3 - Отменить заявку,  Q - выход");
+            
             char s = Console.ReadKey().KeyChar;
-            switch (s)
+            while (s != 'Q')
             {
-                case ('1'):
-                    ApplicationDTO na = new ApplicationDTO { 
-                        ApplicantId = _user.Id, 
-                        ApplicationTypeId = 1, 
-                        DepartmentId = 6, 
-                        DateCreate = DateTime.Now, 
-                        StatusId = 1, 
-                        Description= "Надо переехать с одного места на другое",
-                        Subject = "Необходим перезд"
-                    };
-                    
-                    break;
-                case ('2'):
-                    break;
-                case ('3'):
-                    break;
-                case ('Q'):
-                    return;
-                default:
-                    Console.WriteLine("Введите валидную команду");
-                    break;
+                switch (s)
+                {
+                    case ('1'):
+                        ApplicationDTO? newApp = await CreateAppNewApplication();
+                        if (newApp != null)
+                        {
+                            string jsonApp = JsonSerializer.Serialize(newApp);
+                            Console.WriteLine(jsonApp);
+                            string addingResult = await AddNewApp(jsonApp);
+                            Console.WriteLine(addingResult);
+                        }
+                        break;
+                    case ('2'):
+                        await PrintApplications();
+                        break;
+                    case ('3'):
+                        Console.WriteLine("Выберите заявку из списка. Если заявка не найдена, то введите 0");
+                        await PrintOpenedApplications();
+                        int delAppId = int.Parse(Console.ReadLine());
+                        await CancelApplication(delAppId);
+                        break;
+                    case ('Q'):
+                        return;
+                    default:
+                        Console.WriteLine("Введите валидную команду");
+                        break;
+                }
+                s = Console.ReadKey().KeyChar;
             }
+            Console.ReadKey();   
         }
     }
 }

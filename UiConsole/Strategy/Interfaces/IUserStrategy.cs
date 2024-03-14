@@ -8,6 +8,6 @@ namespace UiConsole.Strategy
 {
     public interface IUserStrategy
     {
-        public void RunUser();
+        public Task RunUser();
     }
 }
