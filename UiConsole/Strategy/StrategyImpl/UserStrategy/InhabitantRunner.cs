@@ -1,5 +1,6 @@
 ﻿using CommonLib.DTO;
 using CommonLib.Entities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +31,9 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                         ApplicationDTO? newApp = await CreateAppNewApplication();
                         if (newApp != null)
                         {
-                            string jsonApp = JsonSerializer.Serialize(newApp);
+                            string jsonApp = JsonConvert.SerializeObject(newApp);
                             Console.WriteLine(jsonApp);
-                            string addingResult = await AddNewApp(jsonApp);
+                            var addingResult = await AddNewApp(jsonApp);
                             Console.WriteLine(addingResult);
                         }
                         break;

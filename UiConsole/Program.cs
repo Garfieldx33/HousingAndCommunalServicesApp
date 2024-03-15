@@ -4,10 +4,11 @@ using CommonLib.DTO;
 using CommonLib.Entities;
 using CommonLib.Enums;
 using Newtonsoft.Json;
+using System.Text.Json;
 using UiConsole;
 using UiConsole.Strategy;
 using UiConsole.Strategy.StrategyImpl.UserStrategy;
-
+//JsonConvert.SerializeObject(new AuthDTO { Login = login, Pwd = pwd })
 Console.Write("Логин: ");
 //string? login = Console.ReadLine();
 string? login = "ALeon";
@@ -15,9 +16,9 @@ Console.Write("Пароль: ");
 //string? pwd = Console.ReadLine();
 string? pwd = "somePass";
 var userResult = await CommonMethodsInvoker.GetInfoFromWebAPI<User>(
-    $"http://127.0.0.1:7001/Users/GetUserByLoginPwd/{login}/{pwd}",
+    $@"http://127.0.0.1:7001/Users/GetUserByLoginPwd/{login}/{pwd}",
     HttpMethodsEnum.Get,
-    null);
+null);
 if (userResult != null)
 {
     User userInfo = userResult;

@@ -95,9 +95,17 @@ namespace IncomingAppsService
 
         public bool SendNewApplication(ApplicationDTO newApplication)
         {
-            var connect = CreateConnection();
-            var channel = CreateChannel(connect);
-            return PublishMessage(newApplication, channel);
+            try
+            {
+                var connect = CreateConnection();
+                var channel = CreateChannel(connect);
+                return PublishMessage(newApplication, channel);
+            }
+            catch(Exception ex) 
+            {
+                _logger.Warn(ex.Message);
+                return false;
+            }
         }
 
         private void ConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)

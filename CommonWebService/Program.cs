@@ -1,16 +1,18 @@
 using CommonLib.Config;
 using CommonWebService;
 using CommonWebService.Services;
-using Microsoft.OpenApi.Models;
+using NLog;
+using NLog.Web;
 using System.Net;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Logger _logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 ConfigurationManager configuration = builder.Configuration;
 
 builder.Services.Configure<gRpcConfig>(
            configuration.GetSection("gRpcConfig"));
+_logger.Debug(configuration.GetSection("gRpcConfig").GetSection("HttpsEndpoint").Value);
 builder.Services.AddAutoMapper(typeof(WebApiMappingProfile));
 builder.Services.AddScoped<AppServiceGrpc>();
 builder.Services.AddScoped<UserServiceGrpc>();
@@ -43,6 +45,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

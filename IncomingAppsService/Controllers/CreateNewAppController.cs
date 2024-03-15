@@ -16,24 +16,17 @@ public class CreateNewAppController : ControllerBase
     }
 
     [HttpPost()]
-    public string AddNewApp([FromBody] ApplicationDTO newApplication, CancellationToken cancellationToken = default)
+    public IActionResult AddNewApp(ApplicationDTO newApplication, CancellationToken cancellationToken = default)
     {
-        try
+        var sendSuccess = _publisherService.SendNewApplication(newApplication);
+        _logger.Debug("Result of adding " + sendSuccess);
+        if (sendSuccess)
         {
-            var sendSuccess = _publisherService.SendNewApplication(newApplication);
-            if (sendSuccess)
-            {
-                return "Поздравляем! Ваша заявка успешно зарегистрирована";
-            }
-            else
-            {
-                return "Произошла ошибка при отправке заявки на обработку, повторите позже";
-            }
+            return Ok();
         }
-        catch (Exception ex)
+        else
         {
-            _logger.Warn(ex);
-            return ex.Message;
+            return BadRequest();
         }
     }
 }

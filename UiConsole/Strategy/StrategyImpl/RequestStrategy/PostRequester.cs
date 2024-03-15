@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace UiConsole.Strategy.StrategyImpl
 {
@@ -12,12 +9,16 @@ namespace UiConsole.Strategy.StrategyImpl
     {
         public async Task<T?> GetResponce(string uri, string? content)
         {
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            };
             try
             {
-                var cont = JsonContent.Create(content);
-                //cont.Headers.Add("Content-Type", "application/json");
-                using HttpResponseMessage responcePost = await _httpClient.PostAsync(uri, cont);
-                return await responcePost.Content.ReadFromJsonAsync<T>();
+                var con = new StringContent(content, Encoding.UTF8, "application/json");
+                using HttpResponseMessage responcePost = await _httpClient.PostAsync(uri, con);
+                return await responcePost.Content.ReadFromJsonAsync<T>(options: options);
             }
             catch (Exception ex) 
             {

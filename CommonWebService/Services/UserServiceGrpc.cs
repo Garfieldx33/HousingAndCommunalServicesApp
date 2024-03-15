@@ -4,7 +4,8 @@ using CommonLib.DTO;
 using CommonLib.Entities;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using NLog;
+using NLog.Web;
 
 namespace CommonWebService.Services;
 
@@ -12,6 +13,7 @@ public class UserServiceGrpc
 {
     private readonly gRpcConfig _gRpcConfig;
     private readonly IMapper _mapper;
+    Logger _logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
     public UserServiceGrpc(IOptions<gRpcConfig> gRpcConfigSection, IMapper mapper)
     {
         _gRpcConfig = gRpcConfigSection.Value;
@@ -40,6 +42,7 @@ public class UserServiceGrpc
 
     public Task<User> GetUserAsync(UserDtoGrpc user)
     {
+        _logger.Debug("GrpcEP = " + _gRpcConfig.HttpsEndpoint);
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
         var reply = client.GetUser(new UserDtoRequest { UserDto = user });

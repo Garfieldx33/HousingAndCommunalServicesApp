@@ -23,10 +23,10 @@ try
            configuration.GetSection("RabbitMQConf"));
 
     builder.Services.AddScoped<RabbitMqPublisherService>();
-    /*builder.Services.AddControllers().AddJsonOptions(options =>
+    builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });*/
+    });
     builder.Services.AddControllers(options =>
     {
         options.AllowEmptyInputInBodyModelBinding = true;
@@ -49,7 +49,7 @@ try
         app.UseSwaggerUI();
     }
 
-    //app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
     app.MapControllers();
     app.Run();
 }
