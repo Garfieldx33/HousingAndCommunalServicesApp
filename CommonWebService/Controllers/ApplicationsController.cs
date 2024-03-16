@@ -16,21 +16,30 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpGet("{applicantId}")]
-    public async Task<List<Application>> GetAppByApplicantId(int applicantId)
+    public async Task<ActionResult<List<Application>>> GetAppByApplicantId(int applicantId)
     {
-        return await _appService.GetAppAsync(applicantId);
+        var result =  await _appService.GetAppAsync(applicantId);
+        if (result != null) 
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
 
     [HttpPatch]
-    public async Task<Application> UpdateApplication([FromBody] UpdateAppDTO updatingApp)
+    public async Task<ActionResult<Application>> UpdateApplication([FromBody] UpdateAppDTO updatingApp)
     {
-        return await _appService.UpdateAppAsync(updatingApp);
+        var resut  = await _appService.UpdateAppAsync(updatingApp);
+        return Ok(resut);
     }
 
     [HttpDelete("{deletingAppId}")]
-    public async Task<string> DeleteApplication(int deletingAppId)
+    public async Task<ActionResult<string>> DeleteApplication(int deletingAppId)
     {
         var result = await _appService.DeleteAppAsync(new DeleteAppRequest { DeleteAppId = deletingAppId });
-        return result.Item2;
+        return Ok(result.Item2);
     }
 }

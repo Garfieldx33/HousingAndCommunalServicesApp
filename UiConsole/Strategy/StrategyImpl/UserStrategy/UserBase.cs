@@ -29,19 +29,16 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
             }
             return users;
         }
-
         protected static async Task<string?> AddUserAsync(UserDTO userDTO)
         {
             string userDtoString = JsonConvert.SerializeObject(userDTO);
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>("http://127.0.0.1:7001/Users/AddUser", HttpMethodsEnum.Post, userDtoString);
         }
-
         protected static async Task<UserDTO?> UpdateUserAsync(UserDTO userDTO)
         {
             string userDtoString = JsonConvert.SerializeObject(userDTO);
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<UserDTO>("http://127.0.0.1:7001/Users/UpdateUserInfo", HttpMethodsEnum.Put, userDtoString);
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<UserDTO>("http://127.0.0.1:7001/Users/UpdateUserInfo", HttpMethodsEnum.Patch, userDtoString);
         }
-
         protected static async Task<string?> DeleteUserAsync(int userId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>("http://127.0.0.1:7001/Users/DeleteUser", HttpMethodsEnum.Post, userId.ToString());
@@ -50,20 +47,17 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         //Applications
         protected static async Task<List<Application>?> GetAppByApplicantId(int applicantId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>("http://127.0.0.1:7001/Applications/DeleteUser", HttpMethodsEnum.Get, applicantId.ToString());
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetAppByApplicantId/{applicantId}", HttpMethodsEnum.Get, applicantId.ToString());
         }
-
         public static async Task<Application?> UpdateApplication(UpdateAppDTO updatingApp)
         {
             string appString = JsonConvert.SerializeObject(updatingApp);
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<Application>("http://127.0.0.1:7001/Applications/UpdateApplication", HttpMethodsEnum.Put, appString);
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<Application>("http://127.0.0.1:7001/Applications/UpdateApplication", HttpMethodsEnum.Patch, appString);
         }
-
         public static async Task<string?> DeleteApplication(int deletingAppId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>("http://127.0.0.1:7001/Applications/DeleteApplication", HttpMethodsEnum.Delete, deletingAppId.ToString());
         }
-
         protected static async Task<string?> AddNewApp(string newApplicationAsJson)
         {
             return await new PostNoJsonAnswerRequester<string>().GetResponce("http://127.0.0.1:7771/CreateNewApp/AddNewApp", newApplicationAsJson);
@@ -73,11 +67,10 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         public static async Task<Department?> GetDepartmentById(int departmentId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Department>(
-                "http://127.0.0.1:7001/Dictionary/GetDepartmentById",
+                $"http://127.0.0.1:7001/Dictionary/GetDepartmentById/{departmentId}",
                 HttpMethodsEnum.Get,
-                departmentId.ToString());
+                string.Empty);
         }
-
         public static async Task<List<Department>?> GetAllDepartments()
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Department>>(
@@ -92,21 +85,19 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 HttpMethodsEnum.Post,
                 departmentName);
         }
-
         public static async Task<Department?> UpdateDepartment(Department department)
         {
             string deptString = JsonConvert.SerializeObject(department);
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Department>(
                 "http://127.0.0.1:7001/Dictionary/UpdateDepartment",
-                HttpMethodsEnum.Put,
+                HttpMethodsEnum.Patch,
                 deptString);
         }
-
         public static async Task<string?> DeleteDepartment(Department department)
         {
             string deptString = JsonConvert.SerializeObject(department);
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
-                "http://127.0.0.1:7001/Dictionary/DeleteDepartment",
+                $"http://127.0.0.1:7001/Dictionary/DeleteDepartment/{department.Id}",
                 HttpMethodsEnum.Delete,
                 deptString);
         }
@@ -126,7 +117,6 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 HttpMethodsEnum.Get,
                 employeeId.ToString());
         }
-
         public static async Task<string?> AddNewEmployee(EmployeeInfo newEmployee)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
@@ -134,15 +124,13 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 HttpMethodsEnum.Post,
                 JsonConvert.SerializeObject(newEmployee));
         }
-
         public static async Task<string?> UpdateEmployee(EmployeeInfo employeeInfo)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
                 "http://127.0.0.1:7001/Employee/UpdateEmployee",
-                HttpMethodsEnum.Put,
+                HttpMethodsEnum.Patch,
                 JsonConvert.SerializeObject(employeeInfo));
         }
-
         public static async Task<string?> DeleteEmployee(int employeeId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
@@ -159,7 +147,6 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 HttpMethodsEnum.Post,
                 string.Empty);
         }
-
         public static async Task<Dictionary<int, string>?> GetAppTypes()
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Dictionary<int, string>>(
@@ -167,7 +154,6 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 HttpMethodsEnum.Get,
                 string.Empty);
         }
-
         public static async Task<Dictionary<int, string>?> GetUserTypes()
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Dictionary<int, string>>(
@@ -211,9 +197,9 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 int deptId = int.Parse(Console.ReadLine());
                 result.DepartmentId = deptId;
 
-                Console.Write($"Введите тему заявки");
+                Console.Write($"Введите тему заявки: ");
                 result.Subject = Console.ReadLine();
-                Console.Write($"Опишите проблему наиболее полно");
+                Console.Write($"Опишите проблему наиболее полно: ");
                 result.Description = Console.ReadLine();
                 result.DateCreate = DateTime.Now;
                 return result;
@@ -224,7 +210,6 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
             }
             return null;
         }
-
         protected async Task PrintApplications()
         {
             try
@@ -247,7 +232,6 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 Console.WriteLine($"Ошибка при получении списка заявок. {ex.Message}");
             }
         }
-
         protected async Task PrintOpenedApplications()
         {
             try
@@ -258,9 +242,8 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                     foreach (var app in apps)
                     {
                         if (app.Status != AppStatusEnum.Completed
-                            || app.Status != AppStatusEnum.Rejected
-                            || app.Status != AppStatusEnum.Canceled
-                            || app.Status != AppStatusEnum.PrimaryProcessing)
+                            && app.Status != AppStatusEnum.Rejected
+                            && app.Status != AppStatusEnum.Canceled)
                         {
                             Console.WriteLine($"{app}");
                         }
@@ -269,7 +252,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 }
                 else
                 {
-                    Console.WriteLine("У Вас еще нет зарегистрированных заявок");
+                    Console.WriteLine("У Вас еще нет активных заявок");
                 }
             }
             catch (Exception ex)
@@ -277,24 +260,9 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 Console.WriteLine($"Ошибка при получении списка заявок. {ex.Message}");
             }
         }
-
-        protected static async Task<string> CancelApplication(int applicationId)
+        protected static async Task<Application> CancelApplication(int applicationId)
         {
-            try
-            {
-                if (applicationId != 0)
-                {
-                    return await DeleteApplication(applicationId);
-                }
-                else
-                {
-                    return "Заявка не найдена";
-                }
-            }
-            catch (Exception ex)
-            {
-                return $"Ошибка при удалении заявки.{ex.Message}";
-            }
+            return await UpdateApplication(new UpdateAppDTO { DateClose = DateTime.Now, Id = applicationId, Status = (int)AppStatusEnum.Canceled});
         }
         #endregion
     }

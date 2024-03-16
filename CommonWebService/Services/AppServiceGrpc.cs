@@ -29,7 +29,7 @@ public class AppServiceGrpc
             foreach (var app in reply.Applications)
             {
                 resultList.Add(_mapper.Map<Application>(app));
-            }
+            } 
         }
         return Task.FromResult(resultList);
     }

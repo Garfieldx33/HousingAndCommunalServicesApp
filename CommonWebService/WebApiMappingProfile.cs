@@ -4,6 +4,7 @@ using CommonLib.Entities;
 using CommonLib.Enums;
 using CommonWebService.Services;
 using Google.Protobuf.WellKnownTypes;
+using System.Globalization;
 
 namespace CommonWebService;
 
@@ -31,9 +32,13 @@ public class WebApiMappingProfile : Profile
             .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)));
 
         CreateMap<DateTime, Timestamp>().ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
+        CreateMap<Timestamp, DateTime>().ConvertUsing(x => x.ToDateTime());
 
         CreateMap<ApplicationGrpc, Application>()
-                .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)));
+                .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)))
+                .ForMember(dest => dest.DateCreate, dest => dest.MapFrom(src => src.DateCreate.ToDateTime()))
+                .ForMember(dest => dest.DateClose, dest => dest.MapFrom(src => src.DateClose.ToDateTime()))
+                .ForMember(dest => dest.DateConfirm, dest => dest.MapFrom(src => src.DateConfirm.ToDateTime()));
 
         CreateMap<Application, ApplicationGrpc>()
             .ForMember(d => d.Status, opt => opt.MapFrom(source => (int)source.Status))

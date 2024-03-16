@@ -13,7 +13,7 @@ namespace UiConsole
             {
                 HttpMethodsEnum.Get => await new Requester<T?>(new GetRequester<T?>()).GetRequestResult(uri, content),
                 HttpMethodsEnum.Post => await new Requester<T?>(new PostRequester<T?>()).GetRequestResult(uri, content),
-                HttpMethodsEnum.Put => await new Requester<T?>(new PutRequester<T?>()).GetRequestResult(uri, content),
+                HttpMethodsEnum.Patch => await new Requester<T?>(new PatchRequester<T?>()).GetRequestResult(uri, content),
                 HttpMethodsEnum.Delete => await new Requester<T?>(new DeleteRequester<T?>()).GetRequestResult(uri, content),
                 _ => null,
             };

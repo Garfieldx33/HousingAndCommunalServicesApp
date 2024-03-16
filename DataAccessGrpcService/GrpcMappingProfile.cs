@@ -3,6 +3,7 @@ using CommonLib.DTO;
 using CommonLib.Entities;
 using CommonLib.Enums;
 using Google.Protobuf.WellKnownTypes;
+using System.Globalization;
 
 namespace DataAccessGrpcService
 {
@@ -16,10 +17,13 @@ namespace DataAccessGrpcService
             .ForMember(d => d.Subject, opt => opt.MapFrom(source => source.Subject))
             .ForMember(d => d.ApplicationTypeId, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppTypeEnum), source.ApplicationTypeId)))
             .ForMember(d => d.Description, opt => opt.MapFrom(source => source.Description))
-            .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => source.DateCreate.ToDateTime()));
+            .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => source.DateCreate.ToDateTimeOffset()));
 
             CreateMap<ApplicationGrpc, Application>()
-                .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)));
+                .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)))
+                .ForMember(dest => dest.DateCreate, dest => dest.MapFrom(src => src.DateCreate.ToDateTime()))
+                .ForMember(dest => dest.DateClose, dest => dest.MapFrom(src => src.DateClose.ToDateTime()))
+                .ForMember(dest => dest.DateConfirm, dest => dest.MapFrom(src => src.DateConfirm.ToDateTime()));
 
             CreateMap<Application, ApplicationGrpc>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => (int)source.Status))
@@ -36,7 +40,9 @@ namespace DataAccessGrpcService
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.RegistrationDate.ToDateTime()));
 
             CreateMap<User, UserGrpc>()
-                .ForMember(d => d.TypeId, opt => opt.MapFrom(source => (int)source.TypeId));
+                .ForMember(d => d.TypeId, opt => opt.MapFrom(source => (int)source.TypeId))
+                .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateOfBirth, DateTimeKind.Utc))))
+                .ForMember(d => d.RegistrationDate, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.RegistrationDate, DateTimeKind.Utc))));
 
             CreateMap<UpdateAppDTO, UpdateAppRequest>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => source.Status))
@@ -55,6 +61,7 @@ namespace DataAccessGrpcService
                 .ForMember(d => d.Position, opt => opt.MapFrom(source => source.Position));
 
             CreateMap<DateTime, Timestamp>().ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
+            CreateMap<Timestamp, DateTime>().ConvertUsing(x => x.ToDateTime());
 
         }
     }
