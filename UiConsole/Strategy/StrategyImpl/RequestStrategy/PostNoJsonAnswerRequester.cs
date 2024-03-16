@@ -10,7 +10,8 @@ namespace UiConsole.Strategy.StrategyImpl
             var con = new StringContent(content, Encoding.UTF8, "application/json");
             using HttpResponseMessage responcePost = await _httpClient.PostAsync(uri, con);
             {
-                return responcePost.StatusCode == System.Net.HttpStatusCode.OK ? "success" : "not success";
+                return responcePost.StatusCode == System.Net.HttpStatusCode.OK ?
+                    "Заявка отправлена на обработку" : "Ошибка при регистрации заявки, попробуйте позже";
             }
         }
     }

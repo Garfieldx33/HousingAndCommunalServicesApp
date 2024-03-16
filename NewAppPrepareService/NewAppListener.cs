@@ -151,19 +151,20 @@ namespace NewAppPrepareService
 
         public bool SendNewAppToSave(ApplicationDTO newAppDTO)
         {
-            bool result = false;
             try
             {
+                _logger.Debug($"Пуболикация заявки с пользователя c Id {newAppDTO.ApplicantId} по эндпоинту {_gRpcConfig.HttpsEndpoint}");
                 var appGrpcDto = _mapper.Map<ApplicationDtoGrpc>(newAppDTO);
                 using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
                 var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
                 var reply = client.AddNewApp(new AddNewAppRequest { ApplicationDto = appGrpcDto });
+                return reply.ResultOfInsert > 0;
             }
             catch (Exception ex) 
             {
                 _logger.Warn($"Не удалось отправить новую заявку на сохранение.Подробнее {ex}");
             }
-            return result;
+            return false;
         }
     }
 }

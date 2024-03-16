@@ -21,9 +21,11 @@ public partial class DataAccessGrpcBase
                 ApplicantFullName = $"{applicantInfo.SecondName} {applicantInfo.FirstName}",
                 Destination = messagingMethod.Name == "email" ? employee.Email : employee.MessagingDestination,
                 ApplicationId = newApplication.Id,
-                Body = newApplication.Description,
+                Body =  $"Здравствуйте, {applicantInfo.SecondName} {applicantInfo.FirstName}." +
+                $" Пришла новая заявка." +
+                $" Текст заявки: {newApplication.Description}",
                 MessagingMethod = messagingMethod.Name,
-                Subject = $"Новая заявка #{newApplication.Id}. {newApplication.Subject}",
+                Subject = $"Заявка #{newApplication.Id}. {newApplication.Subject}",
                 TelephoneNumber = applicantInfo.Phone
             };
 

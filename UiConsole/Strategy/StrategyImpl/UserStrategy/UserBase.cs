@@ -66,7 +66,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
 
         protected static async Task<string?> AddNewApp(string newApplicationAsJson)
         {
-            return await new PostNoJsonAnswerRequester<string>().GetResponce("http://127.0.0.1:7771/CreateNewApp/AddNewApp", newApplicationAsJson); 
+            return await new PostNoJsonAnswerRequester<string>().GetResponce("http://127.0.0.1:7771/CreateNewApp/AddNewApp", newApplicationAsJson);
         }
 
         //Departments
