@@ -14,11 +14,12 @@ service DataAccessGrpcService {
  // Methods 
 
  //Applications
-  rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (GetAppsByUserIdReply);
+  rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (AppsListReply);
   rpc AddNewApp (AddNewAppRequest) returns (AddNewAppReply);
   rpc UpdateApp (UpdateAppRequest) returns (UpdateAppReply);
   rpc DeleteApp (DeleteAppRequest) returns (DeleteAppReply);
-  
+  rpc GetOpenedAppsByDepartmentId (GetOpenAppsByDepartmentIdRequest) returns (AppsListReply);
+  rpc GetAppsByExecutorId (GetAppsByExecutorIdRequest) returns (AppsListReply);
   //Dictionaries
   rpc GetDepartments (DepartmentsRequest) returns (DepartmentsReply);
   rpc GetDepartmentById (DepartmentRequest) returns (DepartmentReply);
@@ -44,6 +45,9 @@ service DataAccessGrpcService {
 
 //Applications
 message GetAppsByUserIdRequest { int32 applicant_id = 1;  }
+message GetOpenAppsByDepartmentIdRequest { int32 department_id = 1; }
+message GetAppsByExecutorIdRequest { int32 executor_id =1; }
+
 message AddNewAppRequest { ApplicationDtoGrpc application_dto = 1; }
 message UpdateAppRequest {
   int32 status = 1;
@@ -77,7 +81,7 @@ message EmployeeInfoRequest{ int32 searching_id = 1; }
 // Responce messages
 
 //Applications
-message GetAppsByUserIdReply { repeated ApplicationGrpc applications = 1; }
+message AppsListReply { repeated ApplicationGrpc applications = 1; }
 message AddNewAppReply { int32 result_of_insert = 1; }
 message UpdateAppReply { ApplicationGrpc updated_application = 1; }
 message DeleteAppReply { int32 deleted_app_id = 1; string message = 2; }
