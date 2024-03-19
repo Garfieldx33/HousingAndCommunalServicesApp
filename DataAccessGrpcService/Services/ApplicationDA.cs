@@ -29,12 +29,42 @@ namespace DataAccessGrpcService.Services
         }
 
         //Read
-        public override async Task<GetAppsByUserIdReply> GetAppsByUserId(GetAppsByUserIdRequest request, ServerCallContext context)
+        public override async Task<AppsListReply> GetAppsByUserId(GetAppsByUserIdRequest request, ServerCallContext context)
         {
-            GetAppsByUserIdReply responce = new();
+            AppsListReply responce = new();
             try
             {
                 var result = await _repository.GetApplicationByApplicantId(request.ApplicantId);
+                result.ForEach(i => responce.Applications.Add(_mapper.Map<ApplicationGrpc>(i)));
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex);
+            }
+            return responce;
+        }
+
+        public override async Task<AppsListReply> GetOpenedAppsByDepartmentId(GetOpenAppsByDepartmentIdRequest request, ServerCallContext context)
+        {
+            AppsListReply responce = new();
+            try
+            {
+                var result = await _repository.GetOpenedApplicationsByDepartmentId(request.DepartmentId);
+                result.ForEach(i => responce.Applications.Add(_mapper.Map<ApplicationGrpc>(i)));
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex);
+            }
+            return responce;
+        }
+
+        public override async Task<AppsListReply> GetAppsByExecutorId(GetAppsByExecutorIdRequest request, ServerCallContext context)
+        {
+            AppsListReply responce = new();
+            try
+            {
+                var result = await _repository.GetApplicationsByExecutorId(request.ExecutorId);
                 result.ForEach(i => responce.Applications.Add(_mapper.Map<ApplicationGrpc>(i)));
             }
             catch (Exception ex)

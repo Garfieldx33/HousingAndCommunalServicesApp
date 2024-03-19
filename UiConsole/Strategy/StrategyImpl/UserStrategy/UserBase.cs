@@ -260,9 +260,80 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 Console.WriteLine($"Ошибка при получении списка заявок. {ex.Message}");
             }
         }
+        protected async Task PrintCompletedApplications()
+        {
+            try
+            {
+                List<Application>? apps = await GetAppByApplicantId(_user.Id);
+                if (apps is not null)
+                {
+                    foreach (var app in apps)
+                    {
+                        if (app.Status == AppStatusEnum.Completed)
+                        {
+                            Console.WriteLine($"{app}");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("У Вас еще нет завершенныз заявок, требующих подтверждения");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении списка заявок. {ex.Message}");
+            }
+        }
         protected static async Task<Application> CancelApplication(int applicationId)
         {
             return await UpdateApplication(new UpdateAppDTO { DateClose = DateTime.Now, Id = applicationId, Status = (int)AppStatusEnum.Canceled});
+        }
+        protected static async Task<Application?> ConfirmApplication(int applicationId)
+        {
+            return await UpdateApplication(new UpdateAppDTO
+            {
+                DateConfirm = DateTime.Now,
+                Id = applicationId,
+                Status = (int)AppStatusEnum.WorkСompletionСonfirmed
+            });
+        }
+        protected async Task PrintFreeApplicationsOfDepartment()
+        {
+
+        }
+        protected async Task PrintSelfApplicationInWork()
+        {
+            throw new NotImplementedException();
+        }
+        protected async Task<Application?> GetApplicationInWork(int applicationId)
+        {
+            return await UpdateApplication(new UpdateAppDTO
+            {
+                DateClose = DateTime.Now,
+                Id = applicationId,
+                Status = (int)AppStatusEnum.ExecutorAppointed,
+                ExecutorId = _user.Id
+            });
+        }
+        protected static async Task<Application?> CompleteApplication(int applicationId)
+        {
+            return await UpdateApplication(new UpdateAppDTO
+            {
+                DateClose = DateTime.Now,
+                Id = applicationId,
+                Status = (int)AppStatusEnum.Completed
+            });
+        }
+        protected static async Task<Application?> AbortApplicationExecution(int applicationId)
+        {
+            return await UpdateApplication(new UpdateAppDTO
+            {
+                DateClose = DateTime.Now,
+                Id = applicationId,
+                Status = (int)AppStatusEnum.PrimaryProcessing,
+                ExecutorId = 0
+            }); ;
         }
         #endregion
     }

@@ -29,5 +29,8 @@ public enum AppStatusEnum
     Rejected = 8,
 
     [Description("Отменена")]
-    Canceled = 9
+    Canceled = 9,
+
+    [Description("Принята заказчиком")]
+    WorkСompletionСonfirmed = 9
 }

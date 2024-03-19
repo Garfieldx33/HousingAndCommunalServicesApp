@@ -18,8 +18,36 @@ public class ApplicationsController : ControllerBase
     [HttpGet("{applicantId}")]
     public async Task<ActionResult<List<Application>>> GetAppByApplicantId(int applicantId)
     {
-        var result =  await _appService.GetAppAsync(applicantId);
+        var result =  await _appService.GetAppsByUserIdAsync(applicantId);
         if (result != null) 
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpGet("{departmentId}")]
+    public async Task<ActionResult<List<Application>>> GetOpenedAppByDepartmentId(int departmentId)
+    {
+        var result = await _appService.GetOpenedAppsByDepartmentIdAsync(departmentId);
+        if (result != null)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpGet("{executorId}")]
+    public async Task<ActionResult<List<Application>>> GetAppByExecutorId(int executorId)
+    {
+        var result = await _appService.GetAppsByExecutorIdAsync(executorId);
+        if (result != null)
         {
             return Ok(result);
         }

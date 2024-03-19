@@ -6,16 +6,34 @@ namespace CommonLib.DAL;
 
 public partial class PostgresRepository
 {
-    public async Task<List<Application>> GetApplicationByApplicantId(int UserId, CancellationToken cancellation = default)
+    public async Task<List<Application>> GetApplicationByApplicantId(int userId, CancellationToken cancellation = default)
     {
         var query = _context.Apps.AsNoTracking();
-        if (UserId > 0)
+        if (userId > 0)
         {
-            query = query.Where(q => q.ApplicantId == UserId);
+            query = query.Where(q => q.ApplicantId == userId);
         }
         return await query.ToListAsync(cancellation);
     }
 
+    public async Task<List<Application>>  GetApplicationsByExecutorId(int executorId, CancellationToken cancellation = default)
+    {
+        var query = _context.Apps.AsNoTracking();
+        if (executorId > 0)
+        {
+            query = query.Where(q => q.ExecutorId == executorId);
+        }
+        return await query.ToListAsync(cancellation);
+    }
+    public async Task<List<Application>> GetOpenedApplicationsByDepartmentId(int departmentId, CancellationToken cancellation = default)
+    {
+        var query = _context.Apps.AsNoTracking();
+        if (departmentId > 0)
+        {
+            query = query.Where(q => q.DepartmentId == departmentId);
+        }
+        return await query.ToListAsync(cancellation);
+    }
     public async Task<Application> GetApplicationById(int applicationId, CancellationToken cancellation = default)
     {
         var query = _context.Apps.AsNoTracking();
@@ -49,6 +67,8 @@ public partial class PostgresRepository
                 { updatedApp.DepartmentId = request.DepartmentId; }
                 if (request.ExecutorId > 0)
                 { updatedApp.ExecutorId = request.ExecutorId; }
+                if(request.ExecutorId == 0)
+                { updatedApp.ExecutorId = null; }
                 if (request.DateClose != DateTime.MinValue)
                 { updatedApp.DateClose = request.DateClose; }
                 if (request.DateConfirm != DateTime.MinValue)

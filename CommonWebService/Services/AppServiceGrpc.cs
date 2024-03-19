@@ -18,7 +18,7 @@ public class AppServiceGrpc
         _mapper = mapper;
     }
 
-    public Task<List<Application>> GetAppAsync(int userId)
+    public Task<List<Application>> GetAppsByUserIdAsync(int userId)
     {
         List<Application> resultList = new();
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
@@ -30,6 +30,38 @@ public class AppServiceGrpc
             {
                 resultList.Add(_mapper.Map<Application>(app));
             } 
+        }
+        return Task.FromResult(resultList);
+    }
+
+    public Task<List<Application>> GetOpenedAppsByDepartmentIdAsync(int departmentId)
+    {
+        List<Application> resultList = new();
+        using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
+        var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
+        var reply = client.GetOpenedAppsByDepartmentId(new GetOpenAppsByDepartmentIdRequest { DepartmentId = departmentId });
+        if (reply is not null)
+        {
+            foreach (var app in reply.Applications)
+            {
+                resultList.Add(_mapper.Map<Application>(app));
+            }
+        }
+        return Task.FromResult(resultList);
+    }
+
+    public Task<List<Application>> GetAppsByExecutorIdAsync(int executorId)
+    {
+        List<Application> resultList = new(); 
+        using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
+        var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
+        var reply = client.GetAppsByExecutorId(new GetAppsByExecutorIdRequest { ExecutorId = executorId });
+        if (reply is not null)
+        {
+            foreach (var app in reply.Applications)
+            {
+                resultList.Add(_mapper.Map<Application>(app));
+            }
         }
         return Task.FromResult(resultList);
     }
