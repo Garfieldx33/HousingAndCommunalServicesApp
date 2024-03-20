@@ -39,11 +39,11 @@ namespace CommonWebService.Services
             return Task.FromResult(resultList);
         }
 
-        public Task<string> GetDepartmentByUserId(int deptId)
+        public Task<string> GetDepartmentByUserId(int userId)
         {
             using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
             var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
-            var reply = client.GetDepartmentByUserId(new EmployeeInfoRequest { SearchingId = deptId });
+            var reply = client.GetDepartmentByUserId(new EmployeeInfoRequest { SearchingId = userId });
             return Task.FromResult(reply.DepartmentName);
         }
 

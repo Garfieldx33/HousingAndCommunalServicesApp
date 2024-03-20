@@ -17,7 +17,7 @@ namespace DataAccessGrpcService
             .ForMember(d => d.Subject, opt => opt.MapFrom(source => source.Subject))
             .ForMember(d => d.ApplicationTypeId, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppTypeEnum), source.ApplicationTypeId)))
             .ForMember(d => d.Description, opt => opt.MapFrom(source => source.Description))
-            .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => source.DateCreate.ToDateTimeOffset()));
+            .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => source.DateCreate.ToDateTime()));
 
             CreateMap<ApplicationGrpc, Application>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => System.Enum.GetName(typeof(AppStatusEnum), source.Status)))

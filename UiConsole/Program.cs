@@ -9,11 +9,14 @@ using UiConsole;
 using UiConsole.Strategy;
 using UiConsole.Strategy.StrategyImpl.UserStrategy;
 //JsonConvert.SerializeObject(new AuthDTO { Login = login, Pwd = pwd })
-Console.Write("Логин: ");
+//Console.Write("Логин: ");
 //string? login = Console.ReadLine();
-string? login = "ALeon";
-Console.Write("Пароль: ");
+//Console.Write("Пароль: ");
 //string? pwd = Console.ReadLine();
+
+/*string? login = "Json";
+string? pwd = "WhoKnowsKnows";*/
+string? login = "ALeon";
 string? pwd = "somePass";
 var userResult = await CommonMethodsInvoker.GetInfoFromWebAPI<User>(
     $@"http://127.0.0.1:7001/Users/GetUserByLoginPwd/{login}/{pwd}",

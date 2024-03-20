@@ -15,13 +15,13 @@ namespace CommonWebService.Controllers
             _employeeService = employeeService;
         }
 
-        [HttpGet]
+        [HttpGet("{departmentId}")]
         public async Task<List<User>> GetEmployersByDepartmentId(int departmentId)
         {
             return await _employeeService.GetEmployersByDepartmentId(departmentId);
         }
         
-        [HttpGet]
+        [HttpGet("{userId}")]
         public async Task<string> GetDepartmentByUserId(int userId)
         {
             return await _employeeService.GetDepartmentByUserId(userId);
@@ -39,7 +39,7 @@ namespace CommonWebService.Controllers
             return await _employeeService.UpdateEmployee(employeeInfo);
         }
 
-        [HttpDelete]
+        [HttpDelete("{employeeId}")]
         public async Task<string> DeleteEmployee(int employeeId)
         {
             return await _employeeService.DeleteEmployee(employeeId);

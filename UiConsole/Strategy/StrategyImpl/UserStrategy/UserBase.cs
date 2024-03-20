@@ -5,6 +5,7 @@ using CommonLib.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
+using UiConsole.Strategy.StrategyImpl.RequestStrategy;
 
 namespace UiConsole.Strategy.StrategyImpl.UserStrategy
 {
@@ -48,6 +49,14 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         protected static async Task<List<Application>?> GetAppByApplicantId(int applicantId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetAppByApplicantId/{applicantId}", HttpMethodsEnum.Get, applicantId.ToString());
+        }
+        protected static async Task<List<Application>?> GetOpenedAppByDepartmentId(int departmentId)
+        {
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetOpenedAppByDepartmentId/{departmentId}", HttpMethodsEnum.Get, departmentId.ToString());
+        }
+        protected static async Task<List<Application>?> GetAppByExecutorId(int executorId)
+        {
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetAppByExecutorId/{executorId}", HttpMethodsEnum.Get, executorId.ToString());
         }
         public static async Task<Application?> UpdateApplication(UpdateAppDTO updatingApp)
         {
@@ -112,10 +121,8 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         }
         public static async Task<string?> GetDepartmentByEmployeeId(int employeeId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
-                "http://127.0.0.1:7001/Employee/GetDepartmentByUserId",
-                HttpMethodsEnum.Get,
-                employeeId.ToString());
+            return await new GetStringAnswerRequester().GetResponce(
+                $"http://127.0.0.1:7001/Employee/GetDepartmentByUserId/{employeeId}", string.Empty);
         }
         public static async Task<string?> AddNewEmployee(EmployeeInfo newEmployee)
         {
@@ -285,38 +292,68 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
                 Console.WriteLine($"Ошибка при получении списка заявок. {ex.Message}");
             }
         }
-        protected static async Task<Application> CancelApplication(int applicationId)
-        {
-            return await UpdateApplication(new UpdateAppDTO { DateClose = DateTime.Now, Id = applicationId, Status = (int)AppStatusEnum.Canceled});
-        }
-        protected static async Task<Application?> ConfirmApplication(int applicationId)
-        {
-            return await UpdateApplication(new UpdateAppDTO
-            {
-                DateConfirm = DateTime.Now,
-                Id = applicationId,
-                Status = (int)AppStatusEnum.WorkСompletionСonfirmed
-            });
-        }
+
         protected async Task PrintFreeApplicationsOfDepartment()
         {
+            try
+            {
+                var depts = await GetAllDepartments();
+                if (depts is not null)
+                {
+                    string? deptName = await GetDepartmentByEmployeeId(_user.Id);
+                    int deptId = depts.Where(u => u.Name == deptName).Select(i => i.Id).First();
+                    List<Application>? apps = await GetOpenedAppByDepartmentId(deptId);
+                    if (apps is not null)
+                    {
+                        foreach (var app in apps)
+                        {
+                            Console.WriteLine($"{app}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("У Вас еще нет зарегистрированных заявок");
+                    }
+                }
 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении списка заявок. {ex.Message}");
+            }
         }
         protected async Task PrintSelfApplicationInWork()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var apps = await GetAppByExecutorId(_user.Id);
+                if (apps is not null)
+                {
+                    foreach (var app in apps)
+                    {
+                        Console.WriteLine($"{app}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("У Вас еще нет взятых в работу заявок");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении списка заявок. {ex.Message}");
+            }
         }
         protected async Task<Application?> GetApplicationInWork(int applicationId)
         {
             return await UpdateApplication(new UpdateAppDTO
             {
-                DateClose = DateTime.Now,
                 Id = applicationId,
                 Status = (int)AppStatusEnum.ExecutorAppointed,
                 ExecutorId = _user.Id
             });
         }
-        protected static async Task<Application?> CompleteApplication(int applicationId)
+        protected async Task<Application?> CompleteApplication(int applicationId)
         {
             return await UpdateApplication(new UpdateAppDTO
             {
@@ -329,12 +366,25 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
             return await UpdateApplication(new UpdateAppDTO
             {
-                DateClose = DateTime.Now,
                 Id = applicationId,
                 Status = (int)AppStatusEnum.PrimaryProcessing,
-                ExecutorId = 0
+                ExecutorId = -1
             }); ;
         }
+        protected static async Task<Application> CancelApplication(int applicationId)
+        {
+            return await UpdateApplication(new UpdateAppDTO { DateClose = DateTime.Now, Id = applicationId, Status = (int)AppStatusEnum.Canceled });
+        }
+        protected static async Task<Application?> ConfirmApplication(int applicationId)
+        {
+            return await UpdateApplication(new UpdateAppDTO
+            {
+                DateConfirm = DateTime.Now,
+                Id = applicationId,
+                Status = (int)AppStatusEnum.WorkСompletionСonfirmed
+            });
+        }
+
         #endregion
     }
 }

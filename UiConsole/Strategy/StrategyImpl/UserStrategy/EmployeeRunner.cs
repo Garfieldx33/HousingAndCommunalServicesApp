@@ -10,13 +10,13 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy;
 internal class EmployeeRunner : UserBase, IUserStrategy
 {
     const string selectStr = 
-        @"Выберите действие: 
-        1 - Просмотреть свободные заявки 
-        2 - Просмотреть свои заявки
-        3 - Взять заявку в работу
-        4 - Завершить заявку
-        5 - Отменить исполнения своей заявки
-        Q - Выход";
+@"Выберите действие: 
+1 - Просмотреть свободные заявки 
+2 - Просмотреть свои заявки
+3 - Взять заявку в работу
+4 - Завершить заявку
+5 - Отменить исполнения своей заявки
+Q - Выход";
     public EmployeeRunner(User user) : base(user)
     {
     }
@@ -24,8 +24,7 @@ internal class EmployeeRunner : UserBase, IUserStrategy
     public async Task RunUser()
     {
         Console.WriteLine("Запуск с правами сотрудника УК");
-        Console.WriteLine($@"Здравствуйте, {_user.FirstName}{_user.SecondName}.
-                                {selectStr}");
+        Console.WriteLine(selectStr);
 
         char s = Console.ReadKey().KeyChar;
         while (s != 'Q')
@@ -47,13 +46,13 @@ internal class EmployeeRunner : UserBase, IUserStrategy
                 case ('4'):
                     await PrintSelfApplicationInWork();
                     Console.WriteLine($"Введите идентификатор заявки, которую хотите завершить");
-                    int completedAppId = int.Parse(Console.ReadLine());
+                    int completedAppId = int.Parse(Console.ReadLine().ToString());
                     await CompleteApplication(completedAppId);
                     break;
                 case ('5'):
                     await PrintSelfApplicationInWork();
                     Console.WriteLine($"Введите идентификатор заявки, которую хотите прекратить выполнять");
-                    int abortAppppId = int.Parse(Console.ReadKey().ToString());
+                    int abortAppppId = int.Parse(Console.ReadLine().ToString());
                     await AbortApplicationExecution(abortAppppId);
                     break;
                 case ('Q'):

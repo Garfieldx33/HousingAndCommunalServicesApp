@@ -9,20 +9,19 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy;
 internal class InhabitantRunner : UserBase, IUserStrategy
 {
     const string selectStr =
-        @"Выберите действие: 
-        1 - Подать заявку 
-        2 - Просмотреть Ваши заявки 
-        3 - Отменить заявку 
-        4 - Подтвердить заявку 
-        Q - Выход";
+@"Выберите действие: 
+1 - Подать заявку 
+2 - Просмотреть Ваши заявки 
+3 - Отменить заявку 
+4 - Подтвердить заявку 
+Q - Выход";
     public InhabitantRunner(User user) : base(user)
     {
     }
     public async Task RunUser()
     {
         Console.WriteLine("Запуск с правами жителя");
-        Console.WriteLine($@"Здравствуйте, {_user.FirstName}{_user.SecondName}.
-                                {selectStr}");
+        Console.WriteLine(selectStr);
 
         char s = Console.ReadKey().KeyChar;
         while (s != 'Q')

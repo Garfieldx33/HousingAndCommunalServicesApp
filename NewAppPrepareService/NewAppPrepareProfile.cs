@@ -11,7 +11,7 @@ namespace NewAppPrepareService
         {
             CreateMap<ApplicationDTO, ApplicationDtoGrpc>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(source => source.StatusId))
-            .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateCreate, DateTimeKind.Utc))));
+                .ForMember(d => d.DateCreate, opt => opt.MapFrom(source => Timestamp.FromDateTime(DateTime.SpecifyKind(source.DateCreate, DateTimeKind.Utc))));
         }
     }
 }

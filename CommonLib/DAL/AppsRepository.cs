@@ -67,7 +67,7 @@ public partial class PostgresRepository
                 { updatedApp.DepartmentId = request.DepartmentId; }
                 if (request.ExecutorId > 0)
                 { updatedApp.ExecutorId = request.ExecutorId; }
-                if(request.ExecutorId == 0)
+                if(request.ExecutorId == -1)
                 { updatedApp.ExecutorId = null; }
                 if (request.DateClose != DateTime.MinValue)
                 { updatedApp.DateClose = request.DateClose; }

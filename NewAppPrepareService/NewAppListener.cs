@@ -153,7 +153,7 @@ namespace NewAppPrepareService
         {
             try
             {
-                _logger.Debug($"Пуболикация заявки с пользователя c Id {newAppDTO.ApplicantId} по эндпоинту {_gRpcConfig.HttpsEndpoint}");
+                _logger.Debug($"Публикация заявки с пользователя c Id {newAppDTO.ApplicantId} по эндпоинту {_gRpcConfig.HttpsEndpoint}");
                 var appGrpcDto = _mapper.Map<ApplicationDtoGrpc>(newAppDTO);
                 using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
                 var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
