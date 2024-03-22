@@ -39,6 +39,7 @@ service DataAccessGrpcService {
   rpc GetDepartmentByUserId (EmployeeInfoRequest) returns (DepartmentReply);
   rpc UpdateEmployee (EmployeeInfoGrpc) returns (EmployeeOperationResultInfo);
   rpc DeleteEmployee (EmployeeInfoRequest) returns (EmployeeOperationResultInfo);
+  rpc GetEmployeeInfoByUsertId (EmployeeInfoRequest) returns (EmployeeInfoGrpc);
 }
 // Request messages
 
@@ -97,7 +98,8 @@ message UserOperationReply {string identificator = 1; string message = 2;}
 //Employers 
 message EmployeeOperationResultInfo { string operation_result = 1; }
 
-message ApplicationGrpc {
+
+message ApplicationGrpc { 
   int32 id = 1;
   string subject = 2;
   string description = 3;

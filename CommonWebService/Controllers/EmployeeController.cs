@@ -22,11 +22,17 @@ namespace CommonWebService.Controllers
         }
         
         [HttpGet("{userId}")]
+
         public async Task<string> GetDepartmentByUserId(int userId)
         {
             return await _employeeService.GetDepartmentByUserId(userId);
         }
 
+        [HttpGet("{userId}")]
+        public async Task<EmployeeInfo> GetEmployeeInfoByUserId(int userId)
+        {
+            return await _employeeService.GetEmployeeInfoByUserId(userId);
+        }
         [HttpPost]
         public async Task<string> AddEmployee([FromBody] EmployeeInfo newEmployee)
         {

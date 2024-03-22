@@ -2,7 +2,7 @@
 
 namespace UiConsole.Strategy.StrategyImpl
 {
-    public class PostNoJsonAnswerRequester<T> : RequesterBase, IRequestStrategy<string>
+    public class PostStringAnswerRequester<T> : RequesterBase, IRequestStrategy<string>
     {
         public async Task<string> GetResponce(string uri, string? content)
         {

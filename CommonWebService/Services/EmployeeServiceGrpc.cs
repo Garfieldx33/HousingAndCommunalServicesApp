@@ -39,6 +39,14 @@ namespace CommonWebService.Services
             return Task.FromResult(resultList);
         }
 
+        public Task<EmployeeInfo> GetEmployeeInfoByUserId(int userId)
+        {
+            using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
+            var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
+            var reply = client.GetEmployeeInfoByUsertId(new EmployeeInfoRequest { SearchingId = userId });
+            return Task.FromResult(_mapper.Map<EmployeeInfo>(reply));
+        }
+
         public Task<string> GetDepartmentByUserId(int userId)
         {
             using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
@@ -62,5 +70,7 @@ namespace CommonWebService.Services
             var reply = client.DeleteEmployee(new EmployeeInfoRequest { SearchingId = employeeUserId });
             return Task.FromResult(reply.OperationResult);
         }
+
+
     }
 }

@@ -32,6 +32,12 @@ namespace DataAccessGrpcService.Services
             return result;
         }
 
+        public override async Task<EmployeeInfoGrpc> GetEmployeeInfoByUsertId(EmployeeInfoRequest request, ServerCallContext context)
+        {
+            EmployeeInfoGrpc result = new();
+            EmployeeInfo employeeInfo = await _repository.GetEmployeeByUserId(request.SearchingId);
+            return _mapper.Map<EmployeeInfoGrpc>(employeeInfo);
+        }
         public override async Task<DepartmentReply> GetDepartmentByUserId(EmployeeInfoRequest request, ServerCallContext context)
         {
             string searchResult = await _repository.GetDepartmentByUserIdAsync(request.SearchingId);

@@ -28,7 +28,7 @@ public partial class PostgresRepository
     public async Task<int> AddNewEmployeeAsync(EmployeeInfo newEmployee, CancellationToken cancellation = default)
     {
         _context.EmployeeInfos.Add(newEmployee);
-        return await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync(cancellation);
     }
 
     public async Task<int> UpdateEmployeeAsync(EmployeeInfo updatingEmployee, CancellationToken cancellation = default)
@@ -58,5 +58,10 @@ public partial class PostgresRepository
             }
         }
         return await Task.FromResult(0);
+    }
+
+    public async Task<EmployeeInfo> GetEmployeeByUserId(int employeeId, CancellationToken cancellation = default)
+    {
+        return await _context.EmployeeInfos.Where(u => u.EmployeeUserId == employeeId).FirstAsync(cancellationToken: cancellation);
     }
 }

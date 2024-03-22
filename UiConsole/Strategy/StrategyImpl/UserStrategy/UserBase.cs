@@ -33,7 +33,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         protected static async Task<string?> AddUserAsync(UserDTO userDTO)
         {
             string userDtoString = JsonConvert.SerializeObject(userDTO);
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>("http://127.0.0.1:7001/Users/AddUser", HttpMethodsEnum.Post, userDtoString);
+            return await new PostStringAnswerRequester<string>().GetResponce("http://127.0.0.1:7001/Users/AddUser", userDtoString);
         }
         protected static async Task<UserDTO?> UpdateUserAsync(UserDTO userDTO)
         {
@@ -42,7 +42,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         }
         protected static async Task<string?> DeleteUserAsync(int userId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>("http://127.0.0.1:7001/Users/DeleteUser", HttpMethodsEnum.Post, userId.ToString());
+            return await new DeleteStringAnswerRequester().GetResponce($"http://127.0.0.1:7001/Users/DeleteUser/{userId}", string.Empty);
         }
 
         //Applications
@@ -69,7 +69,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         }
         protected static async Task<string?> AddNewApp(string newApplicationAsJson)
         {
-            return await new PostNoJsonAnswerRequester<string>().GetResponce("http://127.0.0.1:7771/CreateNewApp/AddNewApp", newApplicationAsJson);
+            return await new PostStringAnswerRequester<string>().GetResponce("http://127.0.0.1:7771/CreateNewApp/AddNewApp", newApplicationAsJson);
         }
 
         //Departments
@@ -105,30 +105,35 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         public static async Task<string?> DeleteDepartment(Department department)
         {
             string deptString = JsonConvert.SerializeObject(department);
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
+            return await new DeleteStringAnswerRequester().GetResponce(
                 $"http://127.0.0.1:7001/Dictionary/DeleteDepartment/{department.Id}",
-                HttpMethodsEnum.Delete,
                 deptString);
         }
 
         //Employers
         public static async Task<List<User>?> GetAllEmployersInDepartment(int departmentId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<User>>("" +
-                "http://127.0.0.1:7001/Employee/GetEmployersByDepartmentId",
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<User>?>("" +
+                $"http://127.0.0.1:7001/Employee/GetEmployersByDepartmentId/{departmentId}",
                 HttpMethodsEnum.Get,
                 departmentId.ToString());
         }
         public static async Task<string?> GetDepartmentByEmployeeId(int employeeId)
         {
-            return await new GetStringAnswerRequester().GetResponce(
+            return await new GetStringAnswerRequester<string>().GetResponce(
                 $"http://127.0.0.1:7001/Employee/GetDepartmentByUserId/{employeeId}", string.Empty);
+        }
+        public static async Task<EmployeeInfo?> GetEmployeeInfoByUserUd(int employeeId)
+        {
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<EmployeeInfo>(
+                $"http://127.0.0.1:7001/Employee/GetEmployeeInfoByUserId/{employeeId}",
+                HttpMethodsEnum.Get,
+                string.Empty);
         }
         public static async Task<string?> AddNewEmployee(EmployeeInfo newEmployee)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
+            return await new PostStringAnswerRequester<string>().GetResponce(
                 "http://127.0.0.1:7001/Employee/AddEmployee",
-                HttpMethodsEnum.Post,
                 JsonConvert.SerializeObject(newEmployee));
         }
         public static async Task<string?> UpdateEmployee(EmployeeInfo employeeInfo)
@@ -140,9 +145,8 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         }
         public static async Task<string?> DeleteEmployee(int employeeId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
-                "http://127.0.0.1:7001/Employee/DeleteEmployee",
-                HttpMethodsEnum.Delete,
+            return await new DeleteStringAnswerRequester().GetResponce(
+                $"http://127.0.0.1:7001/Employee/DeleteEmployee/{employeeId}",
                 employeeId.ToString());
         }
 
@@ -385,6 +389,181 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
             });
         }
 
+        // TODO
+        protected void ProcessApplications()
+        {
+            Console.WriteLine(@"Выберите действие:
+1 - Поиск заявки по номеру
+2 - Добавить заявку
+3 - Изменить статус заявки
+4 - Удалить заявку
+Q - Выход");
+            char choise = Console.ReadKey().KeyChar;
+
+            while (choise != 'Q')
+            {
+                switch (choise)
+                {
+                    case '1':
+                        break;
+                    case '2':
+                        break;
+                    case '3':
+                        break;
+                    case '4':
+                        break;
+                    case 'Q':
+                        break;
+                }
+            }
+        }
+
+        // TODO
+        protected async Task ProcessUsers()
+        {
+            Console.WriteLine(@"Выберите действие:
+1 - Просмотреть всех пользователей
+2 - Добавить пользователя
+3 - Изменить пользователя
+4 - Удалить пользователя
+Q - Выход");
+            char choise = Console.ReadKey().KeyChar;
+
+            while (choise != 'Q')
+            {
+                switch (choise)
+                {
+                    case '1':
+                        break;
+                    case '2':
+                        Console.WriteLine("Введите имя");
+                        string fName = Console.ReadLine();
+
+                        Console.WriteLine("Введите фамилию");
+                        string sName = Console.ReadLine();
+                        int rnd = new Random(999).Next(0, 988);
+                        var insertResult = await AddUserAsync(new UserDTO 
+                        { 
+                            FirstName = fName,
+                            Surname = sName,
+                            UserTypeId = (int)UserTypeEnum.Inhabitant,
+                            Address = $"улица Победы, дом 2, кв.{rnd}",
+                            Balance = 0,
+                            DateOfBirth = new DateTime(1970,5,3),
+                            Email = $"newuser_{rnd}@mail.ru",
+                            Login = $"NewUser_{rnd}",
+                            Password = rnd.ToString(),
+                            Phone = $"+78569851{rnd}"
+                        });
+                        Console.WriteLine(insertResult);
+                        break;
+                    case '3':
+                        break;
+                    case '4':
+                        break;
+                    case 'Q':
+                        break;
+                }
+                choise = Console.ReadKey().KeyChar;
+            }
+
+        }
+
+        // TODO
+        protected void ProcessDepartments()
+        {
+            Console.WriteLine(@"Выберите действие:
+1 - Просмотреть все департаменты
+2 - Добавить департамент
+3 - Изменить департамент
+4 - Удалить департамент
+Q - Выход");
+            char choise = Console.ReadKey().KeyChar;
+
+            while (choise != 'Q')
+            {
+                switch (choise)
+                {
+                    case '1':
+                        break;
+                    case '2':
+                        break;
+                    case '3':
+                        break;
+                    case '4':
+                        break;
+                    case 'Q':
+                        break;
+                }
+            }
+        }
+
+        protected async Task ProcessEmployers()
+        {
+            Console.WriteLine(@"Выберите действие:
+1 - Просмотреть работников 
+2 - Добавить работника в департамент
+3 - Изменить должность работника
+4 - Удалить работника из департамента
+Q - Выход");
+            char choise = Console.ReadKey().KeyChar;
+
+            while (choise != 'Q')
+            {
+                switch (choise)
+                {
+                    case '1':
+                        List<Department?> deptList = await GetAllDepartments();
+                        deptList?.ForEach(async d =>
+                        {
+                            List<User>? users = await GetAllEmployersInDepartment(d.Id);
+                            users?.ForEach(async user =>
+                            {
+                                EmployeeInfo? employeeInfo = await GetEmployeeInfoByUserUd(user.Id);
+                                if (employeeInfo is not null)
+                                {
+                                    Console.WriteLine($"Департамент {d.Name} => {user.FirstName} {user.SecondName} => {employeeInfo.Position}");
+                                }
+                            });
+                        });
+                        break;
+                    case '2':
+                        Console.WriteLine("Выберите департамент");
+                        List<Department?> dList = await GetAllDepartments();
+                        dList?.ForEach(d => Console.WriteLine($"{d.Id} => {d.Name}"));
+                        int dId = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("Выберите пользователя");
+                        List<User> uList = await GetUsersAsync();
+                        uList?.Where(u => u.TypeId != UserTypeEnum.Employee).ToList().ForEach(u => Console.WriteLine($"{u.Id} => {u.FirstName} {u.SecondName}"));
+                        int uId = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("Введите должность");
+                        string position = Console.ReadLine();
+                        var result = await AddNewEmployee(new EmployeeInfo { DepartmentId = dId, EmployeeUserId = uId, Position = position});
+                        Console.WriteLine(result);
+                        break;
+                    case '3':
+                        Console.WriteLine("Введите Id пользователя");
+                        int usId = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Введите должность");
+                        string pos = Console.ReadLine();
+                        var updResult = UpdateEmployee(new EmployeeInfo { EmployeeUserId = usId, Position = pos});
+                        Console.WriteLine(updResult);
+                        break;
+                    case '4':
+                        Console.WriteLine("Введите Id работника");
+                        int deleteUserId = int.Parse(Console.ReadLine());
+                        var deleteResult = await DeleteEmployee(deleteUserId);
+                        break;
+                    case 'Q':
+                        break;
+                    default:
+                        break;
+                }
+                choise = Console.ReadKey().KeyChar;
+            }
+        }
         #endregion
     }
 }

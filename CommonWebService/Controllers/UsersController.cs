@@ -47,7 +47,7 @@ public class UsersController : ControllerBase
         return await _usersService.UpdateUserAsync(updatingUserInfo);
     }
 
-    [HttpDelete]
+    [HttpDelete("{userId}")]
     public async Task<string> DeleteUser([FromBody] int userId)
     {
         var result = await _usersService.DeleteUserAsync(userId);

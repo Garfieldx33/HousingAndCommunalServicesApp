@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace UiConsole.Strategy.StrategyImpl.RequestStrategy
 {
-    public class GetStringAnswerRequester : RequesterBase, IRequestStrategy<string>
+    public class GetStringAnswerRequester<T> : RequesterBase, IRequestStrategy<string?> 
     {
-        public async Task<string> GetResponce(string uri, string? content)
+        public async Task<string?> GetResponce(string uri, string? content)
         {
 
             using HttpResponseMessage responceGet = await _httpClient.GetAsync(uri);

@@ -1,10 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using CommonLib.DTO;
 using CommonLib.Entities;
 using CommonLib.Enums;
-using Newtonsoft.Json;
-using System.Text.Json;
 using UiConsole;
 using UiConsole.Strategy;
 using UiConsole.Strategy.StrategyImpl.UserStrategy;
@@ -16,8 +13,10 @@ using UiConsole.Strategy.StrategyImpl.UserStrategy;
 
 /*string? login = "Json";
 string? pwd = "WhoKnowsKnows";*/
-string? login = "ALeon";
-string? pwd = "somePass";
+/*string? login = "ALeon";
+string? pwd = "somePass";*/
+string? login = "Admin";
+string? pwd = "@sutulaya";
 var userResult = await CommonMethodsInvoker.GetInfoFromWebAPI<User>(
     $@"http://127.0.0.1:7001/Users/GetUserByLoginPwd/{login}/{pwd}",
     HttpMethodsEnum.Get,

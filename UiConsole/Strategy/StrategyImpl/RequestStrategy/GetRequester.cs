@@ -6,10 +6,17 @@ namespace UiConsole.Strategy.StrategyImpl
     {
         public async Task<T?> GetResponce(string uri, string? content)
         {
-            HttpResponseMessage responceGet = await _httpClient.GetAsync(uri);
-            responceGet.EnsureSuccessStatusCode();
-             string data = await responceGet.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(data);
+            try
+            {
+                HttpResponseMessage responceGet = await _httpClient.GetAsync(uri);
+                //responceGet.EnsureSuccessStatusCode();
+                string data = await responceGet.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<T>(data);
+            }
+            catch (Exception ex) 
+            {
+                return default;
+            }
         }
     }
 }
