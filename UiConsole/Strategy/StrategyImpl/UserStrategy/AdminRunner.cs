@@ -42,6 +42,7 @@ Q - Выход";
                     await ProcessEmployers();
                     break;
                 case ('Q'):
+                    Console.WriteLine("До свидания");
                     return;
                 default:
                     Console.WriteLine("Введите валидную команду");

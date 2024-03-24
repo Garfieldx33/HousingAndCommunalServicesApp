@@ -11,6 +11,7 @@ internal class UnknownRunner : UserBase, IUserStrategy
     public Task RunUser()
     {
         Console.WriteLine($"Получите права в кабинете номер 101");
+        Console.WriteLine("До свидания");
         return Task.CompletedTask;
     }
 }
