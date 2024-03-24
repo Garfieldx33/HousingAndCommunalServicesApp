@@ -74,6 +74,20 @@ namespace DataAccessGrpcService.Services
             return responce;
         }
 
+        public override async Task<ApplicationGrpc> GetAppByAppId(GetAppsByAppIdRequest request, ServerCallContext context)
+        {
+            ApplicationGrpc responce = new();
+            try
+            {
+                var result = await _repository.GetApplicationById(request.Id);
+                responce = _mapper.Map<ApplicationGrpc>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex);
+            }
+            return responce;
+        }
         //Update
         public override async Task<UpdateAppReply> UpdateApp(UpdateAppRequest request, ServerCallContext context)
         {
@@ -105,7 +119,6 @@ namespace DataAccessGrpcService.Services
             }
             return responce;
         }
-
         //Delete
         public override async Task<DeleteAppReply> DeleteApp(DeleteAppRequest request, ServerCallContext context)
         {

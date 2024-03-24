@@ -29,6 +29,20 @@ public class ApplicationsController : ControllerBase
         }
     }
 
+    [HttpGet("{applicationId}")]
+    public async Task<ActionResult<Application>> GetAppByApplicationId(int applicationId)
+    {
+        var result = await _appService.GetApplicationByIdAsync(applicationId);
+        if (result != null)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest($"Заявка с ID {applicationId} не найдена");
+        }
+    }
+
     [HttpGet("{departmentId}")]
     public async Task<ActionResult<List<Application>>> GetOpenedAppByDepartmentId(int departmentId)
     {

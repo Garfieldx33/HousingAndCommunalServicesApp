@@ -66,6 +66,15 @@ public class AppServiceGrpc
         return Task.FromResult(resultList);
     }
 
+    public Task<Application> GetApplicationByIdAsync(int appId) 
+    {
+        using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
+        var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
+        var reply = client.GetAppByAppIdAsync(new GetAppsByAppIdRequest { Id = appId });
+        return Task.FromResult(_mapper.Map<Application>(reply));
+
+    }
+
     /*public Task<string> AddAppAsync(AddNewAppRequest request) //Depricated
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);

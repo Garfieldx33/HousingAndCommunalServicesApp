@@ -16,7 +16,30 @@ public partial class PostgresRepository
         return await query.ToListAsync(cancellation);
     }
 
-    public async Task<List<Application>>  GetApplicationsByExecutorId(int executorId, CancellationToken cancellation = default)
+    public async Task<Application> GetApplicationByApplicationId(int appId, CancellationToken cancellation = default)
+    {
+        var query = _context.Apps.AsNoTracking();
+        if (appId > 0)
+        {
+            return await query.Where(q => q.Id == appId).FirstAsync(cancellationToken: cancellation);
+        }
+        return new Application
+        {
+            Id = 0,
+            ApplicantId = 0,
+            ApplicationTypeId = Enums.AppTypeEnum.Unknown,
+            DateClose = null,
+            DateConfirm = null,
+            DateCreate = new DateTime(1970, 1, 1),
+            DepartmentId = 0,
+            Description = string.Empty,
+            ExecutorId = null,
+            Status = Enums.AppStatusEnum.Unknown,
+            Subject = string.Empty,
+        };
+    }
+
+    public async Task<List<Application>> GetApplicationsByExecutorId(int executorId, CancellationToken cancellation = default)
     {
         var query = _context.Apps.AsNoTracking();
         if (executorId > 0)
@@ -67,7 +90,7 @@ public partial class PostgresRepository
                 { updatedApp.DepartmentId = request.DepartmentId; }
                 if (request.ExecutorId > 0)
                 { updatedApp.ExecutorId = request.ExecutorId; }
-                if(request.ExecutorId == -1)
+                if (request.ExecutorId == -1)
                 { updatedApp.ExecutorId = null; }
                 if (request.DateClose != DateTime.MinValue)
                 { updatedApp.DateClose = request.DateClose; }
@@ -95,5 +118,5 @@ public partial class PostgresRepository
         return await Task.FromResult(0);
     }
 
-    
+
 }

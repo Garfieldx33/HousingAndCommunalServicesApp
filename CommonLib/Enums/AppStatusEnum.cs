@@ -4,6 +4,9 @@ namespace CommonLib.Enums;
 
 public enum AppStatusEnum
 {
+    [Description("Неизвествно")]
+    Unknown = 0,
+
     [Description("Первичная обработка")]
     PrimaryProcessing = 1,
 

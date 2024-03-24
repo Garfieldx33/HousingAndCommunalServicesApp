@@ -21,7 +21,7 @@ Q - Выход";
         {
         }
 
-        //To do реализовать
+        //To do проверить
         public async Task RunUser()
         {
             Console.WriteLine($@"Запуск с правами администратора");
@@ -33,9 +33,10 @@ Q - Выход";
                     await ProcessUsers();
                     break;
                 case ('2'):
+                    await ProcessApplications();
                     break;
                 case ('3'):
-
+                    await ProcessDepartments();
                     break;
                 case ('4'):
                     await ProcessEmployers();
@@ -48,7 +49,5 @@ Q - Выход";
             }
 
         }
-
-
     }
 }

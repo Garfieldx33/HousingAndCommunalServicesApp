@@ -4,6 +4,7 @@ using CommonLib.Enums;
 using CommonLib.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
 using System.Net;
 using UiConsole.Strategy.StrategyImpl.RequestStrategy;
 
@@ -58,6 +59,11 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetAppByExecutorId/{executorId}", HttpMethodsEnum.Get, executorId.ToString());
         }
+        protected static async Task<Application?> GetAppByApplicationId(int applicationId)
+        {
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<Application>($"http://127.0.0.1:7001/Applications/GetAppByApplicationId/{applicationId}", HttpMethodsEnum.Get, applicationId.ToString());
+        }
+
         public static async Task<Application?> UpdateApplication(UpdateAppDTO updatingApp)
         {
             string appString = JsonConvert.SerializeObject(updatingApp);
@@ -65,7 +71,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         }
         public static async Task<string?> DeleteApplication(int deletingAppId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>("http://127.0.0.1:7001/Applications/DeleteApplication", HttpMethodsEnum.Delete, deletingAppId.ToString());
+            return await new DeleteStringAnswerRequester().GetResponce($"http://127.0.0.1:7001/Applications/DeleteApplication/{deletingAppId}", string.Empty);
         }
         protected static async Task<string?> AddNewApp(string newApplicationAsJson)
         {
@@ -89,9 +95,8 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         }
         public static async Task<string?> AddDepartment(string departmentName)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
+            return await new PostStringAnswerRequester<string>().GetResponce(
                 "http://127.0.0.1:7001/Dictionary/AddDepartment",
-                HttpMethodsEnum.Post,
                 departmentName);
         }
         public static async Task<Department?> UpdateDepartment(Department department)
@@ -382,15 +387,23 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         protected static async Task<Application?> ConfirmApplication(int applicationId)
         {
             return await UpdateApplication(new UpdateAppDTO
-            {
+            { 
                 DateConfirm = DateTime.Now,
                 Id = applicationId,
                 Status = (int)AppStatusEnum.WorkСompletionСonfirmed
             });
         }
-
-        // TODO
-        protected void ProcessApplications()
+        protected static async Task<Application?> ChangeApplicationStatus(int appId, AppStatusEnum newAppStatus)
+        {
+            return await UpdateApplication(new UpdateAppDTO
+            {
+                Id = appId,
+                Status = (int)newAppStatus
+            });
+        }
+        
+        // надо проверить
+        protected async Task ProcessApplications()
         {
             Console.WriteLine(@"Выберите действие:
 1 - Поиск заявки по номеру
@@ -405,72 +418,132 @@ Q - Выход");
                 switch (choise)
                 {
                     case '1':
+                        Console.WriteLine("Введите номер заяки для поиска");
+                        int appIdSrch = int.Parse(Console.ReadLine());
+                        var srchAppRes = await GetAppByApplicationId(appIdSrch);
+                        if (srchAppRes is not null)
+                        {
+                            Console.WriteLine(srchAppRes.ToString());
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Заявка с ID {appIdSrch} не найдена");
+                        }
                         break;
                     case '2':
+                        ApplicationDTO? newApp = await CreateAppNewApplication();
+                        if (newApp != null)
+                        {
+                            string jsonApp = JsonConvert.SerializeObject(newApp);
+                            Console.WriteLine(jsonApp);
+                            var addingResult = await AddNewApp(jsonApp);
+                            Console.WriteLine(addingResult);
+                        }
                         break;
                     case '3':
+                        Console.WriteLine("Введите номер заявки");
+                        int changeAppId = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Введите Id нового статуса заявки");
+                        var statuses = await GetAppStatuses();
+                        int newAppStatusId = int.Parse(Console.ReadLine());
+                        if (statuses.ContainsKey(newAppStatusId))
+                        {
+                            if (changeAppId != 0)
+                            {
+                                var changedApp = await ChangeApplicationStatus(changeAppId, (AppStatusEnum)newAppStatusId);
+                                if (changedApp is not null)
+                                {
+                                    Console.WriteLine($"Заявка с ID {changedApp.Id} в статусе " +
+                                        $"{EnumConverter.GetEnumDescription((AppStatusEnum)Enum.Parse(typeof(AppStatusEnum), changedApp.Status.ToString()))}");
+                                }
+                            }
+                        }
+                      
                         break;
                     case '4':
+                        Console.WriteLine($"Ведите номер заявки, которую хотите удалить ");
+                        int delAppId = int.Parse(Console.ReadLine());
+                        if (delAppId > 0 )
+                        {
+                            var delResult = await DeleteApplication(delAppId);
+                            Console.WriteLine(delResult);
+                        }
                         break;
                     case 'Q':
                         break;
                 }
+                Console.WriteLine("Введите команду");
+                choise = Console.ReadKey().KeyChar;
             }
         }
-
-        // TODO
-        protected async Task ProcessUsers()
+        // надо проверить
+        protected static async Task ProcessUsers()
         {
-            Console.WriteLine(@"Выберите действие:
+            try
+            {
+                Console.WriteLine(@"Выберите действие:
 1 - Просмотреть всех пользователей
 2 - Добавить пользователя
 3 - Изменить пользователя
 4 - Удалить пользователя
 Q - Выход");
-            char choise = Console.ReadKey().KeyChar;
-
-            while (choise != 'Q')
-            {
-                switch (choise)
+                char choise = Console.ReadKey().KeyChar;
+                while (choise != 'Q')
                 {
-                    case '1':
-                        break;
-                    case '2':
-                        Console.WriteLine("Введите имя");
-                        string fName = Console.ReadLine();
+                    switch (choise)
+                    {
+                        case '1':
+                            var users = await GetUsersAsync();
+                            foreach (User u in users)
+                            {
+                                Console.WriteLine(u.ToString());
+                            }
+                            break;
+                        case '2':
+                            Console.WriteLine("Введите имя");
+                            string fName = Console.ReadLine();
 
-                        Console.WriteLine("Введите фамилию");
-                        string sName = Console.ReadLine();
-                        int rnd = new Random(999).Next(0, 988);
-                        var insertResult = await AddUserAsync(new UserDTO 
-                        { 
-                            FirstName = fName,
-                            Surname = sName,
-                            UserTypeId = (int)UserTypeEnum.Inhabitant,
-                            Address = $"улица Победы, дом 2, кв.{rnd}",
-                            Balance = 0,
-                            DateOfBirth = new DateTime(1970,5,3),
-                            Email = $"newuser_{rnd}@mail.ru",
-                            Login = $"NewUser_{rnd}",
-                            Password = rnd.ToString(),
-                            Phone = $"+78569851{rnd}"
-                        });
-                        Console.WriteLine(insertResult);
-                        break;
-                    case '3':
-                        break;
-                    case '4':
-                        break;
-                    case 'Q':
-                        break;
+                            Console.WriteLine("Введите фамилию");
+                            string sName = Console.ReadLine();
+                            int rnd = new Random(999).Next(0, 988);
+                            var insertResult = await AddUserAsync(new UserDTO
+                            {
+                                FirstName = fName,
+                                Surname = sName,
+                                UserTypeId = (int)UserTypeEnum.Inhabitant,
+                                Address = $"улица Победы, дом 2, кв.{rnd}",
+                                Balance = 0,
+                                DateOfBirth = new DateTime(1970, 5, 3),
+                                Email = $"user_{rnd}@mail.ru",
+                                Login = $"User_{rnd}",
+                                Password = rnd.ToString(),
+                                Phone = $"+78569851{rnd}"
+                            });
+                            Console.WriteLine(insertResult);
+                            break;
+                        case '3':
+                            Console.WriteLine($"Люди просто так не меняются =)");
+                            break;
+                        case '4':
+                            Console.WriteLine("Выберите ID пользователя для удаления");
+                            int delUserId = Console.ReadKey().KeyChar;
+                            string delResul = await DeleteUserAsync(delUserId);
+                            Console.WriteLine(delResul);
+                            break;
+                        case 'Q':
+                            break;
+                    }
+                    Console.WriteLine("Введите команду");
+                    choise = Console.ReadKey().KeyChar;
                 }
-                choise = Console.ReadKey().KeyChar;
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
-
-        // TODO
-        protected void ProcessDepartments()
+        // надо проверить
+        protected static async Task ProcessDepartments()
         {
             Console.WriteLine(@"Выберите действие:
 1 - Просмотреть все департаменты
@@ -485,83 +558,145 @@ Q - Выход");
                 switch (choise)
                 {
                     case '1':
+                        List<Department> departments = await GetAllDepartments();
+                        foreach (var dept in departments)
+                        {
+                            Console.WriteLine($"{dept.Id} => {dept.Name}");
+                        }
                         break;
                     case '2':
+                        Console.WriteLine("Введите название нового департамента");
+                        string newDepartmentName = Console.ReadLine();
+                        var addResult = AddDepartment(newDepartmentName);
+                        Console.WriteLine(addResult);
                         break;
                     case '3':
+                        List<Department> departmentsUpd = await GetAllDepartments();
+                        foreach (var dept in departmentsUpd)
+                        {
+                            Console.WriteLine($"{dept.Id} => {dept.Name}");
+                        }
+                        Console.WriteLine("Выберите департамент, который хотите изменить");
+                        int selDeptId= int.Parse(Console.ReadLine());
+                        var selDept = departmentsUpd.Find(i => i.Id == selDeptId);
+                        if (selDept is not null)
+                        {
+                            Console.WriteLine("Введите новое название департамента");
+                            
+                            string updDeptName = Console.ReadLine();
+                            var updDept = new Department { Id = selDept.Id, Name = updDeptName };
+                            var updResult = await UpdateDepartment(updDept);
+                            if (updResult is not null)
+                            {
+                                if (updResult.Equals(updDept))
+                                {
+                                    Console.WriteLine($"Название департамента изменено с {selDept.Name} на {updResult.Name}");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Не удалось обновить название департамента");
+                            }
+                        }
                         break;
                     case '4':
+                        List<Department> departmentsDel = await GetAllDepartments();
+                        foreach (var dept in departmentsDel)
+                        {
+                            Console.WriteLine($"{dept.Id} => {dept.Name}");
+                        }
+                        Console.WriteLine("Выберите департамент, который хотите удалить");
+                        int delDeptId = int.Parse(Console.ReadLine());
+                        var delDept = departmentsDel.Find(i => i.Id == delDeptId);
+                        if (delDept is not null)
+                        {
+                            var delResult = await DeleteDepartment(delDept);
+                            Console.WriteLine(delResult);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Департамент не найден");
+                        }
                         break;
                     case 'Q':
-                        break;
+                        return;
                 }
+                Console.WriteLine("Введите команду");
+                choise = Console.ReadKey().KeyChar;
             }
         }
-
-        protected async Task ProcessEmployers()
+        protected static async Task ProcessEmployers()
         {
-            Console.WriteLine(@"Выберите действие:
+            try
+            {
+                Console.WriteLine(@"Выберите действие:
 1 - Просмотреть работников 
 2 - Добавить работника в департамент
 3 - Изменить должность работника
 4 - Удалить работника из департамента
 Q - Выход");
-            char choise = Console.ReadKey().KeyChar;
+                char choise = Console.ReadKey().KeyChar;
 
-            while (choise != 'Q')
-            {
-                switch (choise)
+                while (choise != 'Q')
                 {
-                    case '1':
-                        List<Department?> deptList = await GetAllDepartments();
-                        deptList?.ForEach(async d =>
-                        {
-                            List<User>? users = await GetAllEmployersInDepartment(d.Id);
-                            users?.ForEach(async user =>
+                    switch (choise)
+                    {
+                        case '1':
+                            List<Department?> deptList = await GetAllDepartments();
+                            deptList?.ForEach(async d =>
                             {
-                                EmployeeInfo? employeeInfo = await GetEmployeeInfoByUserUd(user.Id);
-                                if (employeeInfo is not null)
+                                List<User>? users = await GetAllEmployersInDepartment(d.Id);
+                                users?.ForEach(async user =>
                                 {
-                                    Console.WriteLine($"Департамент {d.Name} => {user.FirstName} {user.SecondName} => {employeeInfo.Position}");
-                                }
+                                    EmployeeInfo? employeeInfo = await GetEmployeeInfoByUserUd(user.Id);
+                                    if (employeeInfo is not null)
+                                    {
+                                        Console.WriteLine($"Департамент {d.Name} => {user.FirstName} {user.SecondName} => {employeeInfo.Position}");
+                                    }
+                                });
                             });
-                        });
-                        break;
-                    case '2':
-                        Console.WriteLine("Выберите департамент");
-                        List<Department?> dList = await GetAllDepartments();
-                        dList?.ForEach(d => Console.WriteLine($"{d.Id} => {d.Name}"));
-                        int dId = int.Parse(Console.ReadLine());
+                            break;
+                        case '2':
+                            Console.WriteLine("Выберите департамент");
+                            List<Department?> dList = await GetAllDepartments();
+                            dList?.ForEach(d => Console.WriteLine($"{d.Id} => {d.Name}"));
+                            int dId = int.Parse(Console.ReadLine());
 
-                        Console.WriteLine("Выберите пользователя");
-                        List<User> uList = await GetUsersAsync();
-                        uList?.Where(u => u.TypeId != UserTypeEnum.Employee).ToList().ForEach(u => Console.WriteLine($"{u.Id} => {u.FirstName} {u.SecondName}"));
-                        int uId = int.Parse(Console.ReadLine());
+                            Console.WriteLine("Выберите пользователя");
+                            List<User> uList = await GetUsersAsync();
+                            uList?.Where(u => u.TypeId != UserTypeEnum.Employee).ToList().ForEach(u => Console.WriteLine($"{u.Id} => {u.FirstName} {u.SecondName}"));
+                            int uId = int.Parse(Console.ReadLine());
 
-                        Console.WriteLine("Введите должность");
-                        string position = Console.ReadLine();
-                        var result = await AddNewEmployee(new EmployeeInfo { DepartmentId = dId, EmployeeUserId = uId, Position = position});
-                        Console.WriteLine(result);
-                        break;
-                    case '3':
-                        Console.WriteLine("Введите Id пользователя");
-                        int usId = int.Parse(Console.ReadLine());
-                        Console.WriteLine("Введите должность");
-                        string pos = Console.ReadLine();
-                        var updResult = UpdateEmployee(new EmployeeInfo { EmployeeUserId = usId, Position = pos});
-                        Console.WriteLine(updResult);
-                        break;
-                    case '4':
-                        Console.WriteLine("Введите Id работника");
-                        int deleteUserId = int.Parse(Console.ReadLine());
-                        var deleteResult = await DeleteEmployee(deleteUserId);
-                        break;
-                    case 'Q':
-                        break;
-                    default:
-                        break;
+                            Console.WriteLine("Введите должность");
+                            string position = Console.ReadLine();
+                            var result = await AddNewEmployee(new EmployeeInfo { DepartmentId = dId, EmployeeUserId = uId, Position = position });
+                            Console.WriteLine(result);
+                            break;
+                        case '3':
+                            Console.WriteLine("Введите Id пользователя");
+                            int usId = int.Parse(Console.ReadLine());
+                            Console.WriteLine("Введите должность");
+                            string pos = Console.ReadLine();
+                            var updResult = UpdateEmployee(new EmployeeInfo { EmployeeUserId = usId, Position = pos });
+                            Console.WriteLine(updResult);
+                            break;
+                        case '4':
+                            Console.WriteLine("Введите Id работника");
+                            int deleteUserId = int.Parse(Console.ReadLine());
+                            var deleteResult = await DeleteEmployee(deleteUserId);
+                            break;
+                        case 'Q':
+                            break;
+                        default:
+                            break;
+                    }
+                    Console.WriteLine("Введите команду");
+                    choise = Console.ReadKey().KeyChar;
                 }
-                choise = Console.ReadKey().KeyChar;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
         #endregion

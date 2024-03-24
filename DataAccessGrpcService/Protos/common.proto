@@ -14,6 +14,7 @@ service DataAccessGrpcService {
 
  //Applications
   rpc GetAppsByUserId (GetAppsByUserIdRequest) returns (AppsListReply);
+  rpc GetAppByAppId (GetAppsByAppIdRequest) returns (ApplicationGrpc);
   rpc AddNewApp (AddNewAppRequest) returns (AddNewAppReply);
   rpc UpdateApp (UpdateAppRequest) returns (UpdateAppReply);
   rpc DeleteApp (DeleteAppRequest) returns (DeleteAppReply);
@@ -46,8 +47,8 @@ service DataAccessGrpcService {
 //Applications
 message GetAppsByUserIdRequest { int32 applicant_id = 1;  }
 message GetOpenAppsByDepartmentIdRequest { int32 department_id = 1; }
-message GetAppsByExecutorIdRequest { int32 executor_id =1; }
-
+message GetAppsByExecutorIdRequest { int32 executor_id = 1; }
+message GetAppsByAppIdRequest { int32 id = 1;  }
 message AddNewAppRequest { ApplicationDtoGrpc application_dto = 1; }
 message UpdateAppRequest {
   int32 status = 1;

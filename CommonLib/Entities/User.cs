@@ -18,4 +18,9 @@ public class User
     public float Balance { get; set; }
     public int MessagingMethodId { get; set; } = 1;
     public string MessagingDestination { get; set; } = string.Empty;
+
+    public override string ToString()
+    {
+        return $" {Id} | {FirstName} | {SecondName} | {DateOfBirth} | {Address} | {Phone} | {Email} | {RegistrationDate} | {TypeId} | {Login} | {Password} | {Balance} | {MessagingMethodId} | {MessagingDestination}";
+    }
 }
