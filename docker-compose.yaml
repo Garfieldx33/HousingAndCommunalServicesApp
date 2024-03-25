@@ -1,0 +1,13 @@
+services:
+  dataaccessgrpcservice:
+    image: "dataaccessgrpcservice:dev"
+    ports:
+      - 7001:80
+    environment:
+      - ConnectionStrings__SrcConnectionString=Host=192.168.50.175;Port=5432;database=db_edu;User ID=postgres;password=postgres;
+  commonwebservice:
+    image: "commonwebservice:dev"
+    ports:
+      - 7080:80
+    environment:
+      - gRpcConfig__HttpsEndpoint=http://dataaccessgrpcservice:80;

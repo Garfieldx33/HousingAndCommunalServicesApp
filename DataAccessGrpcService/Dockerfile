@@ -9,9 +9,9 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["DataAccessGrpcService/DataAccessGrpcService.csproj", "DataAccessGrpcService/"]
-COPY ["CommonGrpcService/CommonGrpcService.csproj", "CommonGrpcService/"]
+#COPY ["CommonGrpcService/CommonGrpcService.csproj", "CommonGrpcService/"]
 COPY ["CommonLib/CommonLib.csproj", "CommonLib/"]
-RUN dotnet restore "./DataAccessGrpcService/./DataAccessGrpcService.csproj"
+RUN dotnet restore "./DataAccessGrpcService/DataAccessGrpcService.csproj"
 COPY . .
 WORKDIR "/src/DataAccessGrpcService"
 RUN dotnet build "./DataAccessGrpcService.csproj" -c $BUILD_CONFIGURATION -o /app/build

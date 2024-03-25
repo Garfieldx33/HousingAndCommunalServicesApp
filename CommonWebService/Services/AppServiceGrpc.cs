@@ -66,12 +66,13 @@ public class AppServiceGrpc
         return Task.FromResult(resultList);
     }
 
-    public Task<Application> GetApplicationByIdAsync(int appId) 
+    public async Task<Application> GetApplicationByIdAsync(int appId) 
     {
         using var channel = GrpcChannel.ForAddress(_gRpcConfig.HttpsEndpoint);
         var client = new DataAccessGrpcService.DataAccessGrpcServiceClient(channel);
-        var reply = client.GetAppByAppIdAsync(new GetAppsByAppIdRequest { Id = appId });
-        return Task.FromResult(_mapper.Map<Application>(reply));
+        var reply = await client.GetAppByAppIdAsync(new GetAppsByAppIdRequest { Id = appId });
+        var replyResult = _mapper.Map<Application>(reply);
+        return replyResult;
 
     }
 

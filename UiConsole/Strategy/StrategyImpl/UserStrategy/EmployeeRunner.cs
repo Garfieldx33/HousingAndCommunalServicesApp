@@ -68,8 +68,4 @@ Q - Выход";
         Console.ReadKey();
     }
 
-
-
-
-
 }

@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonWebService", "CommonW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UiConsole", "UiConsole\UiConsole.csproj", "{0B7BC77E-8FF2-44B0-B2F3-7914B43A17C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationWorkerService", "NotificationWorkerService\NotificationWorkerService.csproj", "{DD8C4D99-1180-4CC9-A225-72EA8CA8EC0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationWorkerService", "NotificationWorkerService\NotificationWorkerService.csproj", "{DD8C4D99-1180-4CC9-A225-72EA8CA8EC0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{53F56990-9411-4108-A773-EC3FE1B3B212}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
