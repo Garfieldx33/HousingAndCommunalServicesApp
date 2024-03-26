@@ -11,3 +11,11 @@ services:
       - 7080:80
     environment:
       - gRpcConfig__HttpsEndpoint=http://dataaccessgrpcservice:80;
+  incomingappsservice:
+    image: "incomingappsservice:dev"
+    ports:
+      - 7081:80
+  newappprepareservice:
+    image: "newappprepareservice:dev"
+    environment:
+    - gRpcConfig__HttpsEndpoint=http://dataaccessgrpcservice:80;
