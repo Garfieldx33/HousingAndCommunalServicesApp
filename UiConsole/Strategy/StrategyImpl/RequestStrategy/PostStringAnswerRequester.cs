@@ -8,7 +8,7 @@ namespace UiConsole.Strategy.StrategyImpl
         public async Task<string> GetResponce(string uri, string? content)
         {
             var con = new StringContent(content, Encoding.UTF8, "application/json");
-            HttpResponseMessage responcePut = await _httpClient.PatchAsync(uri, con);
+            HttpResponseMessage responcePut = await _httpClient.PostAsync(uri, con);
             return await responcePut.Content.ReadAsStringAsync();
         }
     }

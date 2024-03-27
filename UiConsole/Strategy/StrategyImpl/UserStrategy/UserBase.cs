@@ -24,7 +24,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         protected static async Task<List<User>> GetUsersAsync()
         {
             var users = new List<User>();
-            var rawData = await CommonMethodsInvoker.GetInfoFromWebAPI<List<User>>("http://127.0.0.1:7001/Users/GetAllUsers", HttpMethodsEnum.Get, string.Empty);
+            var rawData = await CommonMethodsInvoker.GetInfoFromWebAPI<List<User>>("http://192.168.50.175:7080/Users/GetAllUsers", HttpMethodsEnum.Get, string.Empty);
             if (rawData is not null)
             {
                 users = rawData;
@@ -34,76 +34,76 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         protected static async Task<string?> AddUserAsync(UserDTO userDTO)
         {
             string userDtoString = JsonConvert.SerializeObject(userDTO);
-            return await new PostStringAnswerRequester<string>().GetResponce("http://127.0.0.1:7001/Users/AddUser", userDtoString);
+            return await new PostStringAnswerRequester<string>().GetResponce("http://192.168.50.175:7080/Users/AddUser", userDtoString);
         }
         protected static async Task<UserDTO?> UpdateUserAsync(UserDTO userDTO)
         {
             string userDtoString = JsonConvert.SerializeObject(userDTO);
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<UserDTO>("http://127.0.0.1:7001/Users/UpdateUserInfo", HttpMethodsEnum.Patch, userDtoString);
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<UserDTO>("http://192.168.50.175:7080/Users/UpdateUserInfo", HttpMethodsEnum.Patch, userDtoString);
         }
         protected static async Task<string?> DeleteUserAsync(int userId)
         {
-            return await new DeleteStringAnswerRequester().GetResponce($"http://127.0.0.1:7001/Users/DeleteUser/{userId}", string.Empty);
+            return await new DeleteStringAnswerRequester().GetResponce($"http://192.168.50.175:7080/Users/DeleteUser/{userId}", string.Empty);
         }
 
         //Applications
         protected static async Task<List<Application>?> GetAppByApplicantId(int applicantId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetAppByApplicantId/{applicantId}", HttpMethodsEnum.Get, applicantId.ToString());
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://192.168.50.175:7080/Applications/GetAppByApplicantId/{applicantId}", HttpMethodsEnum.Get, applicantId.ToString());
         }
         protected static async Task<List<Application>?> GetOpenedAppByDepartmentId(int departmentId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetOpenedAppByDepartmentId/{departmentId}", HttpMethodsEnum.Get, departmentId.ToString());
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://192.168.50.175:7080/Applications/GetOpenedAppByDepartmentId/{departmentId}", HttpMethodsEnum.Get, departmentId.ToString());
         }
         protected static async Task<List<Application>?> GetAppByExecutorId(int executorId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://127.0.0.1:7001/Applications/GetAppByExecutorId/{executorId}", HttpMethodsEnum.Get, executorId.ToString());
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Application>>($"http://192.168.50.175:7080/Applications/GetAppByExecutorId/{executorId}", HttpMethodsEnum.Get, executorId.ToString());
         }
         protected static async Task<Application?> GetAppByApplicationId(int applicationId)
         {
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<Application>($"http://127.0.0.1:7001/Applications/GetAppByApplicationId/{applicationId}", HttpMethodsEnum.Get, applicationId.ToString());
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<Application>($"http://192.168.50.175:7080/Applications/GetAppByApplicationId/{applicationId}", HttpMethodsEnum.Get, applicationId.ToString());
         }
 
         public static async Task<Application?> UpdateApplication(UpdateAppDTO updatingApp)
         {
             string appString = JsonConvert.SerializeObject(updatingApp);
-            return await CommonMethodsInvoker.GetInfoFromWebAPI<Application>("http://127.0.0.1:7001/Applications/UpdateApplication", HttpMethodsEnum.Patch, appString);
+            return await CommonMethodsInvoker.GetInfoFromWebAPI<Application>("http://192.168.50.175:7080/Applications/UpdateApplication", HttpMethodsEnum.Patch, appString);
         }
         public static async Task<string?> DeleteApplication(int deletingAppId)
         {
-            return await new DeleteStringAnswerRequester().GetResponce($"http://127.0.0.1:7001/Applications/DeleteApplication/{deletingAppId}", string.Empty);
+            return await new DeleteStringAnswerRequester().GetResponce($"http://192.168.50.175:7080/Applications/DeleteApplication/{deletingAppId}", string.Empty);
         }
         protected static async Task<string?> AddNewApp(string newApplicationAsJson)
         {
-            return await new PostStringAnswerRequester<string>().GetResponce("http://127.0.0.1:7771/CreateNewApp/AddNewApp", newApplicationAsJson);
+            return await new PostStringAnswerRequester<string>().GetResponce("http://192.168.50.175:7081/CreateNewApp/AddNewApp", newApplicationAsJson);
         }
 
         //Departments
         public static async Task<Department?> GetDepartmentById(int departmentId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Department>(
-                $"http://127.0.0.1:7001/Dictionary/GetDepartmentById/{departmentId}",
+                $"http://192.168.50.175:7080/Dictionary/GetDepartmentById/{departmentId}",
                 HttpMethodsEnum.Get,
                 string.Empty);
         }
         public static async Task<List<Department>?> GetAllDepartments()
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<List<Department>>(
-                "http://127.0.0.1:7001/Dictionary/GetAllDepartments",
+                "http://192.168.50.175:7080/Dictionary/GetAllDepartments",
                 HttpMethodsEnum.Get,
                 string.Empty);
         }
         public static async Task<string?> AddDepartment(string departmentName)
         {
             return await new PostStringAnswerRequester<string>().GetResponce(
-                "http://127.0.0.1:7001/Dictionary/AddDepartment",
+                "http://192.168.50.175:7080/Dictionary/AddDepartment",
                 departmentName);
         }
         public static async Task<Department?> UpdateDepartment(Department department)
         {
             string deptString = JsonConvert.SerializeObject(department);
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Department>(
-                "http://127.0.0.1:7001/Dictionary/UpdateDepartment",
+                "http://192.168.50.175:7080/Dictionary/UpdateDepartment",
                 HttpMethodsEnum.Patch,
                 deptString);
         }
@@ -111,7 +111,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         {
             string deptString = JsonConvert.SerializeObject(department);
             return await new DeleteStringAnswerRequester().GetResponce(
-                $"http://127.0.0.1:7001/Dictionary/DeleteDepartment/{department.Id}",
+                $"http://192.168.50.175:7080/Dictionary/DeleteDepartment/{department.Id}",
                 deptString);
         }
 
@@ -119,39 +119,39 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         public static async Task<List<User>?> GetAllEmployersInDepartment(int departmentId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<List<User>?>("" +
-                $"http://127.0.0.1:7001/Employee/GetEmployersByDepartmentId/{departmentId}",
+                $"http://192.168.50.175:7080/Employee/GetEmployersByDepartmentId/{departmentId}",
                 HttpMethodsEnum.Get,
                 departmentId.ToString());
         }
         public static async Task<string?> GetDepartmentByEmployeeId(int employeeId)
         {
             return await new GetStringAnswerRequester<string>().GetResponce(
-                $"http://127.0.0.1:7001/Employee/GetDepartmentByUserId/{employeeId}", string.Empty);
+                $"http://192.168.50.175:7080/Employee/GetDepartmentByUserId/{employeeId}", string.Empty);
         }
         public static async Task<EmployeeInfo?> GetEmployeeInfoByUserUd(int employeeId)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<EmployeeInfo>(
-                $"http://127.0.0.1:7001/Employee/GetEmployeeInfoByUserId/{employeeId}",
+                $"http://192.168.50.175:7080/Employee/GetEmployeeInfoByUserId/{employeeId}",
                 HttpMethodsEnum.Get,
                 string.Empty);
         }
         public static async Task<string?> AddNewEmployee(EmployeeInfo newEmployee)
         {
             return await new PostStringAnswerRequester<string>().GetResponce(
-                "http://127.0.0.1:7001/Employee/AddEmployee",
+                "http://192.168.50.175:7080/Employee/AddEmployee",
                 JsonConvert.SerializeObject(newEmployee));
         }
         public static async Task<string?> UpdateEmployee(EmployeeInfo employeeInfo)
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<string>(
-                "http://127.0.0.1:7001/Employee/UpdateEmployee",
+                "http://192.168.50.175:7080/Employee/UpdateEmployee",
                 HttpMethodsEnum.Patch,
                 JsonConvert.SerializeObject(employeeInfo));
         }
         public static async Task<string?> DeleteEmployee(int employeeId)
         {
             return await new DeleteStringAnswerRequester().GetResponce(
-                $"http://127.0.0.1:7001/Employee/DeleteEmployee/{employeeId}",
+                $"http://192.168.50.175:7080/Employee/DeleteEmployee/{employeeId}",
                 employeeId.ToString());
         }
 
@@ -159,21 +159,21 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
         public static async Task<Dictionary<int, string>?> GetAppStatuses()
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Dictionary<int, string>>(
-                "http://127.0.0.1:7001/Dictionary/GetAppStatuses",
+                "http://192.168.50.175:7080/Dictionary/GetAppStatuses",
                 HttpMethodsEnum.Post,
                 string.Empty);
         }
         public static async Task<Dictionary<int, string>?> GetAppTypes()
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Dictionary<int, string>>(
-                "http://127.0.0.1:7001/Dictionary/GetAppTypes",
+                "http://192.168.50.175:7080/Dictionary/GetAppTypes",
                 HttpMethodsEnum.Get,
                 string.Empty);
         }
         public static async Task<Dictionary<int, string>?> GetUserTypes()
         {
             return await CommonMethodsInvoker.GetInfoFromWebAPI<Dictionary<int, string>>(
-                "http://127.0.0.1:7001/Dictionary/GetUserTypes",
+                "http://192.168.50.175:7080/Dictionary/GetUserTypes",
                 HttpMethodsEnum.Get,
                 string.Empty);
         }
@@ -222,7 +222,7 @@ namespace UiConsole.Strategy.StrategyImpl.UserStrategy
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Не удалось создать заявку. {ex.Message}");
+                Console.WriteLine($"Не удалось создать заявку. {ex.Message}{ex.StackTrace}");
             }
             return null;
         }

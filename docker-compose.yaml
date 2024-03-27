@@ -8,14 +8,14 @@ services:
   commonwebservice:
     image: "commonwebservice:dev"
     ports:
-      - 7080:80
+      - 7080:7000
     environment:
-      - gRpcConfig__HttpsEndpoint=http://dataaccessgrpcservice:80;
+      - gRpcConfig__HttpsEndpoint=http://dataaccessgrpcservice:80
   incomingappsservice:
     image: "incomingappsservice:dev"
     ports:
-      - 7081:80
+      - 7081:7770
   newappprepareservice:
     image: "newappprepareservice:dev"
     environment:
-    - gRpcConfig__HttpsEndpoint=http://dataaccessgrpcservice:80;
+    - gRpcConfig__HttpsEndpoint=http://dataaccessgrpcservice:80

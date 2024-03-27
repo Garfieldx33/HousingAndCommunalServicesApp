@@ -12,7 +12,7 @@ namespace UiConsole.Strategy.StrategyImpl.RequestStrategy
         {
 
             var con = new StringContent(content, Encoding.UTF8, "application/json");
-            using HttpResponseMessage responcePost = await _httpClient.PostAsync(uri, con);
+            using HttpResponseMessage responcePost = await _httpClient.PatchAsync(uri, con);
             {
                 return responcePost.StatusCode == System.Net.HttpStatusCode.OK ?
                     "Заявка отправлена на обработку" : "Ошибка при регистрации заявки, попробуйте позже";
