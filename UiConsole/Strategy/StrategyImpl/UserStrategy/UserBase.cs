@@ -505,7 +505,7 @@ Q - Выход");
 
                             Console.WriteLine("Введите фамилию");
                             string sName = Console.ReadLine();
-                            int rnd = new Random(999).Next(0, 988);
+                            int rnd = new Random().Next(0, 988);
                             var insertResult = await AddUserAsync(new UserDTO
                             {
                                 FirstName = fName,

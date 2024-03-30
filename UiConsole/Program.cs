@@ -5,22 +5,14 @@ using CommonLib.Enums;
 using UiConsole;
 using UiConsole.Strategy;
 using UiConsole.Strategy.StrategyImpl.UserStrategy;
-//JsonConvert.SerializeObject(new AuthDTO { Login = login, Pwd = pwd })
+
 Console.Write("Логин: ");
 string? login = Console.ReadLine();
 Console.Write("Пароль: ");
 string? pwd = Console.ReadLine();
 
-/*string? login = "Json";
-string? pwd = "WhoKnowsKnows";*/
-/*string? login = "ALeon";
-string? pwd = "somePass";
-/*string? login = "Admin";
-string? pwd = "@sutulaya";*/
 var userResult = await CommonMethodsInvoker.GetInfoFromWebAPI<User>(
-    $@"http://192.168.50.175:7080/Users/GetUserByLoginPwd/{login}/{pwd}",
-    HttpMethodsEnum.Get,
-null);
+    $@"http://192.168.50.175:7080/Users/GetUserByLoginPwd/{login}/{pwd}", HttpMethodsEnum.Get, null);
 if (userResult != null)
 {
     User userInfo = userResult;
