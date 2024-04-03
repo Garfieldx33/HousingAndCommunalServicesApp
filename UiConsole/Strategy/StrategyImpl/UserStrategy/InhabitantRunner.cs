@@ -33,9 +33,12 @@ Q - Выход";
                     if (newApp != null)
                     {
                         string jsonApp = JsonConvert.SerializeObject(newApp);
-                        Console.WriteLine(jsonApp);
-                        var addingResult = await AddNewApp(jsonApp);
-                        Console.WriteLine(addingResult);
+                        for (int i = 0;i < 10;i++)
+                        {
+                            var addingResult = await AddNewApp(jsonApp);
+                            Console.WriteLine(jsonApp);
+                            Console.WriteLine("Заявка отправлена на обработку");
+                        }
                     }
                     break;
                 case ('2'):
