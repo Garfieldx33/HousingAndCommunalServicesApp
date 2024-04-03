@@ -17,6 +17,7 @@ public abstract class NotificationServiceBase : INotificationService, IDisposabl
     private IConnection? RabbitConnection;
     private IModel? Channel;
     private EventingBasicConsumer _consumer;
+    object _messageLocker = new();
     public NotificationServiceBase(IOptions<RabbitMqConfig> rabbitConfig)
     {
         _incomingExchageConfig = rabbitConfig.Value;
@@ -114,15 +115,19 @@ public abstract class NotificationServiceBase : INotificationService, IDisposabl
 
     protected void ReceivedNewAppData(object? sender, BasicDeliverEventArgs e)
     {
+        Monitor.Enter(_messageLocker);
         if (Channel is null)
         {
             throw new Exception("Канал закрыт, работа сервиса остановлена");
         }
         var message = JsonConvert.DeserializeObject<MessageDTO>(Encoding.UTF8.GetString(e.Body.ToArray()));
         bool sendSuccess = SendMessage(message);
+        Thread.Sleep(10000); // Имитация долгой отправки
         if (sendSuccess)
         {
             Channel.BasicAck(e.DeliveryTag, false);
         }
+        
+        Monitor.Exit(_messageLocker);
     }
 }

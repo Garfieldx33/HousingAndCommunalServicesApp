@@ -40,8 +40,7 @@ public class EmailNotificationSerivce : NotificationServiceBase, IHostedService
                 };
                 smtp.Send(Message);
             }
-            catch 
-            (Exception ex) 
+            catch(Exception ex) 
             {
                 _logger.Warn(ex);
                 return false;

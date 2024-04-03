@@ -8,129 +8,128 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using IModel = RabbitMQ.Client.IModel;
 
-namespace DataAccessGrpcService.Services
+namespace DataAccessGrpcService.Services;
+
+//Сервис отправки уведомлений в очередь
+public class NotificationQueueService
 {
-    //Сервис отправки уведомлений в очередь
-    public class NotificationQueueService
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+    RabbitMqConfig _rabbitConfig;
+    public IConnection Connection { get; set; }
+    public IModel Channel { get; set; }
+
+    delegate void OneMessageHandler(MessageDTO message);
+    event OneMessageHandler _oneMessageQueueSender;
+
+    delegate void MultipleMessageHandler(List<MessageDTO> messages);
+    event MultipleMessageHandler _multipleMessagesQueueSender;
+
+    public NotificationQueueService(IOptions<RabbitMqConfig> rabbitConfig)
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        _rabbitConfig = rabbitConfig.Value;
+        _oneMessageQueueSender += SendNewMessage;
+        _multipleMessagesQueueSender += SendMultipleMessages;
+    }
 
-        RabbitMqConfig _rabbitConfig;
-        public IConnection Connection { get; set; }
-        public IModel Channel { get; set; }
-
-        delegate void OneMessageHandler(MessageDTO message);
-        event OneMessageHandler _oneMessageQueueSender;
-
-        delegate void MultipleMessageHandler(List<MessageDTO> messages);
-        event MultipleMessageHandler _multipleMessagesQueueSender;
-
-        public NotificationQueueService(IOptions<RabbitMqConfig> rabbitConfig)
+    private IConnection CreateConnection()
+    {
+        ConnectionFactory factory = new ConnectionFactory()
         {
-            _rabbitConfig = rabbitConfig.Value;
-            _oneMessageQueueSender += SendNewMessage;
-            _multipleMessagesQueueSender += SendMultipleMessages;
-        }
-
-        private IConnection CreateConnection()
+            AutomaticRecoveryEnabled = _rabbitConfig.RetryCount != 0 ? true : false,
+            HostName = _rabbitConfig.Host,
+            Port = _rabbitConfig.Port,
+            UserName = _rabbitConfig.Username,
+            Password = _rabbitConfig.Password
+        };
+        if (_rabbitConfig.RetryCount != 0)
         {
-            ConnectionFactory factory = new ConnectionFactory()
-            {
-                AutomaticRecoveryEnabled = _rabbitConfig.RetryCount != 0 ? true : false,
-                HostName = _rabbitConfig.Host,
-                Port = _rabbitConfig.Port,
-                UserName = _rabbitConfig.Username,
-                Password = _rabbitConfig.Password
-            };
-            if (_rabbitConfig.RetryCount != 0)
-            {
-                factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(_rabbitConfig.ReconnectInterval);
-            }
-            if (_rabbitConfig.RetryCount < 0)
-            {
-                factory.RequestedConnectionTimeout = TimeSpan.FromDays(2);
-            }
-            else if (_rabbitConfig.RetryCount > 0)
-            {
-                factory.RequestedConnectionTimeout = TimeSpan.FromSeconds(_rabbitConfig.ReconnectInterval * _rabbitConfig.RetryCount);
-            }
-            IConnection rabbitConnection = factory.CreateConnection();
-            var prop = rabbitConnection.ServerProperties;
-            rabbitConnection.ConnectionShutdown += ConnectionShutdown;
-            rabbitConnection.ConnectionBlocked += ConnectionBlocked;
-            _logger.Info(nameof(NotificationQueueService) + " Соединение с RabbitMQ установлено успешно");
-            return rabbitConnection;
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(_rabbitConfig.ReconnectInterval);
         }
-        private IModel? CreateChannel(IConnection connection)
+        if (_rabbitConfig.RetryCount < 0)
         {
-            if (connection == null)
-            {
-                return null;
-            }
-            try
-            {
-                Channel = connection.CreateModel();
-                _logger.Debug(nameof(NotificationQueueService) + $" канал создан успешно");
-                return Channel;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(nameof(NotificationQueueService) + $" при создании канала произошла ошибка: {ex.Message}");
-                return null;
-            }
+            factory.RequestedConnectionTimeout = TimeSpan.FromDays(2);
         }
-        private void PublishMessage(MessageDTO newMessage, IModel channel)
+        else if (_rabbitConfig.RetryCount > 0)
         {
-            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newMessage));
-            IBasicProperties prop = channel.CreateBasicProperties();
-            prop.ContentType = "application/json";
-            prop.Persistent = true;
-            try
-            {
-                channel.BasicPublish(exchange: _rabbitConfig.ExchangeName,
-                              routingKey: _rabbitConfig.RoutingKey,
-                              basicProperties: prop,
-                              body: body);
-            }
-            catch (Exception e)
-            {
-                _logger.Warn($"Не удалось выполнить отправку уведомления {body}. {e.Message}");
-            }
+            factory.RequestedConnectionTimeout = TimeSpan.FromSeconds(_rabbitConfig.ReconnectInterval * _rabbitConfig.RetryCount);
         }
-        private void SendNewMessage(MessageDTO newMessage)
+        IConnection rabbitConnection = factory.CreateConnection();
+        var prop = rabbitConnection.ServerProperties;
+        rabbitConnection.ConnectionShutdown += ConnectionShutdown;
+        rabbitConnection.ConnectionBlocked += ConnectionBlocked;
+        _logger.Info(nameof(NotificationQueueService) + " Соединение с RabbitMQ установлено успешно");
+        return rabbitConnection;
+    }
+    private IModel? CreateChannel(IConnection connection)
+    {
+        if (connection == null)
         {
-            var connect = CreateConnection();
-            var channel = CreateChannel(connect);
-            PublishMessage(newMessage, channel!);
+            return null;
         }
-        private void SendMultipleMessages(List<MessageDTO> messages)
+        try
         {
-            var connect = CreateConnection();
-            var channel = CreateChannel(connect);
-            foreach (var message in messages)
-            {
-                PublishMessage(message, channel!);
-            }
+            Channel = connection.CreateModel();
+            _logger.Debug(nameof(NotificationQueueService) + $" канал создан успешно");
+            return Channel;
         }
-        private void ConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
+        catch (Exception ex)
         {
-            _logger.Warn($"Соединение с Rabbit блокировано {e.Reason}");
+            _logger.Error(nameof(NotificationQueueService) + $" при создании канала произошла ошибка: {ex.Message}");
+            return null;
         }
-        private void ConnectionShutdown(object? sender, ShutdownEventArgs e)
+    }
+    private void PublishMessage(MessageDTO newMessage, IModel channel)
+    {
+        var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(newMessage));
+        IBasicProperties prop = channel.CreateBasicProperties();
+        prop.ContentType = "application/json";
+        prop.Persistent = true;
+        try
         {
-            _logger.Warn($"Соединение с Rabbit потеряно {e.ReplyText} Инициатор {e.Initiator} {e.ReplyCode}");
-            if (_rabbitConfig.RetryCount == 0)
-            {
-                _logger.Warn("Функция восcтановления соеднинения с брокером сообщений целевой очереди отключена.");
-            }
+            channel.BasicPublish(exchange: _rabbitConfig.ExchangeName,
+                          routingKey: _rabbitConfig.RoutingKey,
+                          basicProperties: prop,
+                          body: body);
         }
-        public void SendNewMessageInvoke(MessageDTO newMessage)
+        catch (Exception e)
         {
-            _oneMessageQueueSender.Invoke(newMessage);
+            _logger.Warn($"Не удалось выполнить отправку уведомления {body}. {e.Message}");
         }
-        public void SendMultipleMessagesInvoke(List<MessageDTO> messages)
+    }
+    private void SendNewMessage(MessageDTO newMessage)
+    {
+        var connect = CreateConnection();
+        var channel = CreateChannel(connect);
+        PublishMessage(newMessage, channel!);
+    }
+    private void SendMultipleMessages(List<MessageDTO> messages)
+    {
+        var connect = CreateConnection();
+        var channel = CreateChannel(connect);
+        foreach (var message in messages)
         {
-            _multipleMessagesQueueSender.Invoke(messages);
+            PublishMessage(message, channel!);
         }
+    }
+    private void ConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
+    {
+        _logger.Warn($"Соединение с Rabbit блокировано {e.Reason}");
+    }
+    private void ConnectionShutdown(object? sender, ShutdownEventArgs e)
+    {
+        _logger.Warn($"Соединение с Rabbit потеряно {e.ReplyText} Инициатор {e.Initiator} {e.ReplyCode}");
+        if (_rabbitConfig.RetryCount == 0)
+        {
+            _logger.Warn("Функция восcтановления соеднинения с брокером сообщений целевой очереди отключена.");
+        }
+    }
+    public void SendNewMessageInvoke(MessageDTO newMessage)
+    {
+        _oneMessageQueueSender.Invoke(newMessage);
+    }
+    public void SendMultipleMessagesInvoke(List<MessageDTO> messages)
+    {
+        _multipleMessagesQueueSender.Invoke(messages);
     }
 }
