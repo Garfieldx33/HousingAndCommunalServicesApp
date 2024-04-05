@@ -33,7 +33,7 @@ Q - Выход";
                     if (newApp != null)
                     {
                         string jsonApp = JsonConvert.SerializeObject(newApp);
-                        for (int i = 0;i < 10;i++)
+                        for (int i = 0;i <= 3;i++)
                         {
                             var addingResult = await AddNewApp(jsonApp);
                             Console.WriteLine(jsonApp);
